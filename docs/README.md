@@ -1,0 +1,15 @@
+# Bible Bench Specifications
+
+This folder contains the draft v1 specification documents:
+
+- TECHNICAL_SPEC_V1.md
+- TRANSFORM_PROFILE_SCHEMA_V1.md
+- DATA_DICTIONARY_V1.md
+- MONGODB_DATA_MODEL_V1.md
+- API_SPEC_OPENAPI_V1.md
+- API_DTO_SCHEMAS_V1.md
+- ADMIN_UI_SPEC_V1.md
+- ADMIN_UI_WIREFRAMES_V1.md
+- ETL_PARSER_SPEC_V1.md
+- PARSER_PSEUDOCODE_V1.md
+
