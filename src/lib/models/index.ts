@@ -297,6 +297,10 @@ export const etlRunsValidator: JsonSchemaValidator = {
       status: stringSchema,
       startedAt: dateSchema,
       completedAt: nullableDateSchema,
+      metrics: {
+        bsonType: "object",
+        additionalProperties: true,
+      },
       stages: {
         bsonType: "object",
         additionalProperties: true,
@@ -409,6 +413,28 @@ export const runsValidator: JsonSchemaValidator = {
       completedAt: nullableDateSchema,
       metrics: {
         bsonType: "object",
+        additionalProperties: true,
+      },
+      logs: {
+        bsonType: "array",
+        items: {
+          bsonType: "object",
+          properties: {
+            stage: stringSchema,
+            level: stringSchema,
+            message: stringSchema,
+            timestamp: dateSchema,
+          },
+          additionalProperties: true,
+        },
+      },
+      errorSummary: {
+        bsonType: ["object", "null"],
+        properties: {
+          failedCount: numberSchema,
+          lastError: nullableStringSchema,
+          lastErrorAt: nullableDateSchema,
+        },
         additionalProperties: true,
       },
       audit: auditJsonSchema,
@@ -764,6 +790,7 @@ const etlRunSchema = new Schema({
   status: { type: String, required: true },
   startedAt: { type: Date, required: true },
   completedAt: { type: Date, default: null },
+  metrics: { type: Schema.Types.Mixed, default: {} },
   stages: { type: Schema.Types.Mixed, default: {} },
   summary: { type: Schema.Types.Mixed, required: true },
   logs: { type: [Schema.Types.Mixed], required: true, default: [] },
@@ -813,6 +840,25 @@ modelTransformMapSchema.index({ modelId: 1 }, { unique: true });
 
 type ModelTransformMap = InferSchemaType<typeof modelTransformMapSchema>;
 
+const runLogSchema = new Schema(
+  {
+    stage: { type: String, required: true },
+    level: { type: String, required: true },
+    message: { type: String, required: true },
+    timestamp: { type: Date, required: true },
+  },
+  { _id: false }
+);
+
+const runErrorSummarySchema = new Schema(
+  {
+    failedCount: { type: Number, required: true },
+    lastError: { type: String, default: null },
+    lastErrorAt: { type: Date, default: null },
+  },
+  { _id: false }
+);
+
 const runSchema = new Schema({
   runId: { type: String, required: true },
   runType: { type: String, required: true },
@@ -824,6 +870,8 @@ const runSchema = new Schema({
   startedAt: { type: Date, required: true },
   completedAt: { type: Date, default: null },
   metrics: { type: Schema.Types.Mixed, default: {} },
+  logs: { type: [runLogSchema], default: [] },
+  errorSummary: { type: runErrorSummarySchema, default: null },
   audit: { type: auditSchema, required: true },
 });
 

@@ -1,10 +1,12 @@
 import { NextResponse } from "next/server";
 
+import { validateEnv } from "@/lib/env";
 import { connectToDatabase } from "@/lib/mongodb";
 
 export const runtime = "nodejs";
 
 export async function GET() {
+  const env = validateEnv();
   const hasUri = Boolean(process.env.MONGODB_URI);
   const hasDbName = Boolean(process.env.MONGODB_DBNAME);
   let dbConnected = false;
@@ -18,5 +20,15 @@ export async function GET() {
     }
   }
 
-  return NextResponse.json({ status: "ok", dbConnected, dbNameConfigured: hasDbName });
+  const status = env.ok ? "ok" : "error";
+
+  return NextResponse.json(
+    {
+      status,
+      dbConnected,
+      dbNameConfigured: hasDbName,
+      env,
+    },
+    { status: env.ok ? 200 : 500 }
+  );
 }
