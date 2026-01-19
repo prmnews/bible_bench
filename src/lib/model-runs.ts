@@ -432,7 +432,7 @@ export async function startModelRun(params: StartRunParams): Promise<RunResult> 
     );
 
     return {
-      ok: status === "completed",
+      ok: true,
       data: {
         runId,
         runType: params.runType,
@@ -523,7 +523,7 @@ export async function retryFailedRunItems(runId: string): Promise<RunResult> {
   );
 
   return {
-    ok: status === "completed",
+    ok: true,
     data: {
       runId,
       runType: run.runType as RunType,

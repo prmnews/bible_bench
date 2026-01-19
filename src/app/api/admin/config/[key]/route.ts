@@ -65,15 +65,24 @@ function validatePayload(key: string, payload: unknown): ValidationResult {
 
 export const runtime = "nodejs";
 
+type RouteContext = {
+  params: Promise<Record<string, string | string[] | undefined>>;
+};
+
 export async function PATCH(
   request: Request,
-  { params }: { params: { key: string } }
+  { params }: RouteContext
 ) {
   if (!isAdminAvailable()) {
     return new Response("Not Found", { status: 404 });
   }
 
-  const key = params.key;
+  const resolvedParams = await params;
+  const keyParam = resolvedParams["key"];
+  const key = Array.isArray(keyParam) ? keyParam[0] : keyParam;
+  if (!key) {
+    return NextResponse.json({ ok: false, error: "Config key is required." }, { status: 400 });
+  }
   if (!allowedKeys.has(key)) {
     return NextResponse.json({ ok: false, error: "Unsupported config key." }, { status: 400 });
   }

@@ -16,11 +16,17 @@ async function getShowLatestOnly() {
   return value === "1" || value.toLowerCase() === "true";
 }
 
+type RouteContext = {
+  params: Promise<Record<string, string | string[] | undefined>>;
+};
+
 export async function GET(
   request: Request,
-  { params }: { params: { modelId: string } }
+  { params }: RouteContext
 ) {
-  const modelId = Number(params.modelId);
+  const resolvedParams = await params;
+  const modelIdValue = resolvedParams["modelId"];
+  const modelId = Number(Array.isArray(modelIdValue) ? modelIdValue[0] : modelIdValue);
   if (!Number.isFinite(modelId)) {
     return NextResponse.json({ ok: false, error: "modelId must be a number." }, { status: 400 });
   }

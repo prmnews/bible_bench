@@ -5,15 +5,21 @@ import { retryFailedRunItems } from "@/lib/model-runs";
 
 export const runtime = "nodejs";
 
+type RouteContext = {
+  params: Promise<Record<string, string | string[] | undefined>>;
+};
+
 export async function POST(
   request: Request,
-  { params }: { params: { runId: string } }
+  { params }: RouteContext
 ) {
   if (!isAdminAvailable()) {
     return new Response("Not Found", { status: 404 });
   }
 
-  const runId = params.runId;
+  const resolvedParams = await params;
+  const runIdValue = resolvedParams["runId"];
+  const runId = Array.isArray(runIdValue) ? runIdValue[0] : runIdValue;
   if (!runId || runId.trim().length === 0) {
     return NextResponse.json({ ok: false, error: "runId is required." }, { status: 400 });
   }

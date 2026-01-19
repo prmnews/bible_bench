@@ -3,11 +3,19 @@ import { NextResponse } from "next/server";
 import { VerseResultModel } from "@/lib/models";
 import { connectToDatabase } from "@/lib/mongodb";
 
+type RouteContext = {
+  params: Promise<Record<string, string | string[] | undefined>>;
+};
+
 export async function GET(
   request: Request,
-  { params }: { params: { verseId: string } }
+  { params }: RouteContext
 ) {
-  const verseId = Number(params.verseId);
+  const resolvedParams = await params;
+  const verseIdValue = resolvedParams["verseId"];
+  const verseId = Number(
+    Array.isArray(verseIdValue) ? verseIdValue[0] : verseIdValue
+  );
   if (!Number.isFinite(verseId)) {
     return NextResponse.json({ ok: false, error: "verseId must be a number." }, { status: 400 });
   }

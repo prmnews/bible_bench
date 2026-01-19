@@ -133,15 +133,21 @@ function validatePayload(payload: unknown): ValidationResult {
 
 export const runtime = "nodejs";
 
+type RouteContext = {
+  params: Promise<Record<string, string | string[] | undefined>>;
+};
+
 export async function PATCH(
   request: Request,
-  { params }: { params: { modelId: string } }
+  { params }: RouteContext
 ) {
   if (!isAdminAvailable()) {
     return new Response("Not Found", { status: 404 });
   }
 
-  const modelId = Number(params.modelId);
+  const resolvedParams = await params;
+  const modelIdValue = resolvedParams["modelId"];
+  const modelId = Number(Array.isArray(modelIdValue) ? modelIdValue[0] : modelIdValue);
   if (!Number.isFinite(modelId)) {
     return NextResponse.json({ ok: false, error: "modelId must be a number." }, { status: 400 });
   }
