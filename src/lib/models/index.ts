@@ -128,12 +128,16 @@ export const rawChaptersValidator: JsonSchemaValidator = {
       bookId: numberSchema,
       chapterNumber: numberSchema,
       reference: stringSchema,
+      sourceRef: stringSchema,
       rawPayload: {
         bsonType: "object",
         additionalProperties: true,
       },
       hashRaw: stringSchema,
+      sourceHash: stringSchema,
       source: stringSchema,
+      ingestedAt: dateSchema,
+      ingestedBy: stringSchema,
       audit: auditJsonSchema,
     },
     additionalProperties: true,
@@ -208,8 +212,112 @@ export const versesValidator: JsonSchemaValidator = {
       textProcessed: stringSchema,
       hashRaw: stringSchema,
       hashProcessed: stringSchema,
+      offsetStart: numberSchema,
+      offsetEnd: numberSchema,
       transformProfileId: numberSchema,
       etlControl: etlControlJsonSchema,
+      audit: auditJsonSchema,
+    },
+    additionalProperties: true,
+  },
+};
+
+export const transformProfilesValidator: JsonSchemaValidator = {
+  $jsonSchema: {
+    bsonType: "object",
+    required: ["profileId", "name", "scope", "steps", "isActive", "audit"],
+    properties: {
+      profileId: numberSchema,
+      name: stringSchema,
+      scope: stringSchema,
+      version: numberSchema,
+      bibleId: numberSchema,
+      isDefault: boolSchema,
+      description: nullableStringSchema,
+      steps: {
+        bsonType: "array",
+        items: {
+          bsonType: "object",
+          required: ["order", "type", "enabled", "params"],
+          properties: {
+            order: numberSchema,
+            type: stringSchema,
+            enabled: boolSchema,
+            params: {
+              bsonType: "object",
+              additionalProperties: true,
+            },
+          },
+          additionalProperties: true,
+        },
+      },
+      isActive: boolSchema,
+      audit: auditJsonSchema,
+    },
+    additionalProperties: true,
+  },
+};
+
+export const schemaValidatorRunsValidator: JsonSchemaValidator = {
+  $jsonSchema: {
+    bsonType: "object",
+    required: ["runId", "dryRun", "startedAt", "completedAt", "success", "results", "audit"],
+    properties: {
+      runId: stringSchema,
+      dryRun: boolSchema,
+      startedAt: dateSchema,
+      completedAt: dateSchema,
+      success: boolSchema,
+      results: {
+        bsonType: "array",
+        items: {
+          bsonType: "object",
+          required: ["name", "action", "ok"],
+          properties: {
+            name: stringSchema,
+            action: stringSchema,
+            ok: boolSchema,
+            error: nullableStringSchema,
+          },
+          additionalProperties: true,
+        },
+      },
+      audit: auditJsonSchema,
+    },
+    additionalProperties: true,
+  },
+};
+
+export const etlRunsValidator: JsonSchemaValidator = {
+  $jsonSchema: {
+    bsonType: "object",
+    required: ["runId", "status", "startedAt", "summary", "logs", "audit"],
+    properties: {
+      runId: stringSchema,
+      status: stringSchema,
+      startedAt: dateSchema,
+      completedAt: nullableDateSchema,
+      stages: {
+        bsonType: "object",
+        additionalProperties: true,
+      },
+      summary: {
+        bsonType: "object",
+        additionalProperties: true,
+      },
+      logs: {
+        bsonType: "array",
+        items: {
+          bsonType: "object",
+          properties: {
+            stage: stringSchema,
+            level: stringSchema,
+            message: stringSchema,
+            timestamp: dateSchema,
+          },
+          additionalProperties: true,
+        },
+      },
       audit: auditJsonSchema,
     },
     additionalProperties: true,
@@ -283,9 +391,13 @@ const rawChapterSchema = new Schema({
   bookId: { type: Number, required: true },
   chapterNumber: { type: Number, required: true },
   reference: { type: String, required: true },
+  sourceRef: { type: String },
   rawPayload: { type: Schema.Types.Mixed, required: true },
   hashRaw: { type: String, required: true },
+  sourceHash: { type: String },
   source: { type: String, required: true },
+  ingestedAt: { type: Date },
+  ingestedBy: { type: String },
   audit: { type: auditSchema, required: true },
 });
 
@@ -328,6 +440,8 @@ const verseSchema = new Schema({
   textProcessed: { type: String, required: true },
   hashRaw: { type: String, required: true },
   hashProcessed: { type: String, required: true },
+  offsetStart: { type: Number },
+  offsetEnd: { type: Number },
   transformProfileId: { type: Number, required: true },
   etlControl: { type: etlControlSchema, required: true },
   audit: { type: auditSchema, required: true },
@@ -338,6 +452,65 @@ verseSchema.index({ chapterId: 1 });
 verseSchema.index({ chapterId: 1, verseNumber: 1 });
 
 type Verse = InferSchemaType<typeof verseSchema>;
+
+const transformStepSchema = new Schema(
+  {
+    order: { type: Number, required: true },
+    type: { type: String, required: true },
+    enabled: { type: Boolean, required: true },
+    params: { type: Schema.Types.Mixed, required: true, default: {} },
+  },
+  { _id: false }
+);
+
+const transformProfileSchema = new Schema({
+  profileId: { type: Number, required: true },
+  name: { type: String, required: true },
+  scope: { type: String, required: true },
+  version: { type: Number, required: true, default: 1 },
+  bibleId: { type: Number },
+  isDefault: { type: Boolean, required: true, default: false },
+  description: { type: String, default: null },
+  steps: { type: [transformStepSchema], required: true },
+  isActive: { type: Boolean, required: true, default: true },
+  audit: { type: auditSchema, required: true },
+});
+
+transformProfileSchema.index({ profileId: 1 }, { unique: true });
+transformProfileSchema.index({ scope: 1, isActive: 1 });
+transformProfileSchema.index({ name: 1 });
+transformProfileSchema.index({ bibleId: 1, isDefault: 1, scope: 1, isActive: 1 });
+
+type TransformProfile = InferSchemaType<typeof transformProfileSchema>;
+
+const schemaValidatorRunSchema = new Schema({
+  runId: { type: String, required: true },
+  dryRun: { type: Boolean, required: true },
+  startedAt: { type: Date, required: true },
+  completedAt: { type: Date, required: true },
+  success: { type: Boolean, required: true },
+  results: { type: [Schema.Types.Mixed], required: true },
+  audit: { type: auditSchema, required: true },
+});
+
+schemaValidatorRunSchema.index({ runId: 1 }, { unique: true });
+
+type SchemaValidatorRun = InferSchemaType<typeof schemaValidatorRunSchema>;
+
+const etlRunSchema = new Schema({
+  runId: { type: String, required: true },
+  status: { type: String, required: true },
+  startedAt: { type: Date, required: true },
+  completedAt: { type: Date, default: null },
+  stages: { type: Schema.Types.Mixed, default: {} },
+  summary: { type: Schema.Types.Mixed, required: true },
+  logs: { type: [Schema.Types.Mixed], required: true, default: [] },
+  audit: { type: auditSchema, required: true },
+});
+
+etlRunSchema.index({ runId: 1 }, { unique: true });
+
+type EtlRun = InferSchemaType<typeof etlRunSchema>;
 
 export const DimLanguageModel =
   mongoose.models.DimLanguage ??
@@ -363,6 +536,26 @@ export const VerseModel =
   mongoose.models.Verse ??
   mongoose.model<Verse>("Verse", verseSchema, "verses");
 
+export const TransformProfileModel =
+  mongoose.models.TransformProfile ??
+  mongoose.model<TransformProfile>(
+    "TransformProfile",
+    transformProfileSchema,
+    "transformProfiles"
+  );
+
+export const SchemaValidatorRunModel =
+  mongoose.models.SchemaValidatorRun ??
+  mongoose.model<SchemaValidatorRun>(
+    "SchemaValidatorRun",
+    schemaValidatorRunSchema,
+    "schemaValidatorRuns"
+  );
+
+export const EtlRunModel =
+  mongoose.models.EtlRun ??
+  mongoose.model<EtlRun>("EtlRun", etlRunSchema, "etlRuns");
+
 const collectionValidators = [
   { name: "dimLanguages", validator: dimLanguagesValidator },
   { name: "dimBibles", validator: dimBiblesValidator },
@@ -370,9 +563,21 @@ const collectionValidators = [
   { name: "rawChapters", validator: rawChaptersValidator },
   { name: "chapters", validator: chaptersValidator },
   { name: "verses", validator: versesValidator },
+  { name: "transformProfiles", validator: transformProfilesValidator },
+  { name: "schemaValidatorRuns", validator: schemaValidatorRunsValidator },
+  { name: "etlRuns", validator: etlRunsValidator },
 ];
 
-export async function applySchemaValidators() {
+export type SchemaValidatorResult = {
+  name: string;
+  action: "create" | "update";
+  ok: boolean;
+  error?: string;
+};
+
+export async function applySchemaValidators(options?: {
+  dryRun?: boolean;
+}): Promise<SchemaValidatorResult[]> {
   const db = mongoose.connection.db;
   if (!db) {
     throw new Error("Database connection not initialized");
@@ -384,23 +589,36 @@ export async function applySchemaValidators() {
     )
   );
 
-  await Promise.all(
+  const results = await Promise.all(
     collectionValidators.map(async ({ name, validator }) => {
-      if (!existing.has(name)) {
-        await db.createCollection(name, {
-          validator,
-          validationLevel: "moderate",
-          validationAction: "error",
-        });
-        return;
+      const action: "create" | "update" = existing.has(name) ? "update" : "create";
+      if (options?.dryRun) {
+        return { name, action, ok: true } satisfies SchemaValidatorResult;
       }
 
-      await db.command({
-        collMod: name,
-        validator,
-        validationLevel: "moderate",
-        validationAction: "error",
-      });
+      try {
+        if (!existing.has(name)) {
+          await db.createCollection(name, {
+            validator,
+            validationLevel: "moderate",
+            validationAction: "error",
+          });
+        } else {
+          await db.command({
+            collMod: name,
+            validator,
+            validationLevel: "moderate",
+            validationAction: "error",
+          });
+        }
+
+        return { name, action, ok: true } satisfies SchemaValidatorResult;
+      } catch (error) {
+        const message = error instanceof Error ? error.message : "Unknown error";
+        return { name, action, ok: false, error: message } satisfies SchemaValidatorResult;
+      }
     })
   );
+
+  return results;
 }
