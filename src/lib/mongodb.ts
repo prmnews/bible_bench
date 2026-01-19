@@ -18,10 +18,12 @@ export async function connectToDatabase() {
 
   if (!cached.promise) {
     const uri = process.env.MONGODB_URI;
+    const dbName = process.env.MONGODB_DBNAME;
     if (!uri) {
       throw new Error("MONGODB_URI is not set");
     }
-    cached.promise = mongoose.connect(uri);
+    const options = dbName ? { dbName } : undefined;
+    cached.promise = mongoose.connect(uri, options);
   }
 
   cached.conn = await cached.promise;
