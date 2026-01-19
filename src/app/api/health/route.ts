@@ -6,6 +6,7 @@ export const runtime = "nodejs";
 
 export async function GET() {
   const hasUri = Boolean(process.env.MONGODB_URI);
+  const hasDbName = Boolean(process.env.MONGODB_DBNAME);
   let dbConnected = false;
 
   if (hasUri) {
@@ -17,5 +18,5 @@ export async function GET() {
     }
   }
 
-  return NextResponse.json({ status: "ok", dbConnected });
+  return NextResponse.json({ status: "ok", dbConnected, dbNameConfigured: hasDbName });
 }
