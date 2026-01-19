@@ -63,19 +63,29 @@
 ## Sprint 3 — Model Runs & Evaluation
 ### E-05 Model Execution
 - **S-05.1 Model registry**
-  - **T-05.1.1** Model CRUD (admin-only)
-  - **T-05.1.2** Model capability flags (structured output)
+  - **T-05.1.1** [x] Model CRUD (admin-only)
+  - **T-05.1.2** [x] Model capability flags (structured output)
 - **S-05.2 Run orchestration**
-  - **T-05.2.1** Run + runItems creation
-  - **T-05.2.2** Execute model run + persist outputs
+  - **T-05.2.1** [x] Run + runItems creation
+  - **T-05.2.2** [x] Execute model run + persist outputs
 
 ### E-06 Evaluation & Results
 - **S-06.1 Compare + scoring**
-  - **T-06.1.1** Hash/diff comparison
-  - **T-06.1.2** Fidelity score computation
+  - **T-06.1.1** [x] Hash/diff comparison
+  - **T-06.1.2** [x] Fidelity score computation
 - **S-06.2 Results API**
-  - **T-06.2.1** Chapter/verse results endpoints
-  - **T-06.2.2** Dashboard metrics endpoint
+  - **T-06.2.1** [x] Chapter/verse results endpoints
+  - **T-06.2.2** [x] Dashboard metrics endpoint
+
+### E-06.3 Gap Closeout (pre-Sprint 4)
+- **S-05.3 Model run enablement**
+  - **T-05.3.1** [x] Add configurable mock model provider for runs
+  - **T-05.3.2** [x] Add admin endpoint for model transform mapping
+  - **T-05.3.3** [x] Add admin endpoint for appConfig flags (SHOW_LATEST_ONLY)
+  - **T-05.3.4** [x] Align chapter run semantics to MODEL_CHAPTER
+  - **T-05.3.5** [x] Add run limit/skip to mitigate serverless timeouts
+- **S-06.3 Evaluation hardening**
+  - **T-06.3.1** [x] Add unit tests for evaluation/results utilities
 
 ## Sprint 4 — Hardening & Ops
 ### E-07 Observability & Ops
