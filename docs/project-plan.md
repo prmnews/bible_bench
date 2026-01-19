@@ -28,17 +28,37 @@
 ## Sprint 2 — ETL Pipeline
 ### E-04 ETL Ingest & Transform
 - **S-04.1 Raw ingest API**
-  - **T-04.1.1** Admin endpoint: ingest raw chapter
-  - **T-04.1.2** Persist raw chapter with audit fields
+  - **T-04.1.1** [x] Admin endpoint: ingest raw chapter
+    - Admin-only route with payload validation
+    - Accepts source metadata (e.g., `bibleId`, `bookId`, `chapterNumber`, `sourceRef`)
+  - **T-04.1.2** [x] Persist raw chapter with audit fields
+    - Store `ingestedAt`, `ingestedBy`, `sourceHash`
+    - Enforce idempotency for duplicate raw ingest
 - **S-04.2 Transform profiles**
-  - **T-04.2.1** Transform profile schema + storage
-  - **T-04.2.2** Apply transform pipeline to raw → chapter
+  - **T-04.2.1** [x] Transform profile schema + storage
+    - Profiles include `name`, `version`, `steps` (regex/replace, normalize)
+    - Track active/default profile per bible
+  - **T-04.2.2** [x] Apply transform pipeline to raw → chapter
+    - Apply profile steps in order with error reporting
+    - Persist transformed chapter + profile reference
 - **S-04.3 Verse extraction**
-  - **T-04.3.1** Verse parsing + storage
-  - **T-04.3.2** Add edge-case catalog tests
+  - **T-04.3.1** [x] Verse parsing + storage
+    - Extract verse numbers + text, preserve order
+    - Store verse-level offsets for traceability
+  - **T-04.3.2** [x] Add edge-case catalog tests
+    - Cover multi-verse lines, missing numbers, and special markers
+    - Include regression set for known translation quirks
 - **S-04.4 Admin ETL Triggers**
-  - **T-04.4.1** Admin endpoint to apply DB schema validators
-  - **T-04.4.2** Admin endpoints to trigger raw ingest → transform → verse parsing
+  - **T-04.4.1** [x] Admin endpoint to apply DB schema validators
+    - Admin-only route with optional `dryRun`
+    - Returns per-collection validator status + errors
+    - Records a validator run entry (startedAt, completedAt, success)
+  - **T-04.4.2** [x] Admin endpoints to trigger raw ingest → transform → verse parsing
+    - Admin-only routes for single-stage and full-pipeline triggers
+    - Supports scoped runs (e.g., `bibleId`, `bookId`, `chapterNumber`, `limit`)
+    - Returns run summary with counts + errors
+    - Supports idempotent `runId` to prevent duplicate processing
+    - Emits run log entries for each stage (ingest/transform/parse)
 
 ## Sprint 3 — Model Runs & Evaluation
 ### E-05 Model Execution
