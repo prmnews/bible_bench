@@ -21,6 +21,20 @@ type RunType = "MODEL_CHAPTER" | "MODEL_VERSE";
 type RunScope = "bible" | "book" | "chapter" | "verse";
 type RunTargetType = "chapter" | "verse";
 type RunStatus = "running" | "completed" | "failed";
+type RunLogLevel = "info" | "warn" | "error";
+
+type RunLogEntry = {
+  stage: string;
+  level: RunLogLevel;
+  message: string;
+  timestamp: Date;
+};
+
+type RunErrorSummary = {
+  failedCount: number;
+  lastError: string | null;
+  lastErrorAt: Date | null;
+};
 
 type RunMetrics = {
   total: number;
@@ -28,6 +42,7 @@ type RunMetrics = {
   failed: number;
   totalChapters?: number;
   totalVerses?: number;
+  durationMs?: number;
 };
 
 type RunSummary = {
@@ -54,6 +69,15 @@ type StartRunParams = {
 
 function createResultId() {
   return Math.floor(Date.now() * 1000 + Math.random() * 1000);
+}
+
+function createRunLogger(existingLogs?: RunLogEntry[]) {
+  const logs = existingLogs ? [...existingLogs] : [];
+  const log = (stage: string, level: RunLogLevel, message: string) => {
+    logs.push({ stage, level, message, timestamp: new Date() });
+  };
+
+  return { logs, log };
 }
 
 async function resolveModelOutputProfile(modelId: number) {
@@ -201,6 +225,8 @@ async function executeRunItems(params: {
 
   let success = 0;
   let failed = 0;
+  let lastError: string | null = null;
+  let lastErrorAt: Date | null = null;
 
   for (const targetId of targetIds) {
     const attemptTime = new Date();
@@ -320,6 +346,8 @@ async function executeRunItems(params: {
     } catch (error) {
       failed += 1;
       const message = error instanceof Error ? error.message : "Run item failed.";
+      lastError = message;
+      lastErrorAt = new Date();
       await RunItemModel.updateOne(
         { runId, targetType, targetId },
         {
@@ -333,10 +361,16 @@ async function executeRunItems(params: {
     }
   }
 
-  return { success, failed };
+  return { success, failed, lastError, lastErrorAt };
 }
 
-function buildMetrics(targetType: RunTargetType, total: number, success: number, failed: number) {
+function buildMetrics(
+  targetType: RunTargetType,
+  total: number,
+  success: number,
+  failed: number,
+  durationMs?: number
+) {
   const metrics: RunMetrics = {
     total,
     success,
@@ -347,6 +381,10 @@ function buildMetrics(targetType: RunTargetType, total: number, success: number,
     metrics.totalChapters = total;
   } else {
     metrics.totalVerses = total;
+  }
+
+  if (durationMs !== undefined) {
+    metrics.durationMs = durationMs;
   }
 
   return metrics;
@@ -379,6 +417,8 @@ export async function startModelRun(params: StartRunParams): Promise<RunResult> 
     params.runType === "MODEL_CHAPTER" ? "chapter" : "verse";
   const startedAt = new Date();
   const createdBy = params.createdBy ?? "admin";
+  const { logs, log } = createRunLogger();
+  log("run", "info", `Run ${runId} started.`);
   const scopeParams: Record<string, number> = {};
   if (params.limit !== undefined) {
     scopeParams.limit = params.limit;
@@ -397,6 +437,8 @@ export async function startModelRun(params: StartRunParams): Promise<RunResult> 
     status: "running",
     startedAt,
     metrics: {},
+    logs,
+    errorSummary: null,
     audit: {
       createdAt: startedAt,
       createdBy,
@@ -409,16 +451,37 @@ export async function startModelRun(params: StartRunParams): Promise<RunResult> 
     const endIndex =
       params.limit !== undefined ? startIndex + params.limit : undefined;
     const targetIds = resolvedIds.slice(startIndex, endIndex);
+    log("resolve_targets", "info", `Resolved ${targetIds.length} targets.`);
 
     await createRunItems(runId, targetType, targetIds);
-    const { success, failed } = await executeRunItems({
+    log("run_items", "info", `Created ${targetIds.length} run items.`);
+    const { success, failed, lastError, lastErrorAt } = await executeRunItems({
       runId,
       modelId: params.modelId,
       targetType,
       targetIds,
     });
     const status: RunStatus = failed > 0 ? "failed" : "completed";
-    const metrics = buildMetrics(targetType, targetIds.length, success, failed);
+    const durationMs = Date.now() - startedAt.getTime();
+    const metrics = buildMetrics(targetType, targetIds.length, success, failed, durationMs);
+    const errorSummary: RunErrorSummary | null =
+      failed > 0
+        ? {
+            failedCount: failed,
+            lastError: lastError ?? null,
+            lastErrorAt: lastErrorAt ?? null,
+          }
+        : null;
+
+    log(
+      "execute",
+      failed > 0 ? "error" : "info",
+      `Executed ${targetIds.length} items: ${success} succeeded, ${failed} failed.`
+    );
+    if (failed > 0 && lastError) {
+      log("execute", "error", `Last error: ${lastError}`);
+    }
+    log("complete", status === "completed" ? "info" : "error", `Run ${status}.`);
 
     await RunModel.updateOne(
       { runId },
@@ -427,6 +490,8 @@ export async function startModelRun(params: StartRunParams): Promise<RunResult> 
           status,
           completedAt: new Date(),
           metrics,
+          logs,
+          errorSummary,
         },
       }
     );
@@ -442,13 +507,23 @@ export async function startModelRun(params: StartRunParams): Promise<RunResult> 
     };
   } catch (error) {
     const message = error instanceof Error ? error.message : "Run failed.";
+    const durationMs = Date.now() - startedAt.getTime();
+    log("run", "error", message);
+    log("complete", "error", "Run failed.");
+    const errorSummary: RunErrorSummary = {
+      failedCount: 0,
+      lastError: message,
+      lastErrorAt: new Date(),
+    };
     await RunModel.updateOne(
       { runId },
       {
         $set: {
           status: "failed",
           completedAt: new Date(),
-          metrics: { total: 0, success: 0, failed: 0 },
+          metrics: { total: 0, success: 0, failed: 0, durationMs },
+          logs,
+          errorSummary,
         },
       }
     );
@@ -467,6 +542,9 @@ export async function retryFailedRunItems(runId: string): Promise<RunResult> {
 
   const targetType: RunTargetType =
     run.runType === "MODEL_CHAPTER" ? "chapter" : "verse";
+  const { logs, log } = createRunLogger(
+    Array.isArray(run.logs) ? (run.logs as RunLogEntry[]) : undefined
+  );
   const failedItems = await RunItemModel.find(
     { runId, targetType, status: "failed" },
     { targetId: 1 }
@@ -484,6 +562,7 @@ export async function retryFailedRunItems(runId: string): Promise<RunResult> {
     };
   }
 
+  const retryStartedAt = new Date();
   await RunModel.updateOne(
     { runId },
     {
@@ -494,7 +573,9 @@ export async function retryFailedRunItems(runId: string): Promise<RunResult> {
   );
 
   const targetIds = failedItems.map((item) => item.targetId);
-  await executeRunItems({
+  log("retry", "info", `Retry started for ${targetIds.length} items.`);
+  log("retry", "info", `Retrying ${targetIds.length} failed items.`);
+  const { lastError, lastErrorAt } = await executeRunItems({
     runId,
     modelId: run.modelId as number,
     targetType,
@@ -509,7 +590,25 @@ export async function retryFailedRunItems(runId: string): Promise<RunResult> {
   });
   const failedCount = total - successCount;
   const status: RunStatus = failedCount > 0 ? "failed" : "completed";
-  const metrics = buildMetrics(targetType, total, successCount, failedCount);
+  const durationMs = Date.now() - retryStartedAt.getTime();
+  const metrics = buildMetrics(targetType, total, successCount, failedCount, durationMs);
+  const errorSummary: RunErrorSummary | null =
+    failedCount > 0
+      ? {
+          failedCount,
+          lastError: lastError ?? null,
+          lastErrorAt: lastErrorAt ?? null,
+        }
+      : null;
+
+  log(
+    "retry",
+    status === "completed" ? "info" : "error",
+    `Retry completed: ${successCount} succeeded, ${failedCount} failed.`
+  );
+  if (failedCount > 0 && lastError) {
+    log("retry", "error", `Last error: ${lastError}`);
+  }
 
   await RunModel.updateOne(
     { runId },
@@ -518,6 +617,8 @@ export async function retryFailedRunItems(runId: string): Promise<RunResult> {
         status,
         completedAt: new Date(),
         metrics,
+        logs,
+        errorSummary,
       },
     }
   );

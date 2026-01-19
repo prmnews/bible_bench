@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 
+import { assertEnv } from "@/lib/env";
+
 type MongooseCache = {
   conn: typeof mongoose | null;
   promise: Promise<typeof mongoose> | null;
@@ -17,11 +19,9 @@ export async function connectToDatabase() {
   }
 
   if (!cached.promise) {
-    const uri = process.env.MONGODB_URI;
+    assertEnv();
+    const uri = process.env.MONGODB_URI as string;
     const dbName = process.env.MONGODB_DBNAME;
-    if (!uri) {
-      throw new Error("MONGODB_URI is not set");
-    }
     const options = dbName ? { dbName } : undefined;
     cached.promise = mongoose.connect(uri, options);
   }

@@ -190,6 +190,7 @@ export async function POST(request: Request) {
 
   const logs: Array<{ stage: string; level: string; message: string; timestamp: Date }> = [];
   const stageResults: Record<string, unknown> = {};
+  const stageDurationsMs: Record<string, number> = {};
   const startedAt = new Date();
 
   const addLog = (stage: string, level: string, message: string) => {
@@ -200,6 +201,7 @@ export async function POST(request: Request) {
     runId,
     status: "running",
     startedAt,
+    metrics: {},
     summary: { runId, ok: false, stages: {} },
     logs: [],
     audit: {
@@ -216,8 +218,10 @@ export async function POST(request: Request) {
   const stages = validation.data.stages;
 
   for (const stage of stages) {
+    const stageStart = Date.now();
     if (!overallOk) {
       stageResults[stage] = { ok: false, skipped: true, reason: "Previous stage failed." };
+      stageDurationsMs[stage] = Date.now() - stageStart;
       continue;
     }
 
@@ -259,6 +263,7 @@ export async function POST(request: Request) {
         const message = "Transform profile not found for chapters stage.";
         stageResults.chapters = { ok: false, error: message };
         addLog(stage, "error", message);
+        stageDurationsMs[stage] = Date.now() - stageStart;
         continue;
       }
 
@@ -295,6 +300,7 @@ export async function POST(request: Request) {
         const message = "Transform profile not found for verses stage.";
         stageResults.verses = { ok: false, error: message };
         addLog(stage, "error", message);
+        stageDurationsMs[stage] = Date.now() - stageStart;
         continue;
       }
 
@@ -319,6 +325,8 @@ export async function POST(request: Request) {
         addLog(stage, "info", `Transformed ${versesResult.data.processed} verses.`);
       }
     }
+
+    stageDurationsMs[stage] = Date.now() - stageStart;
   }
 
   const completedAt = new Date();
@@ -326,6 +334,21 @@ export async function POST(request: Request) {
     runId,
     ok: overallOk,
     stages: stageResults,
+  };
+  const getStageMetric = (stage: string, key: string) => {
+    const result = stageResults[stage];
+    if (!isRecord(result)) {
+      return 0;
+    }
+    const value = result[key];
+    return isNumber(value) ? value : 0;
+  };
+  const metrics = {
+    durationMs: completedAt.getTime() - startedAt.getTime(),
+    ingestCount: getStageMetric("ingest", "ingested"),
+    chapterCount: getStageMetric("chapters", "processed"),
+    verseCount: getStageMetric("verses", "processed"),
+    stageDurationsMs,
   };
 
   await EtlRunModel.updateOne(
@@ -336,6 +359,7 @@ export async function POST(request: Request) {
         completedAt,
         summary,
         logs,
+        metrics,
       },
     }
   );

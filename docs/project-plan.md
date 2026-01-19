@@ -90,11 +90,11 @@
 ## Sprint 4 — Hardening & Ops
 ### E-07 Observability & Ops
 - **S-07.1 Logging + metrics**
-  - **T-07.1.1** Run logs + error tracking fields
-  - **T-07.1.2** Minimal metrics for runs/ETL
+  - **T-07.1.1** [x] Run logs + error tracking fields
+  - **T-07.1.2** [x] Minimal metrics for runs/ETL
 - **S-07.2 Deployment checks**
-  - **T-07.2.1** Vercel build/test gates
-  - **T-07.2.2** Production env validation
+  - **T-07.2.1** [x] Vercel build/test gates
+  - **T-07.2.2** [x] Production env validation
 
 ## Commit & PR Scoping
 - **Commit per Task** (e.g., `T-02.1.1 add language/bible/book schemas`).
