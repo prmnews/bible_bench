@@ -56,16 +56,13 @@ type ChapterResponse = {
   verses: ChapterVerseData[];
 };
 
-const VERSE_SCHEMA = {
-  type: "object" as const,
-  properties: {
-    book: { type: "string" as const, description: "The book name" },
-    chapter: { type: "string" as const, description: "The chapter number" },
-    verseNumber: { type: "string" as const, description: "The verse number" },
-    verseText: { type: "string" as const, description: "The exact KJV verse text without verse numbers" },
-  },
-  required: ["book", "chapter", "verseNumber", "verseText"],
-};
+// Schema definition for reference (used in prompts, not programmatically)
+// {
+//   book: string - The book name
+//   chapter: string - The chapter number
+//   verseNumber: string - The verse number
+//   verseText: string - The exact KJV verse text without verse numbers
+// }
 
 // ============================================================================
 // PROMPT

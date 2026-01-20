@@ -227,7 +227,6 @@ async function generateMockResponse(
   }
 
   // For mock, generate a synthetic JSON response
-  let responseRaw: string;
   let parsed: ParsedResponse;
 
   if (params.targetType === "verse") {
@@ -254,7 +253,7 @@ async function generateMockResponse(
     };
   }
 
-  responseRaw = JSON.stringify(parsed);
+  const responseRaw = JSON.stringify(parsed);
   const extractedText = extractText(parsed, params.targetType);
 
   return { responseRaw, parsed, parseError: null, extractedText };
