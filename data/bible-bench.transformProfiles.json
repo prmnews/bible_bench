@@ -1,0 +1,100 @@
+[{
+  "_id": {
+    "$oid": "696ee5b17fac162a3d8719d9"
+  },
+  "profileId": 1,
+  "name": "KJV_CANONICAL_V1",
+  "scope": "canonical",
+  "version": 1,
+  "bibleId": 1001,
+  "isDefault": true,
+  "description": "Default canonical transform profile for KJV Bible text",
+  "steps": [
+    {
+      "order": 1,
+      "type": "stripMarkupTags",
+      "enabled": true,
+      "params": {
+        "tagNames": [
+          "wj",
+          "add",
+          "verse-span",
+          "para",
+          "char",
+          "verse",
+          "chapter"
+        ]
+      }
+    },
+    {
+      "order": 2,
+      "type": "stripParagraphMarkers",
+      "enabled": true,
+      "params": {
+        "markers": [
+          "¶"
+        ]
+      }
+    },
+    {
+      "order": 3,
+      "type": "stripVerseNumbers",
+      "enabled": true,
+      "params": {
+        "patterns": [
+          "^\\d+\\s*"
+        ]
+      }
+    },
+    {
+      "order": 4,
+      "type": "collapseWhitespace",
+      "enabled": true
+    },
+    {
+      "order": 5,
+      "type": "trim",
+      "enabled": true
+    }
+  ],
+  "isActive": true,
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-20T02:17:21.192Z"
+    },
+    "createdBy": "seed"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "696ee5b17fac162a3d8719dc"
+  },
+  "profileId": 2,
+  "name": "MODEL_OUTPUT_V1",
+  "scope": "model_output",
+  "version": 1,
+  "bibleId": 1001,
+  "isDefault": true,
+  "description": "Default transform profile for model output normalization",
+  "steps": [
+    {
+      "order": 1,
+      "type": "collapseWhitespace",
+      "enabled": true
+    },
+    {
+      "order": 2,
+      "type": "trim",
+      "enabled": true
+    }
+  ],
+  "isActive": true,
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-20T02:17:21.192Z"
+    },
+    "createdBy": "seed"
+  },
+  "__v": 0
+}]

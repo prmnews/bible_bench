@@ -161,12 +161,18 @@ async function seedTransformProfiles(): Promise<{
         },
         {
           order: 3,
+          type: "stripVerseNumbers",
+          enabled: true,
+          params: { patterns: ["^\\d+\\s*"] },
+        },
+        {
+          order: 4,
           type: "collapseWhitespace",
           enabled: true,
           params: {},
         },
         {
-          order: 4,
+          order: 5,
           type: "trim",
           enabled: true,
           params: {},
@@ -199,18 +205,12 @@ async function seedTransformProfiles(): Promise<{
       steps: [
         {
           order: 1,
-          type: "stripVerseNumbers",
-          enabled: true,
-          params: { patterns: ["^\\d+\\s*"] },
-        },
-        {
-          order: 2,
           type: "collapseWhitespace",
           enabled: true,
           params: {},
         },
         {
-          order: 3,
+          order: 2,
           type: "trim",
           enabled: true,
           params: {},

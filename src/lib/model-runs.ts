@@ -249,7 +249,7 @@ async function executeRunItems(params: {
         }
 
         const startTime = Date.now();
-        const { responseRaw } = await generateModelResponse({
+        const { responseRaw, extractedText, parseError } = await generateModelResponse({
           targetType: "chapter",
           targetId,
           reference: chapter.reference,
@@ -258,9 +258,16 @@ async function executeRunItems(params: {
           model,
         });
         const latencyMs = Date.now() - startTime;
+
+        // If JSON parsing failed, throw an error
+        if (parseError || extractedText === null) {
+          throw new Error(parseError ?? "Failed to extract text from model response.");
+        }
+
+        // Apply minimal normalization to extracted text (whitespace/trim only)
         const responseProcessed = modelProfile
-          ? applyTransformProfile(responseRaw, modelProfile)
-          : responseRaw;
+          ? applyTransformProfile(extractedText, modelProfile)
+          : extractedText;
         const hashRaw = sha256(responseRaw);
         const hashProcessed = sha256(responseProcessed);
         const hashMatch = hashProcessed === chapter.hashProcessed;
@@ -294,7 +301,7 @@ async function executeRunItems(params: {
         }
 
         const startTime = Date.now();
-        const { responseRaw } = await generateModelResponse({
+        const { responseRaw, extractedText, parseError } = await generateModelResponse({
           targetType: "verse",
           targetId,
           reference: verse.reference,
@@ -303,9 +310,16 @@ async function executeRunItems(params: {
           model,
         });
         const latencyMs = Date.now() - startTime;
+
+        // If JSON parsing failed, throw an error
+        if (parseError || extractedText === null) {
+          throw new Error(parseError ?? "Failed to extract text from model response.");
+        }
+
+        // Apply minimal normalization to extracted text (whitespace/trim only)
         const responseProcessed = modelProfile
-          ? applyTransformProfile(responseRaw, modelProfile)
-          : responseRaw;
+          ? applyTransformProfile(extractedText, modelProfile)
+          : extractedText;
         const hashRaw = sha256(responseRaw);
         const hashProcessed = sha256(responseProcessed);
         const hashMatch = hashProcessed === verse.hashProcessed;

@@ -6,7 +6,7 @@
     "_id": {
       "type": "ObjectId",
       "count": 3,
-      "sample": "696eb785d6ddad8890e6d12b"
+      "sample": "696ee5bbd6ddad8890e767b2"
     },
     "rawChapterId": {
       "type": "number",
@@ -26,7 +26,7 @@
     "audit.createdAt": {
       "type": "date",
       "count": 3,
-      "sample": "2026-01-19T23:00:21.748Z"
+      "sample": "2026-01-20T02:17:31.079Z"
     },
     "audit.createdBy": {
       "type": "string",
@@ -56,7 +56,7 @@
     "ingestedAt": {
       "type": "date",
       "count": 3,
-      "sample": "2026-01-19T23:00:21.748Z"
+      "sample": "2026-01-20T02:17:31.079Z"
     },
     "ingestedBy": {
       "type": "string",
@@ -3265,18 +3265,18 @@
   },
   "samples": [
     {
-      "_id": "696eb785d6ddad8890e6d12b",
+      "_id": "696ee5bbd6ddad8890e767b2",
       "rawChapterId": 1001,
       "__v": 0,
       "audit": {
-        "createdAt": "2026-01-19T23:00:21.748Z",
+        "createdAt": "2026-01-20T02:17:31.079Z",
         "createdBy": "raw_ingest"
       },
       "bibleId": 1001,
       "bookId": 10,
       "chapterNumber": 1,
       "hashRaw": "d3de9359b702387261de526203b532008e94e2dc43570b7c7fc2d87728a02fbc",
-      "ingestedAt": "2026-01-19T23:00:21.748Z",
+      "ingestedAt": "2026-01-20T02:17:31.079Z",
       "ingestedBy": "kjv_ingest",
       "rawPayload": {
         "id": "GEN.1.1-GEN.1.31",
@@ -6424,18 +6424,18 @@
       "sourceRef": "01-Genesis-GEN.1.json"
     },
     {
-      "_id": "696eb785d6ddad8890e6d12c",
+      "_id": "696ee5bbd6ddad8890e767b3",
       "rawChapterId": 1010,
       "__v": 0,
       "audit": {
-        "createdAt": "2026-01-19T23:00:21.748Z",
+        "createdAt": "2026-01-20T02:17:31.079Z",
         "createdBy": "raw_ingest"
       },
       "bibleId": 1001,
       "bookId": 10,
       "chapterNumber": 10,
       "hashRaw": "44f1b8874ce1868cee417c41f53c138abbbca79cb6ff9e1522bab1ca8ce7724f",
-      "ingestedAt": "2026-01-19T23:00:21.748Z",
+      "ingestedAt": "2026-01-20T02:17:31.079Z",
       "ingestedBy": "kjv_ingest",
       "rawPayload": {
         "id": "GEN.10.1-GEN.10.32",
@@ -8984,18 +8984,18 @@
       "sourceRef": "01-Genesis-GEN.10.json"
     },
     {
-      "_id": "696eb785d6ddad8890e6d12d",
+      "_id": "696ee5bbd6ddad8890e767b4",
       "rawChapterId": 1011,
       "__v": 0,
       "audit": {
-        "createdAt": "2026-01-19T23:00:21.748Z",
+        "createdAt": "2026-01-20T02:17:31.079Z",
         "createdBy": "raw_ingest"
       },
       "bibleId": 1001,
       "bookId": 10,
       "chapterNumber": 11,
       "hashRaw": "464303846207b093674f42b2a000739d4a57e8143173bee81fb58bf9effc019c",
-      "ingestedAt": "2026-01-19T23:00:21.748Z",
+      "ingestedAt": "2026-01-20T02:17:31.079Z",
       "ingestedBy": "kjv_ingest",
       "rawPayload": {
         "id": "GEN.11.1-GEN.11.32",

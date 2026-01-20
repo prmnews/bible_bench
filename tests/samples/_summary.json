@@ -85,7 +85,7 @@
   },
   {
     "collection": "schemaValidatorRuns",
-    "documentCount": 3,
+    "documentCount": 4,
     "sampleSize": 2,
     "fieldCount": 11,
     "validationErrorCount": 0

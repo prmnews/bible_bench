@@ -1,6 +1,34 @@
 import Anthropic from "@anthropic-ai/sdk";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenerativeAI, SchemaType, type Schema } from "@google/generative-ai";
 import OpenAI from "openai";
+
+// ============================================================================
+// RESPONSE SCHEMAS
+// ============================================================================
+
+type VerseResponseData = {
+  book: string;
+  chapter: string;
+  verseNumber: string;
+  verseText: string;
+};
+
+type ChapterVerseData = {
+  verseNumber: string;
+  verseText: string;
+};
+
+type ChapterResponseData = {
+  book: string;
+  chapter: string;
+  verses: ChapterVerseData[];
+};
+
+type ParsedResponse = VerseResponseData | ChapterResponseData;
+
+// ============================================================================
+// INPUT/OUTPUT TYPES
+// ============================================================================
 
 type ModelResponseParams = {
   targetType: "chapter" | "verse";
@@ -16,7 +44,14 @@ type ModelResponseParams = {
 
 type ModelResponseResult = {
   responseRaw: string;
+  parsed: ParsedResponse | null;
+  parseError: string | null;
+  extractedText: string | null;
 };
+
+// ============================================================================
+// UTILITY FUNCTIONS
+// ============================================================================
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -34,6 +69,115 @@ function getStringMap(value: unknown): Record<string, string> {
   const entries = Object.entries(value).filter(([, entry]) => typeof entry === "string");
   return Object.fromEntries(entries) as Record<string, string>;
 }
+
+// ============================================================================
+// JSON PARSING & TEXT EXTRACTION
+// ============================================================================
+
+function parseJsonResponse(
+  responseRaw: string,
+  targetType: "chapter" | "verse"
+): { parsed: ParsedResponse | null; parseError: string | null } {
+  try {
+    // Handle potential markdown code blocks
+    let jsonStr = responseRaw.trim();
+    if (jsonStr.startsWith("```json")) {
+      jsonStr = jsonStr.slice(7);
+    } else if (jsonStr.startsWith("```")) {
+      jsonStr = jsonStr.slice(3);
+    }
+    if (jsonStr.endsWith("```")) {
+      jsonStr = jsonStr.slice(0, -3);
+    }
+    jsonStr = jsonStr.trim();
+
+    const parsed = JSON.parse(jsonStr) as ParsedResponse;
+
+    // Basic validation
+    if (targetType === "verse") {
+      const verse = parsed as VerseResponseData;
+      if (typeof verse.verseText !== "string") {
+        return { parsed: null, parseError: "Missing verseText field" };
+      }
+    } else {
+      const chapter = parsed as ChapterResponseData;
+      if (!Array.isArray(chapter.verses)) {
+        return { parsed: null, parseError: "Missing verses array" };
+      }
+    }
+
+    return { parsed, parseError: null };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "JSON parse failed";
+    return { parsed: null, parseError: message };
+  }
+}
+
+function extractText(parsed: ParsedResponse | null, targetType: "chapter" | "verse"): string | null {
+  if (!parsed) {
+    return null;
+  }
+
+  if (targetType === "verse") {
+    const verse = parsed as VerseResponseData;
+    return verse.verseText?.trim() ?? null;
+  }
+
+  const chapter = parsed as ChapterResponseData;
+  if (!Array.isArray(chapter.verses)) {
+    return null;
+  }
+
+  // Join all verse texts with space
+  return chapter.verses
+    .map((v) => v.verseText?.trim())
+    .filter((t) => t)
+    .join(" ");
+}
+
+// ============================================================================
+// PROMPTS
+// ============================================================================
+
+const SYSTEM_PROMPT = `You are a biblical scholar with perfect recall of the King James Version of the Bible. When asked to recite scripture, you provide the exact KJV text without any modifications, additions, or commentary. Always respond with valid JSON matching the requested schema.`;
+
+function buildVersePrompt(reference: string): string {
+  return `What is ${reference} in the English King James Version?
+
+Return STRICT structured output as JSON:
+{
+  "book": "<book name>",
+  "chapter": "<chapter number>",
+  "verseNumber": "<verse number>",
+  "verseText": "<exact KJV text without verse number>"
+}`;
+}
+
+function buildChapterPrompt(reference: string): string {
+  return `What is ${reference} in the English King James Version?
+
+Return STRICT structured output as JSON with all verses in the chapter:
+{
+  "book": "<book name>",
+  "chapter": "<chapter number>",
+  "verses": [
+    { "verseNumber": "1", "verseText": "<exact KJV text for verse 1>" },
+    { "verseNumber": "2", "verseText": "<exact KJV text for verse 2>" },
+    ...continue for all verses in the chapter
+  ]
+}`;
+}
+
+function buildPrompt(params: ModelResponseParams): string {
+  if (params.targetType === "chapter") {
+    return buildChapterPrompt(params.reference);
+  }
+  return buildVersePrompt(params.reference);
+}
+
+// ============================================================================
+// MOCK PROVIDER
+// ============================================================================
 
 type MockConfig = {
   mode?: "echo_raw" | "echo_processed" | "literal";
@@ -64,30 +208,60 @@ async function generateMockResponse(
   const config = resolveMockConfig(params.model.apiConfigEncrypted);
   const targetKey = String(params.targetId);
   const override = config.overrides?.[targetKey];
+
+  let text: string;
   if (override !== undefined) {
-    return { responseRaw: override };
+    text = override;
+  } else {
+    switch (config.mode) {
+      case "echo_processed":
+        text = params.canonicalProcessed;
+        break;
+      case "literal":
+        text = config.literalResponse ?? params.canonicalRaw;
+        break;
+      case "echo_raw":
+      default:
+        text = params.canonicalRaw;
+    }
   }
 
-  switch (config.mode) {
-    case "echo_processed":
-      return { responseRaw: params.canonicalProcessed };
-    case "literal":
-      if (config.literalResponse !== undefined) {
-        return { responseRaw: config.literalResponse };
-      }
-      return { responseRaw: params.canonicalRaw };
-    case "echo_raw":
-    default:
-      return { responseRaw: params.canonicalRaw };
+  // For mock, generate a synthetic JSON response
+  let parsed: ParsedResponse;
+
+  if (params.targetType === "verse") {
+    const parts = params.reference.split(" ");
+    const book = parts.slice(0, -1).join(" ");
+    const chapterVerse = parts[parts.length - 1]?.split(":") ?? ["1", "1"];
+
+    parsed = {
+      book,
+      chapter: chapterVerse[0] ?? "1",
+      verseNumber: chapterVerse[1] ?? "1",
+      verseText: text,
+    };
+  } else {
+    const parts = params.reference.split(" ");
+    const book = parts.slice(0, -1).join(" ");
+    const chapter = parts[parts.length - 1] ?? "1";
+
+    // For mock chapter, just put all text as verse 1
+    parsed = {
+      book,
+      chapter,
+      verses: [{ verseNumber: "1", verseText: text }],
+    };
   }
+
+  const responseRaw = JSON.stringify(parsed);
+  const extractedText = extractText(parsed, params.targetType);
+
+  return { responseRaw, parsed, parseError: null, extractedText };
 }
 
-function buildPrompt(params: ModelResponseParams): string {
-  const typeLabel = params.targetType === "chapter" ? "chapter" : "verse";
-  return `Please recite the King James Version (KJV) Bible text for ${params.reference}. 
-
-Provide ONLY the exact KJV text for this ${typeLabel}, without verse numbers, without any introduction, commentary, or explanation. Just the pure biblical text.`;
-}
+// ============================================================================
+// OPENAI PROVIDER
+// ============================================================================
 
 async function generateOpenAIResponse(
   params: ModelResponseParams
@@ -111,22 +285,23 @@ async function generateOpenAIResponse(
   const response = await client.chat.completions.create({
     model: modelName,
     max_tokens: maxTokens,
+    response_format: { type: "json_object" },
     messages: [
-      {
-        role: "system",
-        content:
-          "You are a biblical scholar with perfect recall of the King James Version of the Bible. When asked to recite scripture, you provide the exact KJV text without any modifications, additions, or commentary.",
-      },
-      {
-        role: "user",
-        content: prompt,
-      },
+      { role: "system", content: SYSTEM_PROMPT },
+      { role: "user", content: prompt },
     ],
   });
 
-  const content = response.choices[0]?.message?.content ?? "";
-  return { responseRaw: content };
+  const responseRaw = response.choices[0]?.message?.content ?? "";
+  const { parsed, parseError } = parseJsonResponse(responseRaw, params.targetType);
+  const extractedText = extractText(parsed, params.targetType);
+
+  return { responseRaw, parsed, parseError, extractedText };
 }
+
+// ============================================================================
+// ANTHROPIC PROVIDER
+// ============================================================================
 
 async function generateAnthropicResponse(
   params: ModelResponseParams
@@ -147,23 +322,58 @@ async function generateAnthropicResponse(
   const client = new Anthropic({ apiKey });
   const prompt = buildPrompt(params);
 
+  // Anthropic doesn't have native JSON mode, so we rely on prompt engineering
   const response = await client.messages.create({
     model: modelName,
     max_tokens: maxTokens,
-    system:
-      "You are a biblical scholar with perfect recall of the King James Version of the Bible. When asked to recite scripture, you provide the exact KJV text without any modifications, additions, or commentary.",
+    system: SYSTEM_PROMPT,
     messages: [
-      {
-        role: "user",
-        content: prompt,
-      },
+      { role: "user", content: prompt },
     ],
   });
 
   const textBlock = response.content.find((block) => block.type === "text");
-  const content = textBlock?.type === "text" ? textBlock.text : "";
-  return { responseRaw: content };
+  const responseRaw = textBlock?.type === "text" ? textBlock.text : "";
+  const { parsed, parseError } = parseJsonResponse(responseRaw, params.targetType);
+  const extractedText = extractText(parsed, params.targetType);
+
+  return { responseRaw, parsed, parseError, extractedText };
 }
+
+// ============================================================================
+// GEMINI PROVIDER
+// ============================================================================
+
+const GEMINI_VERSE_SCHEMA: Schema = {
+  type: SchemaType.OBJECT,
+  properties: {
+    book: { type: SchemaType.STRING },
+    chapter: { type: SchemaType.STRING },
+    verseNumber: { type: SchemaType.STRING },
+    verseText: { type: SchemaType.STRING },
+  },
+  required: ["book", "chapter", "verseNumber", "verseText"],
+};
+
+const GEMINI_CHAPTER_SCHEMA: Schema = {
+  type: SchemaType.OBJECT,
+  properties: {
+    book: { type: SchemaType.STRING },
+    chapter: { type: SchemaType.STRING },
+    verses: {
+      type: SchemaType.ARRAY,
+      items: {
+        type: SchemaType.OBJECT,
+        properties: {
+          verseNumber: { type: SchemaType.STRING },
+          verseText: { type: SchemaType.STRING },
+        },
+        required: ["verseNumber", "verseText"],
+      },
+    },
+  },
+  required: ["book", "chapter", "verses"],
+};
 
 async function generateGeminiResponse(
   params: ModelResponseParams
@@ -179,21 +389,32 @@ async function generateGeminiResponse(
   }
 
   const modelName = getString(config["model"]) ?? "gemini-2.0-flash";
+  const responseSchema = params.targetType === "chapter" 
+    ? GEMINI_CHAPTER_SCHEMA 
+    : GEMINI_VERSE_SCHEMA;
 
   const genAI = new GoogleGenerativeAI(apiKey);
   const model = genAI.getGenerativeModel({
     model: modelName,
-    systemInstruction:
-      "You are a biblical scholar with perfect recall of the King James Version of the Bible. When asked to recite scripture, you provide the exact KJV text without any modifications, additions, or commentary.",
+    systemInstruction: SYSTEM_PROMPT,
+    generationConfig: {
+      responseMimeType: "application/json",
+      responseSchema,
+    },
   });
 
   const prompt = buildPrompt(params);
   const result = await model.generateContent(prompt);
-  const response = result.response;
-  const content = response.text();
+  const responseRaw = result.response.text();
+  const { parsed, parseError } = parseJsonResponse(responseRaw, params.targetType);
+  const extractedText = extractText(parsed, params.targetType);
 
-  return { responseRaw: content };
+  return { responseRaw, parsed, parseError, extractedText };
 }
+
+// ============================================================================
+// MAIN ENTRY POINT
+// ============================================================================
 
 export async function generateModelResponse(
   params: ModelResponseParams
@@ -213,3 +434,12 @@ export async function generateModelResponse(
       return generateMockResponse(params);
   }
 }
+
+export type {
+  ModelResponseParams,
+  ModelResponseResult,
+  VerseResponseData,
+  ChapterResponseData,
+  ChapterVerseData,
+  ParsedResponse,
+};

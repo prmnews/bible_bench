@@ -35,7 +35,7 @@ const CANONICAL = {
 CANONICAL.hashNormalized = sha256(CANONICAL.textNormalized);
 
 // ============================================================================
-// EXPECTED SCHEMA
+// EXPECTED SCHEMAS
 // ============================================================================
 
 type VerseResponse = {
@@ -45,16 +45,24 @@ type VerseResponse = {
   verseText: string;
 };
 
-const VERSE_SCHEMA = {
-  type: "object" as const,
-  properties: {
-    book: { type: "string" as const, description: "The book name" },
-    chapter: { type: "string" as const, description: "The chapter number" },
-    verseNumber: { type: "string" as const, description: "The verse number" },
-    verseText: { type: "string" as const, description: "The exact KJV verse text without verse numbers" },
-  },
-  required: ["book", "chapter", "verseNumber", "verseText"],
+type ChapterVerseData = {
+  verseNumber: string | number;
+  verseText: string;
 };
+
+type ChapterResponse = {
+  book: string;
+  chapter: string | number;
+  verses: ChapterVerseData[];
+};
+
+// Schema definition for reference (used in prompts, not programmatically)
+// {
+//   book: string - The book name
+//   chapter: string - The chapter number
+//   verseNumber: string - The verse number
+//   verseText: string - The exact KJV verse text without verse numbers
+// }
 
 // ============================================================================
 // PROMPT
@@ -517,5 +525,437 @@ function printResult(result: ProviderResult) {
   
   if (!result.hashMatch && result.diff) {
     console.log(`  Diff: ${JSON.stringify(result.diff)}`);
+  }
+}
+
+// ============================================================================
+// CHAPTER-LEVEL TEST (Psalm 117 - shortest chapter, 2 verses)
+// ============================================================================
+
+const PSALM_117 = {
+  reference: "Psalm 117",
+  book: "Psalm",
+  chapter: 117,
+  verses: [
+    { verseNumber: 1, text: "O praise the LORD, all ye nations: praise him, all ye people." },
+    { verseNumber: 2, text: "For his merciful kindness is great toward us: and the truth of the LORD endureth for ever. Praise ye the LORD." },
+  ],
+};
+
+const CHAPTER_PROMPT = `What is Psalm 117 in the English King James Version?
+
+Return STRICT structured output as JSON with all verses in the chapter:
+{
+  "book": "Psalm",
+  "chapter": "117",
+  "verses": [
+    { "verseNumber": "1", "verseText": "<exact KJV text for verse 1>" },
+    { "verseNumber": "2", "verseText": "<exact KJV text for verse 2>" }
+  ]
+}`;
+
+type ChapterProviderResult = {
+  provider: string;
+  success: boolean;
+  responseRaw: string;
+  parsed: ChapterResponse | null;
+  parseError: string | null;
+  validationErrors: string[];
+  verseCount: number;
+  latencyMs: number;
+};
+
+async function testOpenAIChapter(): Promise<ChapterProviderResult> {
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) {
+    return {
+      provider: "openai",
+      success: false,
+      responseRaw: "",
+      parsed: null,
+      parseError: "OPENAI_API_KEY not set",
+      validationErrors: [],
+      verseCount: 0,
+      latencyMs: 0,
+    };
+  }
+
+  const client = new OpenAI({ apiKey });
+  const start = Date.now();
+
+  try {
+    const response = await client.chat.completions.create({
+      model: "gpt-4o",
+      max_tokens: 512,
+      response_format: { type: "json_object" },
+      messages: [
+        { role: "system", content: SYSTEM_PROMPT },
+        { role: "user", content: CHAPTER_PROMPT },
+      ],
+    });
+
+    const latencyMs = Date.now() - start;
+    const responseRaw = response.choices[0]?.message?.content ?? "";
+
+    return parseAndValidateChapter("openai", responseRaw, latencyMs);
+  } catch (error) {
+    return {
+      provider: "openai",
+      success: false,
+      responseRaw: "",
+      parsed: null,
+      parseError: error instanceof Error ? error.message : "Unknown error",
+      validationErrors: [],
+      verseCount: 0,
+      latencyMs: Date.now() - start,
+    };
+  }
+}
+
+async function testAnthropicChapter(): Promise<ChapterProviderResult> {
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) {
+    return {
+      provider: "anthropic",
+      success: false,
+      responseRaw: "",
+      parsed: null,
+      parseError: "ANTHROPIC_API_KEY not set",
+      validationErrors: [],
+      verseCount: 0,
+      latencyMs: 0,
+    };
+  }
+
+  const client = new Anthropic({ apiKey });
+  const start = Date.now();
+
+  try {
+    const response = await client.messages.create({
+      model: "claude-sonnet-4-20250514",
+      max_tokens: 512,
+      system: SYSTEM_PROMPT,
+      messages: [
+        { role: "user", content: CHAPTER_PROMPT },
+      ],
+    });
+
+    const latencyMs = Date.now() - start;
+    const textBlock = response.content.find((block) => block.type === "text");
+    const responseRaw = textBlock?.type === "text" ? textBlock.text : "";
+
+    return parseAndValidateChapter("anthropic", responseRaw, latencyMs);
+  } catch (error) {
+    return {
+      provider: "anthropic",
+      success: false,
+      responseRaw: "",
+      parsed: null,
+      parseError: error instanceof Error ? error.message : "Unknown error",
+      validationErrors: [],
+      verseCount: 0,
+      latencyMs: Date.now() - start,
+    };
+  }
+}
+
+async function testGeminiChapter(): Promise<ChapterProviderResult> {
+  const apiKey = process.env.GEMINI_API_KEY ?? process.env.GOOGLE_API_KEY;
+  if (!apiKey) {
+    return {
+      provider: "gemini",
+      success: false,
+      responseRaw: "",
+      parsed: null,
+      parseError: "GEMINI_API_KEY or GOOGLE_API_KEY not set",
+      validationErrors: [],
+      verseCount: 0,
+      latencyMs: 0,
+    };
+  }
+
+  const genAI = new GoogleGenerativeAI(apiKey);
+  const model = genAI.getGenerativeModel({
+    model: "gemini-2.0-flash",
+    systemInstruction: SYSTEM_PROMPT,
+    generationConfig: {
+      responseMimeType: "application/json",
+      responseSchema: {
+        type: SchemaType.OBJECT,
+        properties: {
+          book: { type: SchemaType.STRING },
+          chapter: { type: SchemaType.STRING },
+          verses: {
+            type: SchemaType.ARRAY,
+            items: {
+              type: SchemaType.OBJECT,
+              properties: {
+                verseNumber: { type: SchemaType.STRING },
+                verseText: { type: SchemaType.STRING },
+              },
+              required: ["verseNumber", "verseText"],
+            },
+          },
+        },
+        required: ["book", "chapter", "verses"],
+      },
+    },
+  });
+
+  const start = Date.now();
+
+  try {
+    const result = await model.generateContent(CHAPTER_PROMPT);
+    const latencyMs = Date.now() - start;
+    const responseRaw = result.response.text();
+
+    return parseAndValidateChapter("gemini", responseRaw, latencyMs);
+  } catch (error) {
+    return {
+      provider: "gemini",
+      success: false,
+      responseRaw: "",
+      parsed: null,
+      parseError: error instanceof Error ? error.message : "Unknown error",
+      validationErrors: [],
+      verseCount: 0,
+      latencyMs: Date.now() - start,
+    };
+  }
+}
+
+function parseAndValidateChapter(
+  provider: string,
+  responseRaw: string,
+  latencyMs: number
+): ChapterProviderResult {
+  let parsed: ChapterResponse | null = null;
+  let parseError: string | null = null;
+
+  try {
+    let jsonStr = responseRaw.trim();
+    if (jsonStr.startsWith("```json")) {
+      jsonStr = jsonStr.slice(7);
+    } else if (jsonStr.startsWith("```")) {
+      jsonStr = jsonStr.slice(3);
+    }
+    if (jsonStr.endsWith("```")) {
+      jsonStr = jsonStr.slice(0, -3);
+    }
+    jsonStr = jsonStr.trim();
+
+    parsed = JSON.parse(jsonStr) as ChapterResponse;
+  } catch (error) {
+    parseError = error instanceof Error ? error.message : "JSON parse failed";
+  }
+
+  if (!parsed) {
+    return {
+      provider,
+      success: false,
+      responseRaw,
+      parsed: null,
+      parseError,
+      validationErrors: [],
+      verseCount: 0,
+      latencyMs,
+    };
+  }
+
+  const validationErrors: string[] = [];
+
+  if (typeof parsed.book !== "string") {
+    validationErrors.push("book is not a string");
+  }
+  if (parsed.chapter === undefined) {
+    validationErrors.push("chapter is missing");
+  }
+  if (!Array.isArray(parsed.verses)) {
+    validationErrors.push("verses is not an array");
+  }
+
+  // Validate metadata
+  if (parsed.book?.toLowerCase() !== PSALM_117.book.toLowerCase()) {
+    validationErrors.push(`book mismatch: expected "${PSALM_117.book}", got "${parsed.book}"`);
+  }
+  if (String(parsed.chapter) !== String(PSALM_117.chapter)) {
+    validationErrors.push(`chapter mismatch: expected "${PSALM_117.chapter}", got "${parsed.chapter}"`);
+  }
+
+  // Validate verse count
+  const verseCount = Array.isArray(parsed.verses) ? parsed.verses.length : 0;
+  if (verseCount !== PSALM_117.verses.length) {
+    validationErrors.push(`verse count mismatch: expected ${PSALM_117.verses.length}, got ${verseCount}`);
+  }
+
+  // Validate each verse has required fields
+  if (Array.isArray(parsed.verses)) {
+    for (let i = 0; i < parsed.verses.length; i++) {
+      const v = parsed.verses[i];
+      if (!v || typeof v.verseText !== "string") {
+        validationErrors.push(`verse ${i + 1} missing verseText`);
+      }
+      if (!v || v.verseNumber === undefined) {
+        validationErrors.push(`verse ${i + 1} missing verseNumber`);
+      }
+    }
+  }
+
+  return {
+    provider,
+    success: validationErrors.length === 0 && verseCount === PSALM_117.verses.length,
+    responseRaw,
+    parsed,
+    parseError,
+    validationErrors,
+    verseCount,
+    latencyMs,
+  };
+}
+
+// ============================================================================
+// CHAPTER-LEVEL TEST SUITE
+// ============================================================================
+
+describe("Structured Output Spike - Chapter (Psalm 117)", () => {
+  it("should display chapter test info", () => {
+    console.log("\n" + "=".repeat(70));
+    console.log("CHAPTER-LEVEL STRUCTURED OUTPUT TEST - Psalm 117");
+    console.log("=".repeat(70));
+    console.log("\nPsalm 117 is the shortest chapter in the Bible (2 verses).");
+    console.log("This tests the verse array structure for chapter responses.\n");
+  });
+
+  it("should test OpenAI chapter output", async () => {
+    console.log("\n--- OPENAI CHAPTER (gpt-4o) ---");
+    const result = await testOpenAIChapter();
+    printChapterResult(result);
+    
+    if (result.parseError?.includes("not set")) {
+      console.log("  ⚠️  Skipped (no API key)");
+      return;
+    }
+    
+    assert.ok(result.parsed !== null, "Should parse JSON successfully");
+    assert.ok(Array.isArray(result.parsed?.verses), "Should have verses array");
+  });
+
+  it("should test Anthropic chapter output", async () => {
+    console.log("\n--- ANTHROPIC CHAPTER (claude-sonnet-4) ---");
+    const result = await testAnthropicChapter();
+    printChapterResult(result);
+    
+    if (result.parseError?.includes("not set")) {
+      console.log("  ⚠️  Skipped (no API key)");
+      return;
+    }
+    
+    assert.ok(result.parsed !== null, "Should parse JSON successfully");
+    assert.ok(Array.isArray(result.parsed?.verses), "Should have verses array");
+  });
+
+  it("should test Gemini chapter output", async () => {
+    console.log("\n--- GEMINI CHAPTER (gemini-2.0-flash) ---");
+    const result = await testGeminiChapter();
+    printChapterResult(result);
+    
+    if (result.parseError?.includes("not set")) {
+      console.log("  ⚠️  Skipped (no API key)");
+      return;
+    }
+    
+    assert.ok(result.parsed !== null, "Should parse JSON successfully");
+    assert.ok(Array.isArray(result.parsed?.verses), "Should have verses array");
+  });
+
+  it("should display chapter summary", async () => {
+    console.log("\n" + "=".repeat(70));
+    console.log("CHAPTER TEST SUMMARY");
+    console.log("=".repeat(70));
+
+    const results = await Promise.all([
+      testOpenAIChapter(),
+      testAnthropicChapter(),
+      testGeminiChapter(),
+    ]);
+
+    console.log("\n📊 CHAPTER SUMMARY:");
+    console.log("-".repeat(70));
+    console.log(
+      "Provider".padEnd(15) +
+      "JSON Parse".padEnd(12) +
+      "Has Array".padEnd(12) +
+      "Verse Count".padEnd(14) +
+      "Latency"
+    );
+    console.log("-".repeat(70));
+
+    for (const r of results) {
+      const jsonParse = r.parsed ? "✓" : r.parseError?.includes("not set") ? "⚠️ skip" : "✗";
+      const hasArray = Array.isArray(r.parsed?.verses) ? "✓" : "✗";
+      const verseCount = r.verseCount === PSALM_117.verses.length 
+        ? `✓ ${r.verseCount}` 
+        : `✗ ${r.verseCount}/${PSALM_117.verses.length}`;
+      const latency = r.latencyMs > 0 ? `${r.latencyMs}ms` : "-";
+
+      console.log(
+        r.provider.padEnd(15) +
+        jsonParse.padEnd(12) +
+        hasArray.padEnd(12) +
+        verseCount.padEnd(14) +
+        latency
+      );
+    }
+
+    console.log("-".repeat(70));
+
+    // Show verse text samples
+    const successful = results.filter((r) => r.parsed?.verses?.length === PSALM_117.verses.length);
+    if (successful.length > 0) {
+      console.log("\n📖 VERSE TEXT SAMPLES (from first successful provider):");
+      const first = successful[0];
+      if (first?.parsed?.verses) {
+        for (const v of first.parsed.verses) {
+          console.log(`  v${v.verseNumber}: "${v.verseText?.substring(0, 50)}..."`);
+        }
+      }
+    }
+
+    // Show any validation errors
+    const withErrors = results.filter((r) => r.validationErrors.length > 0);
+    if (withErrors.length > 0) {
+      console.log("\n⚠️  VALIDATION ISSUES:");
+      for (const r of withErrors) {
+        console.log(`  ${r.provider}:`);
+        for (const err of r.validationErrors) {
+          console.log(`    - ${err}`);
+        }
+      }
+    }
+
+    const allSuccess = results.filter((r) => r.success);
+    const allTested = results.filter((r) => !r.parseError?.includes("not set"));
+    
+    console.log("\n" + "=".repeat(70));
+    console.log(`RESULT: ${allSuccess.length}/${allTested.length} providers achieved correct structure`);
+    console.log("=".repeat(70) + "\n");
+  });
+});
+
+function printChapterResult(result: ChapterProviderResult) {
+  console.log(`  Latency: ${result.latencyMs}ms`);
+  
+  if (result.parseError) {
+    console.log(`  Parse Error: ${result.parseError}`);
+    return;
+  }
+
+  console.log(`  Raw Response: ${result.responseRaw.substring(0, 100)}...`);
+  console.log(`  Book: ${result.parsed?.book}, Chapter: ${result.parsed?.chapter}`);
+  console.log(`  Verses Array: ${Array.isArray(result.parsed?.verses) ? "✓" : "✗"}`);
+  console.log(`  Verse Count: ${result.verseCount} (expected: ${PSALM_117.verses.length})`);
+  
+  if (result.validationErrors.length > 0) {
+    console.log(`  Validation Errors: ${result.validationErrors.join(", ")}`);
   }
 }
