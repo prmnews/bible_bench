@@ -7,11 +7,15 @@
     "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint",
-    "test": "node --test --import tsx \"tests/**/*.test.ts\""
+    "test": "node --test --import tsx \"tests/**/*.test.ts\"",
+    "test:db": "node --test --env-file=.env.local --import tsx \"tests/**/collection-samples.test.ts\" \"tests/**/schema-validation.test.ts\" \"tests/**/data-integrity.test.ts\""
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.71.2",
+    "@google/generative-ai": "^0.24.1",
     "mongoose": "^9.1.4",
     "next": "16.1.3",
+    "openai": "^6.16.0",
     "react": "19.2.3",
     "react-dom": "19.2.3"
   },

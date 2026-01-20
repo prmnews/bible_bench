@@ -1,0 +1,53 @@
+{
+  "timestamp": "2026-01-20T00:49:31.864Z",
+  "sampleSize": 50,
+  "totalErrors": 0,
+  "collectionStats": {
+    "dimLanguages": {
+      "total": 1,
+      "sampled": 1,
+      "errors": 0
+    },
+    "dimBibles": {
+      "total": 1,
+      "sampled": 1,
+      "errors": 0
+    },
+    "dimBooks": {
+      "total": 66,
+      "sampled": 50,
+      "errors": 0
+    },
+    "rawChapters": {
+      "total": 1189,
+      "sampled": 50,
+      "errors": 0
+    },
+    "chapters": {
+      "total": 1189,
+      "sampled": 50,
+      "errors": 0
+    },
+    "verses": {
+      "total": 31102,
+      "sampled": 50,
+      "errors": 0
+    },
+    "transformProfiles": {
+      "total": 2,
+      "sampled": 2,
+      "errors": 0
+    },
+    "models": {
+      "total": 0,
+      "sampled": 0,
+      "errors": 0
+    },
+    "schemaValidatorRuns": {
+      "total": 3,
+      "sampled": 3,
+      "errors": 0
+    }
+  },
+  "errors": []
+}

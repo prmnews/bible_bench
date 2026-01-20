@@ -76,9 +76,15 @@ export async function POST(request: Request) {
       },
     });
 
+    const failedResults = results.filter((r) => !r.ok);
+    const errorMessage = failedResults.length > 0
+      ? `Failed on: ${failedResults.map((r) => `${r.name} (${r.error})`).join(", ")}`
+      : undefined;
+
     return NextResponse.json(
       {
         ok: success,
+        error: errorMessage,
         data: {
           runId,
           dryRun: validation.data.dryRun,
@@ -91,6 +97,7 @@ export async function POST(request: Request) {
       { status: success ? 200 : 500 }
     );
   } catch (error) {
+    console.error("[schema/validators] Error:", error);
     const message = error instanceof Error ? error.message : "Failed to apply validators.";
     return NextResponse.json({ ok: false, error: message }, { status: 500 });
   }

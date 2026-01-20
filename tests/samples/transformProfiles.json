@@ -1,0 +1,209 @@
+{
+  "collection": "transformProfiles",
+  "documentCount": 2,
+  "sampleSize": 2,
+  "fieldAnalysis": {
+    "_id": {
+      "type": "ObjectId",
+      "count": 2,
+      "sample": "696eb7799c842d65b98553dc"
+    },
+    "profileId": {
+      "type": "number",
+      "count": 2,
+      "sample": 1
+    },
+    "name": {
+      "type": "string",
+      "count": 2,
+      "sample": "KJV_CANONICAL_V1"
+    },
+    "scope": {
+      "type": "string",
+      "count": 2,
+      "sample": "canonical"
+    },
+    "version": {
+      "type": "number",
+      "count": 2,
+      "sample": 1
+    },
+    "bibleId": {
+      "type": "number",
+      "count": 2,
+      "sample": 1001
+    },
+    "isDefault": {
+      "type": "boolean",
+      "count": 2,
+      "sample": true
+    },
+    "description": {
+      "type": "string",
+      "count": 2,
+      "sample": "Default canonical transform profile for KJV Bible text"
+    },
+    "steps": {
+      "type": "array",
+      "count": 2,
+      "sample": [
+        {
+          "order": 1,
+          "type": "stripMarkupTags",
+          "enabled": true,
+          "params": {
+            "tagNames": [
+              "wj",
+              "add",
+              "verse-span",
+              "para",
+              "char",
+              "verse",
+              "chapter"
+            ]
+          }
+        },
+        {
+          "order": 2,
+          "type": "stripParagraphMarkers",
+          "enabled": true,
+          "params": {
+            "markers": [
+              "¶"
+            ]
+          }
+        },
+        {
+          "order": 3,
+          "type": "collapseWhitespace",
+          "enabled": true
+        },
+        {
+          "order": 4,
+          "type": "trim",
+          "enabled": true
+        }
+      ]
+    },
+    "isActive": {
+      "type": "boolean",
+      "count": 2,
+      "sample": true
+    },
+    "audit": {
+      "type": "object",
+      "count": 2,
+      "sample": "[object]"
+    },
+    "audit.createdAt": {
+      "type": "date",
+      "count": 2,
+      "sample": "2026-01-19T23:00:09.261Z"
+    },
+    "audit.createdBy": {
+      "type": "string",
+      "count": 2,
+      "sample": "seed"
+    },
+    "__v": {
+      "type": "number",
+      "count": 2,
+      "sample": 0
+    }
+  },
+  "samples": [
+    {
+      "_id": "696eb7799c842d65b98553dc",
+      "profileId": 1,
+      "name": "KJV_CANONICAL_V1",
+      "scope": "canonical",
+      "version": 1,
+      "bibleId": 1001,
+      "isDefault": true,
+      "description": "Default canonical transform profile for KJV Bible text",
+      "steps": [
+        {
+          "order": 1,
+          "type": "stripMarkupTags",
+          "enabled": true,
+          "params": {
+            "tagNames": [
+              "wj",
+              "add",
+              "verse-span",
+              "para",
+              "char",
+              "verse",
+              "chapter"
+            ]
+          }
+        },
+        {
+          "order": 2,
+          "type": "stripParagraphMarkers",
+          "enabled": true,
+          "params": {
+            "markers": [
+              "¶"
+            ]
+          }
+        },
+        {
+          "order": 3,
+          "type": "collapseWhitespace",
+          "enabled": true
+        },
+        {
+          "order": 4,
+          "type": "trim",
+          "enabled": true
+        }
+      ],
+      "isActive": true,
+      "audit": {
+        "createdAt": "2026-01-19T23:00:09.261Z",
+        "createdBy": "seed"
+      },
+      "__v": 0
+    },
+    {
+      "_id": "696eb7799c842d65b98553df",
+      "profileId": 2,
+      "name": "MODEL_OUTPUT_V1",
+      "scope": "model_output",
+      "version": 1,
+      "bibleId": 1001,
+      "isDefault": true,
+      "description": "Default transform profile for model output normalization",
+      "steps": [
+        {
+          "order": 1,
+          "type": "stripVerseNumbers",
+          "enabled": true,
+          "params": {
+            "patterns": [
+              "^\\d+\\s*"
+            ]
+          }
+        },
+        {
+          "order": 2,
+          "type": "collapseWhitespace",
+          "enabled": true
+        },
+        {
+          "order": 3,
+          "type": "trim",
+          "enabled": true
+        }
+      ],
+      "isActive": true,
+      "audit": {
+        "createdAt": "2026-01-19T23:00:09.261Z",
+        "createdBy": "seed"
+      },
+      "__v": 0
+    }
+  ],
+  "validationErrors": []
+}

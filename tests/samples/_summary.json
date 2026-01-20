@@ -1,0 +1,100 @@
+[
+  {
+    "collection": "dimLanguages",
+    "documentCount": 1,
+    "sampleSize": 1,
+    "fieldCount": 8,
+    "validationErrorCount": 0
+  },
+  {
+    "collection": "dimBibles",
+    "documentCount": 1,
+    "sampleSize": 1,
+    "fieldCount": 10,
+    "validationErrorCount": 0
+  },
+  {
+    "collection": "dimBooks",
+    "documentCount": 66,
+    "sampleSize": 10,
+    "fieldCount": 10,
+    "validationErrorCount": 0
+  },
+  {
+    "collection": "rawChapters",
+    "documentCount": 1189,
+    "sampleSize": 3,
+    "fieldCount": 26,
+    "validationErrorCount": 0
+  },
+  {
+    "collection": "chapters",
+    "documentCount": 1189,
+    "sampleSize": 5,
+    "fieldCount": 24,
+    "validationErrorCount": 0
+  },
+  {
+    "collection": "verses",
+    "documentCount": 31102,
+    "sampleSize": 10,
+    "fieldCount": 27,
+    "validationErrorCount": 0
+  },
+  {
+    "collection": "transformProfiles",
+    "documentCount": 2,
+    "sampleSize": 2,
+    "fieldCount": 14,
+    "validationErrorCount": 0
+  },
+  {
+    "collection": "models",
+    "documentCount": 0,
+    "sampleSize": 0,
+    "fieldCount": 0,
+    "validationErrorCount": 0
+  },
+  {
+    "collection": "runs",
+    "documentCount": 0,
+    "sampleSize": 0,
+    "fieldCount": 0,
+    "validationErrorCount": 0
+  },
+  {
+    "collection": "runItems",
+    "documentCount": 0,
+    "sampleSize": 0,
+    "fieldCount": 0,
+    "validationErrorCount": 0
+  },
+  {
+    "collection": "chapterResults",
+    "documentCount": 0,
+    "sampleSize": 0,
+    "fieldCount": 0,
+    "validationErrorCount": 0
+  },
+  {
+    "collection": "verseResults",
+    "documentCount": 0,
+    "sampleSize": 0,
+    "fieldCount": 0,
+    "validationErrorCount": 0
+  },
+  {
+    "collection": "schemaValidatorRuns",
+    "documentCount": 3,
+    "sampleSize": 2,
+    "fieldCount": 11,
+    "validationErrorCount": 0
+  },
+  {
+    "collection": "appConfig",
+    "documentCount": 0,
+    "sampleSize": 0,
+    "fieldCount": 0,
+    "validationErrorCount": 0
+  }
+]

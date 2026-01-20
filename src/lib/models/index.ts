@@ -238,7 +238,7 @@ export const transformProfilesValidator: JsonSchemaValidator = {
         bsonType: "array",
         items: {
           bsonType: "object",
-          required: ["order", "type", "enabled", "params"],
+          required: ["order", "type", "enabled"],
           properties: {
             order: numberSchema,
             type: stringSchema,
@@ -1123,12 +1123,14 @@ export async function applySchemaValidators(options?: {
 
       try {
         if (!existing.has(name)) {
+          console.log(`[applySchemaValidators] Creating collection: ${name}`);
           await db.createCollection(name, {
             validator,
             validationLevel: "moderate",
             validationAction: "error",
           });
         } else {
+          console.log(`[applySchemaValidators] Updating collection: ${name}`);
           await db.command({
             collMod: name,
             validator,
@@ -1139,6 +1141,7 @@ export async function applySchemaValidators(options?: {
 
         return { name, action, ok: true } satisfies SchemaValidatorResult;
       } catch (error) {
+        console.error(`[applySchemaValidators] Error on ${name}:`, error);
         const message = error instanceof Error ? error.message : "Unknown error";
         return { name, action, ok: false, error: message } satisfies SchemaValidatorResult;
       }

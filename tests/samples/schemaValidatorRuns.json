@@ -1,0 +1,372 @@
+{
+  "collection": "schemaValidatorRuns",
+  "documentCount": 3,
+  "sampleSize": 2,
+  "fieldAnalysis": {
+    "_id": {
+      "type": "ObjectId",
+      "count": 2,
+      "sample": "696eb3db9c842d65b9855228"
+    },
+    "runId": {
+      "type": "string",
+      "count": 2,
+      "sample": "4761d620-c292-4826-a0bd-bff9eb0e4956"
+    },
+    "dryRun": {
+      "type": "boolean",
+      "count": 2,
+      "sample": false
+    },
+    "startedAt": {
+      "type": "date",
+      "count": 2,
+      "sample": "2026-01-19T22:44:42.165Z"
+    },
+    "completedAt": {
+      "type": "date",
+      "count": 2,
+      "sample": "2026-01-19T22:44:43.223Z"
+    },
+    "success": {
+      "type": "boolean",
+      "count": 2,
+      "sample": false
+    },
+    "results": {
+      "type": "array",
+      "count": 2,
+      "sample": [
+        {
+          "name": "dimLanguages",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "dimBibles",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "dimBooks",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "rawChapters",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "chapters",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "verses",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "models",
+          "action": "create",
+          "ok": false,
+          "error": "namespace bible-bench.models already exists, but with different options: { uuid: UUID(\"66df584d-1160-425b-a097-4ff3b7ee16b1\") }"
+        },
+        {
+          "name": "modelTransformMap",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "transformProfiles",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "runs",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "runItems",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "chapterResults",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "verseResults",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "canonicalTestVerses",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "userQueries",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "appConfig",
+          "action": "create",
+          "ok": false,
+          "error": "namespace bible-bench.appConfig already exists, but with different options: { uuid: UUID(\"59830e57-8424-4127-8cad-dec798f7411e\") }"
+        },
+        {
+          "name": "schemaValidatorRuns",
+          "action": "create",
+          "ok": false,
+          "error": "namespace bible-bench.schemaValidatorRuns already exists, but with different options: { uuid: UUID(\"40a9332f-e274-4e6c-8d39-982c6f1f863e\") }"
+        },
+        {
+          "name": "etlRuns",
+          "action": "update",
+          "ok": true
+        }
+      ]
+    },
+    "audit": {
+      "type": "object",
+      "count": 2,
+      "sample": "[object]"
+    },
+    "audit.createdAt": {
+      "type": "date",
+      "count": 2,
+      "sample": "2026-01-19T22:44:42.165Z"
+    },
+    "audit.createdBy": {
+      "type": "string",
+      "count": 2,
+      "sample": "admin"
+    },
+    "__v": {
+      "type": "number",
+      "count": 2,
+      "sample": 0
+    }
+  },
+  "samples": [
+    {
+      "_id": "696eb3db9c842d65b9855228",
+      "runId": "4761d620-c292-4826-a0bd-bff9eb0e4956",
+      "dryRun": false,
+      "startedAt": "2026-01-19T22:44:42.165Z",
+      "completedAt": "2026-01-19T22:44:43.223Z",
+      "success": false,
+      "results": [
+        {
+          "name": "dimLanguages",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "dimBibles",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "dimBooks",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "rawChapters",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "chapters",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "verses",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "models",
+          "action": "create",
+          "ok": false,
+          "error": "namespace bible-bench.models already exists, but with different options: { uuid: UUID(\"66df584d-1160-425b-a097-4ff3b7ee16b1\") }"
+        },
+        {
+          "name": "modelTransformMap",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "transformProfiles",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "runs",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "runItems",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "chapterResults",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "verseResults",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "canonicalTestVerses",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "userQueries",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "appConfig",
+          "action": "create",
+          "ok": false,
+          "error": "namespace bible-bench.appConfig already exists, but with different options: { uuid: UUID(\"59830e57-8424-4127-8cad-dec798f7411e\") }"
+        },
+        {
+          "name": "schemaValidatorRuns",
+          "action": "create",
+          "ok": false,
+          "error": "namespace bible-bench.schemaValidatorRuns already exists, but with different options: { uuid: UUID(\"40a9332f-e274-4e6c-8d39-982c6f1f863e\") }"
+        },
+        {
+          "name": "etlRuns",
+          "action": "update",
+          "ok": true
+        }
+      ],
+      "audit": {
+        "createdAt": "2026-01-19T22:44:42.165Z",
+        "createdBy": "admin"
+      },
+      "__v": 0
+    },
+    {
+      "_id": "696eb6959c842d65b9855236",
+      "runId": "98e64896-426a-42c8-90c5-2090db49f21b",
+      "dryRun": false,
+      "startedAt": "2026-01-19T22:56:21.135Z",
+      "completedAt": "2026-01-19T22:56:21.650Z",
+      "success": true,
+      "results": [
+        {
+          "name": "dimLanguages",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "dimBibles",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "dimBooks",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "rawChapters",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "chapters",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "verses",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "models",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "modelTransformMap",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "transformProfiles",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "runs",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "runItems",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "chapterResults",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "verseResults",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "canonicalTestVerses",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "userQueries",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "appConfig",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "schemaValidatorRuns",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "etlRuns",
+          "action": "update",
+          "ok": true
+        }
+      ],
+      "audit": {
+        "createdAt": "2026-01-19T22:56:21.135Z",
+        "createdBy": "admin"
+      },
+      "__v": 0
+    }
+  ],
+  "validationErrors": []
+}

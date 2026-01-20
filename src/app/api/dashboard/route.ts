@@ -2,9 +2,12 @@ import { NextResponse } from "next/server";
 
 import {
   AppConfigModel,
+  ChapterModel,
   ChapterResultModel,
   ModelModel,
+  RawChapterModel,
   RunModel,
+  VerseModel,
   VerseResultModel,
 } from "@/lib/models";
 import { connectToDatabase } from "@/lib/mongodb";
@@ -19,15 +22,38 @@ async function getShowLatestOnly() {
 export async function GET() {
   await connectToDatabase();
   const showLatestOnly = await getShowLatestOnly();
-  const models = await ModelModel.find(
-    { isActive: true },
-    { _id: 0, modelId: 1, displayName: 1, provider: 1, version: 1 }
-  )
-    .sort({ modelId: 1 })
-    .lean();
+  
+  const [
+    rawChapterCount,
+    chapterCount,
+    verseCount,
+    modelCount,
+    runCount,
+    models,
+    latestRun,
+  ] = await Promise.all([
+    RawChapterModel.countDocuments(),
+    ChapterModel.countDocuments(),
+    VerseModel.countDocuments(),
+    ModelModel.countDocuments({ isActive: true }),
+    RunModel.countDocuments(),
+    ModelModel.find(
+      { isActive: true },
+      { _id: 0, modelId: 1, displayName: 1, provider: 1, version: 1 }
+    )
+      .sort({ modelId: 1 })
+      .lean(),
+    RunModel.findOne({}, { runId: 1 }).sort({ startedAt: -1 }).lean(),
+  ]);
 
-  const latestRun = await RunModel.findOne({}, { runId: 1 }).sort({ startedAt: -1 }).lean();
   const latestRunId = latestRun?.runId ?? null;
+  const counts = {
+    rawChapters: rawChapterCount,
+    chapters: chapterCount,
+    verses: verseCount,
+    models: modelCount,
+    runs: runCount,
+  };
 
   const summaries = [] as Array<{
     modelId: number;
@@ -81,5 +107,5 @@ export async function GET() {
     });
   }
 
-  return NextResponse.json({ ok: true, data: { latestRunId, models: summaries } });
+  return NextResponse.json({ ok: true, data: { counts, latestRunId, models: summaries } });
 }

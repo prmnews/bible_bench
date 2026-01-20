@@ -1,0 +1,190 @@
+{
+  "collection": "dimBooks",
+  "documentCount": 66,
+  "sampleSize": 10,
+  "fieldAnalysis": {
+    "_id": {
+      "type": "ObjectId",
+      "count": 10,
+      "sample": "696eb6af9c842d65b985523f"
+    },
+    "bookId": {
+      "type": "number",
+      "count": 10,
+      "sample": 10
+    },
+    "bibleId": {
+      "type": "number",
+      "count": 10,
+      "sample": 1001
+    },
+    "bookCode": {
+      "type": "string",
+      "count": 10,
+      "sample": "GEN"
+    },
+    "bookName": {
+      "type": "string",
+      "count": 10,
+      "sample": "Genesis"
+    },
+    "bookIndex": {
+      "type": "number",
+      "count": 10,
+      "sample": 1
+    },
+    "audit": {
+      "type": "object",
+      "count": 10,
+      "sample": "[object]"
+    },
+    "audit.createdAt": {
+      "type": "date",
+      "count": 10,
+      "sample": "2026-01-19T22:56:47.163Z"
+    },
+    "audit.createdBy": {
+      "type": "string",
+      "count": 10,
+      "sample": "seed"
+    },
+    "__v": {
+      "type": "number",
+      "count": 10,
+      "sample": 0
+    }
+  },
+  "samples": [
+    {
+      "_id": "696eb6af9c842d65b985523f",
+      "bookId": 10,
+      "bibleId": 1001,
+      "bookCode": "GEN",
+      "bookName": "Genesis",
+      "bookIndex": 1,
+      "audit": {
+        "createdAt": "2026-01-19T22:56:47.163Z",
+        "createdBy": "seed"
+      },
+      "__v": 0
+    },
+    {
+      "_id": "696eb6af9c842d65b9855242",
+      "bookId": 20,
+      "bibleId": 1001,
+      "bookCode": "EXO",
+      "bookName": "Exodus",
+      "bookIndex": 2,
+      "audit": {
+        "createdAt": "2026-01-19T22:56:47.163Z",
+        "createdBy": "seed"
+      },
+      "__v": 0
+    },
+    {
+      "_id": "696eb6af9c842d65b9855245",
+      "bookId": 30,
+      "bibleId": 1001,
+      "bookCode": "LEV",
+      "bookName": "Leviticus",
+      "bookIndex": 3,
+      "audit": {
+        "createdAt": "2026-01-19T22:56:47.163Z",
+        "createdBy": "seed"
+      },
+      "__v": 0
+    },
+    {
+      "_id": "696eb6af9c842d65b9855248",
+      "bookId": 40,
+      "bibleId": 1001,
+      "bookCode": "NUM",
+      "bookName": "Numbers",
+      "bookIndex": 4,
+      "audit": {
+        "createdAt": "2026-01-19T22:56:47.163Z",
+        "createdBy": "seed"
+      },
+      "__v": 0
+    },
+    {
+      "_id": "696eb6af9c842d65b985524b",
+      "bookId": 50,
+      "bibleId": 1001,
+      "bookCode": "DEU",
+      "bookName": "Deuteronomy",
+      "bookIndex": 5,
+      "audit": {
+        "createdAt": "2026-01-19T22:56:47.163Z",
+        "createdBy": "seed"
+      },
+      "__v": 0
+    },
+    {
+      "_id": "696eb6af9c842d65b985524e",
+      "bookId": 60,
+      "bibleId": 1001,
+      "bookCode": "JOS",
+      "bookName": "Joshua",
+      "bookIndex": 6,
+      "audit": {
+        "createdAt": "2026-01-19T22:56:47.163Z",
+        "createdBy": "seed"
+      },
+      "__v": 0
+    },
+    {
+      "_id": "696eb6af9c842d65b9855251",
+      "bookId": 70,
+      "bibleId": 1001,
+      "bookCode": "JDG",
+      "bookName": "Judges",
+      "bookIndex": 7,
+      "audit": {
+        "createdAt": "2026-01-19T22:56:47.163Z",
+        "createdBy": "seed"
+      },
+      "__v": 0
+    },
+    {
+      "_id": "696eb6af9c842d65b9855254",
+      "bookId": 80,
+      "bibleId": 1001,
+      "bookCode": "RUT",
+      "bookName": "Ruth",
+      "bookIndex": 8,
+      "audit": {
+        "createdAt": "2026-01-19T22:56:47.163Z",
+        "createdBy": "seed"
+      },
+      "__v": 0
+    },
+    {
+      "_id": "696eb6b09c842d65b9855257",
+      "bookId": 90,
+      "bibleId": 1001,
+      "bookCode": "1SA",
+      "bookName": "1 Samuel",
+      "bookIndex": 9,
+      "audit": {
+        "createdAt": "2026-01-19T22:56:47.163Z",
+        "createdBy": "seed"
+      },
+      "__v": 0
+    },
+    {
+      "_id": "696eb6b09c842d65b985525a",
+      "bookId": 100,
+      "bibleId": 1001,
+      "bookCode": "2SA",
+      "bookName": "2 Samuel",
+      "bookIndex": 10,
+      "audit": {
+        "createdAt": "2026-01-19T22:56:47.163Z",
+        "createdBy": "seed"
+      },
+      "__v": 0
+    }
+  ],
+  "validationErrors": []
+}

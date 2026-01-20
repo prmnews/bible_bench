@@ -252,6 +252,7 @@ async function executeRunItems(params: {
         const { responseRaw } = await generateModelResponse({
           targetType: "chapter",
           targetId,
+          reference: chapter.reference,
           canonicalRaw: chapter.textRaw,
           canonicalProcessed: chapter.textProcessed,
           model,
@@ -296,6 +297,7 @@ async function executeRunItems(params: {
         const { responseRaw } = await generateModelResponse({
           targetType: "verse",
           targetId,
+          reference: verse.reference,
           canonicalRaw: verse.textRaw,
           canonicalProcessed: verse.textProcessed,
           model,

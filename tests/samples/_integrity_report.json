@@ -1,0 +1,128 @@
+{
+  "timestamp": "2026-01-20T00:49:39.962Z",
+  "totalChecks": 22,
+  "passed": 22,
+  "failed": 0,
+  "skipped": 0,
+  "checks": [
+    {
+      "name": "Document Counts",
+      "status": "pass",
+      "message": "dimBooks=66, rawChapters=1189, chapters=1189, verses=31102",
+      "details": {
+        "dimLanguages": 1,
+        "dimBibles": 1,
+        "dimBooks": 66,
+        "rawChapters": 1189,
+        "chapters": 1189,
+        "verses": 31102,
+        "transformProfiles": 2
+      }
+    },
+    {
+      "name": "Bible → Language FK",
+      "status": "pass",
+      "message": "All bibles have valid languageId"
+    },
+    {
+      "name": "Book → Bible FK",
+      "status": "pass",
+      "message": "All books have valid bibleId"
+    },
+    {
+      "name": "RawChapter → Book FK",
+      "status": "pass",
+      "message": "All raw chapters have valid bookId"
+    },
+    {
+      "name": "Chapter → RawChapter FK",
+      "status": "pass",
+      "message": "All chapters have valid rawChapterId"
+    },
+    {
+      "name": "Verse → Chapter FK",
+      "status": "pass",
+      "message": "All verses have valid chapterId"
+    },
+    {
+      "name": "Unique languageId",
+      "status": "pass",
+      "message": "All languageIds are unique"
+    },
+    {
+      "name": "Unique bookId",
+      "status": "pass",
+      "message": "All bookIds are unique"
+    },
+    {
+      "name": "Unique chapterId",
+      "status": "pass",
+      "message": "All chapterIds are unique"
+    },
+    {
+      "name": "Unique verseId",
+      "status": "pass",
+      "message": "All verseIds are unique"
+    },
+    {
+      "name": "Book Index Range",
+      "status": "pass",
+      "message": "All book indices in valid range"
+    },
+    {
+      "name": "Chapter Number Range",
+      "status": "pass",
+      "message": "All chapter numbers in valid range"
+    },
+    {
+      "name": "Verse Number Range",
+      "status": "pass",
+      "message": "All verse numbers in valid range"
+    },
+    {
+      "name": "Chapter Text Content",
+      "status": "pass",
+      "message": "All chapters have text content"
+    },
+    {
+      "name": "Verse Text Content",
+      "status": "pass",
+      "message": "All verses have text content"
+    },
+    {
+      "name": "Hash Format",
+      "status": "pass",
+      "message": "All hashes are valid SHA-256"
+    },
+    {
+      "name": "Chapter Reference Format",
+      "status": "pass",
+      "message": "All chapter references valid"
+    },
+    {
+      "name": "Verse Reference Format",
+      "status": "pass",
+      "message": "All verse references valid"
+    },
+    {
+      "name": "Raw ↔ Chapter Count",
+      "status": "pass",
+      "message": "Both have 1189 documents"
+    },
+    {
+      "name": "KJV Book Count",
+      "status": "pass",
+      "message": "66 books present"
+    },
+    {
+      "name": "KJV Chapter Count",
+      "status": "pass",
+      "message": "1189 chapters present"
+    },
+    {
+      "name": "KJV Verse Count",
+      "status": "pass",
+      "message": "31102 verses (within expected range)"
+    }
+  ]
+}

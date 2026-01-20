@@ -1,0 +1,61 @@
+{
+  "collection": "dimLanguages",
+  "documentCount": 1,
+  "sampleSize": 1,
+  "fieldAnalysis": {
+    "_id": {
+      "type": "ObjectId",
+      "count": 1,
+      "sample": "696eb6af9c842d65b9855239"
+    },
+    "languageId": {
+      "type": "number",
+      "count": 1,
+      "sample": 1
+    },
+    "isoCode": {
+      "type": "string",
+      "count": 1,
+      "sample": "en"
+    },
+    "name": {
+      "type": "string",
+      "count": 1,
+      "sample": "English"
+    },
+    "audit": {
+      "type": "object",
+      "count": 1,
+      "sample": "[object]"
+    },
+    "audit.createdAt": {
+      "type": "date",
+      "count": 1,
+      "sample": "2026-01-19T22:56:46.968Z"
+    },
+    "audit.createdBy": {
+      "type": "string",
+      "count": 1,
+      "sample": "seed"
+    },
+    "__v": {
+      "type": "number",
+      "count": 1,
+      "sample": 0
+    }
+  },
+  "samples": [
+    {
+      "_id": "696eb6af9c842d65b9855239",
+      "languageId": 1,
+      "isoCode": "en",
+      "name": "English",
+      "audit": {
+        "createdAt": "2026-01-19T22:56:46.968Z",
+        "createdBy": "seed"
+      },
+      "__v": 0
+    }
+  ],
+  "validationErrors": []
+}
