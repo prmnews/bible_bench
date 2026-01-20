@@ -443,25 +443,24 @@ export async function startModelRun(params: StartRunParams): Promise<RunResult> 
     scopeParams.skip = params.skip;
   }
 
-  await RunModel.create({
-    runId,
-    runType: params.runType,
-    modelId: params.modelId,
-    scope: params.scope,
-    scopeIds: params.scopeIds,
-    scopeParams: Object.keys(scopeParams).length === 0 ? {} : scopeParams,
-    status: "running",
-    startedAt,
-    metrics: {},
-    logs,
-    errorSummary: null,
-    audit: {
-      createdAt: startedAt,
-      createdBy,
-    },
-  });
-
   try {
+    await RunModel.create({
+      runId,
+      runType: params.runType,
+      modelId: params.modelId,
+      scope: params.scope,
+      scopeIds: params.scopeIds,
+      scopeParams: Object.keys(scopeParams).length === 0 ? {} : scopeParams,
+      status: "running",
+      startedAt,
+      metrics: { total: 0, success: 0, failed: 0 },
+      logs,
+      errorSummary: null,
+      audit: {
+        createdAt: startedAt,
+        createdBy,
+      },
+    });
     const resolvedIds = await resolveTargetIds(targetType, params.scope, params.scopeIds);
     const startIndex = params.skip ?? 0;
     const endIndex =

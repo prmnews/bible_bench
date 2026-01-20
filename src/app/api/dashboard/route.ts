@@ -13,6 +13,25 @@ import {
 import { connectToDatabase } from "@/lib/mongodb";
 import { summarizeResults } from "@/lib/results";
 
+type RunDetails = {
+  runId: string;
+  runType: string;
+  modelId: number;
+  scope: string;
+  status: string;
+  startedAt: string;
+  completedAt: string | null;
+  failedCount: number;
+  durationMs: number | null;
+};
+
+type Alert = {
+  runId: string;
+  errorCode: string;
+  message: string;
+  timestamp: string;
+};
+
 async function getShowLatestOnly() {
   const config = await AppConfigModel.findOne({ key: "SHOW_LATEST_ONLY" }).lean();
   const value = config?.value ?? "1";
@@ -30,7 +49,8 @@ export async function GET() {
     modelCount,
     runCount,
     models,
-    latestRun,
+    latestRunDoc,
+    recentFailedRuns,
   ] = await Promise.all([
     RawChapterModel.countDocuments(),
     ChapterModel.countDocuments(),
@@ -43,10 +63,78 @@ export async function GET() {
     )
       .sort({ modelId: 1 })
       .lean(),
-    RunModel.findOne({}, { runId: 1 }).sort({ startedAt: -1 }).lean(),
+    RunModel.findOne(
+      {},
+      {
+        _id: 0,
+        runId: 1,
+        runType: 1,
+        modelId: 1,
+        scope: 1,
+        status: 1,
+        startedAt: 1,
+        completedAt: 1,
+        metrics: 1,
+        errorSummary: 1,
+      }
+    )
+      .sort({ startedAt: -1 })
+      .lean(),
+    RunModel.find(
+      { "errorSummary.lastError": { $ne: null } },
+      {
+        _id: 0,
+        runId: 1,
+        errorSummary: 1,
+        startedAt: 1,
+      }
+    )
+      .sort({ startedAt: -1 })
+      .limit(5)
+      .lean(),
   ]);
 
-  const latestRunId = latestRun?.runId ?? null;
+  // Build latest run details
+  let latestRun: RunDetails | null = null;
+  if (latestRunDoc) {
+    const metrics = latestRunDoc.metrics as Record<string, unknown> | undefined;
+    const errorSummary = latestRunDoc.errorSummary as Record<string, unknown> | undefined;
+    latestRun = {
+      runId: latestRunDoc.runId as string,
+      runType: latestRunDoc.runType as string,
+      modelId: latestRunDoc.modelId as number,
+      scope: latestRunDoc.scope as string,
+      status: latestRunDoc.status as string,
+      startedAt: (latestRunDoc.startedAt as Date)?.toISOString() ?? "",
+      completedAt: latestRunDoc.completedAt
+        ? (latestRunDoc.completedAt as Date).toISOString()
+        : null,
+      failedCount: (errorSummary?.failedCount as number) ?? (metrics?.failed as number) ?? 0,
+      durationMs: (metrics?.durationMs as number) ?? null,
+    };
+  }
+
+  // Build alerts from recent failed runs
+  const alerts: Alert[] = [];
+  for (const run of recentFailedRuns) {
+    const errorSummary = run.errorSummary as Record<string, unknown> | undefined;
+    if (errorSummary?.lastError) {
+      // Try to extract error code from message (e.g., "MODEL-PARSE-001: ...")
+      const message = String(errorSummary.lastError);
+      const codeMatch = message.match(/^([A-Z]+-[A-Z]+-\d+)/);
+      const errorCode = codeMatch ? codeMatch[1] : "RUN-ERROR";
+      
+      alerts.push({
+        runId: run.runId as string,
+        errorCode,
+        message: message.length > 100 ? message.slice(0, 100) + "..." : message,
+        timestamp: (errorSummary.lastErrorAt as Date)?.toISOString?.() ??
+          (run.startedAt as Date)?.toISOString() ?? "",
+      });
+    }
+  }
+
+  const latestRunId = latestRunDoc?.runId ?? null;
   const counts = {
     rawChapters: rawChapterCount,
     chapters: chapterCount,
@@ -107,5 +195,8 @@ export async function GET() {
     });
   }
 
-  return NextResponse.json({ ok: true, data: { counts, latestRunId, models: summaries } });
+  return NextResponse.json({
+    ok: true,
+    data: { counts, latestRunId, latestRun, alerts, models: summaries },
+  });
 }
