@@ -7,8 +7,10 @@
     "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint",
-    "test": "node --test --import tsx \"tests/**/*.test.ts\"",
-    "test:db": "node --test --env-file=.env.local --import tsx \"tests/**/collection-samples.test.ts\" \"tests/**/schema-validation.test.ts\" \"tests/**/data-integrity.test.ts\""
+    "test": "node --test --env-file=.env.local --import tsx tests/abs-verse-extraction.test.ts tests/evaluation.test.ts tests/results.test.ts tests/genesis-1-1-study.test.ts",
+    "test:api": "node --test --env-file=.env.local --import tsx tests/structured-output-spike.test.ts",
+    "test:db": "node --test --env-file=.env.local --import tsx tests/collection-samples.test.ts tests/schema-validation.test.ts tests/data-integrity.test.ts",
+    "test:all": "node --test --env-file=.env.local --import tsx \"tests/**/*.test.ts\""
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.71.2",

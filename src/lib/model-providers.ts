@@ -1,5 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
-import { GoogleGenerativeAI, SchemaType } from "@google/generative-ai";
+import { GoogleGenerativeAI, SchemaType, type Schema } from "@google/generative-ai";
 import OpenAI from "openai";
 
 // ============================================================================
@@ -345,7 +345,7 @@ async function generateAnthropicResponse(
 // GEMINI PROVIDER
 // ============================================================================
 
-const GEMINI_VERSE_SCHEMA = {
+const GEMINI_VERSE_SCHEMA: Schema = {
   type: SchemaType.OBJECT,
   properties: {
     book: { type: SchemaType.STRING },
@@ -356,7 +356,7 @@ const GEMINI_VERSE_SCHEMA = {
   required: ["book", "chapter", "verseNumber", "verseText"],
 };
 
-const GEMINI_CHAPTER_SCHEMA = {
+const GEMINI_CHAPTER_SCHEMA: Schema = {
   type: SchemaType.OBJECT,
   properties: {
     book: { type: SchemaType.STRING },

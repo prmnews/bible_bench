@@ -6,7 +6,7 @@
     "_id": {
       "type": "ObjectId",
       "count": 2,
-      "sample": "696eb7799c842d65b98553dc"
+      "sample": "696ee5b17fac162a3d8719d9"
     },
     "profileId": {
       "type": "number",
@@ -75,11 +75,21 @@
         },
         {
           "order": 3,
+          "type": "stripVerseNumbers",
+          "enabled": true,
+          "params": {
+            "patterns": [
+              "^\\d+\\s*"
+            ]
+          }
+        },
+        {
+          "order": 4,
           "type": "collapseWhitespace",
           "enabled": true
         },
         {
-          "order": 4,
+          "order": 5,
           "type": "trim",
           "enabled": true
         }
@@ -98,7 +108,7 @@
     "audit.createdAt": {
       "type": "date",
       "count": 2,
-      "sample": "2026-01-19T23:00:09.261Z"
+      "sample": "2026-01-20T02:17:21.192Z"
     },
     "audit.createdBy": {
       "type": "string",
@@ -113,7 +123,7 @@
   },
   "samples": [
     {
-      "_id": "696eb7799c842d65b98553dc",
+      "_id": "696ee5b17fac162a3d8719d9",
       "profileId": 1,
       "name": "KJV_CANONICAL_V1",
       "scope": "canonical",
@@ -150,24 +160,34 @@
         },
         {
           "order": 3,
+          "type": "stripVerseNumbers",
+          "enabled": true,
+          "params": {
+            "patterns": [
+              "^\\d+\\s*"
+            ]
+          }
+        },
+        {
+          "order": 4,
           "type": "collapseWhitespace",
           "enabled": true
         },
         {
-          "order": 4,
+          "order": 5,
           "type": "trim",
           "enabled": true
         }
       ],
       "isActive": true,
       "audit": {
-        "createdAt": "2026-01-19T23:00:09.261Z",
+        "createdAt": "2026-01-20T02:17:21.192Z",
         "createdBy": "seed"
       },
       "__v": 0
     },
     {
-      "_id": "696eb7799c842d65b98553df",
+      "_id": "696ee5b17fac162a3d8719dc",
       "profileId": 2,
       "name": "MODEL_OUTPUT_V1",
       "scope": "model_output",
@@ -178,28 +198,18 @@
       "steps": [
         {
           "order": 1,
-          "type": "stripVerseNumbers",
-          "enabled": true,
-          "params": {
-            "patterns": [
-              "^\\d+\\s*"
-            ]
-          }
-        },
-        {
-          "order": 2,
           "type": "collapseWhitespace",
           "enabled": true
         },
         {
-          "order": 3,
+          "order": 2,
           "type": "trim",
           "enabled": true
         }
       ],
       "isActive": true,
       "audit": {
-        "createdAt": "2026-01-19T23:00:09.261Z",
+        "createdAt": "2026-01-20T02:17:21.192Z",
         "createdBy": "seed"
       },
       "__v": 0
