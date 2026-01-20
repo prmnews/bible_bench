@@ -284,7 +284,7 @@ async function generateOpenAIResponse(
 
   const response = await client.chat.completions.create({
     model: modelName,
-    max_tokens: maxTokens,
+    max_completion_tokens: maxTokens,
     response_format: { type: "json_object" },
     messages: [
       { role: "system", content: SYSTEM_PROMPT },

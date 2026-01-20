@@ -251,7 +251,7 @@ function ModelRow({
           className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${
             model.isActive
               ? "bg-green-100 text-green-700"
-              : "bg-zinc-100 text-zinc-600"
+              : "bg-yellow-100 text-yellow-700"
           }`}
         >
           {model.isActive ? "Active" : "Inactive"}
