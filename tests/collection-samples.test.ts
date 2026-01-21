@@ -27,15 +27,23 @@ const SAMPLE_SIZES: Record<string, number> = {
   dimLanguages: 5,
   dimBibles: 5,
   dimBooks: 10,
-  rawChapters: 3,
-  chapters: 5,
-  verses: 10,
+  dimChapters: 10,
+  canonicalLanguages: 5,
+  canonicalBibles: 5,
+  canonicalBooks: 10,
+  canonicalRawChapters: 3,
+  canonicalChapters: 5,
+  canonicalVerses: 10,
   transformProfiles: 5,
   models: 5,
+  modelProfileMap: 5,
   runs: 3,
   runItems: 5,
-  chapterResults: 3,
-  verseResults: 5,
+  llmRawResponses: 3,
+  llmVerseResults: 5,
+  aggregationChapters: 3,
+  aggregationBooks: 3,
+  aggregationBibles: 3,
   schemaValidatorRuns: 2,
   appConfig: 5,
 };
@@ -226,28 +234,85 @@ describe("Collection Samples", () => {
     assert.ok(result.documentCount >= 0);
   });
 
-  // Raw and transformed data
-  it("should sample rawChapters", async () => {
-    const result = await sampleCollection(db, "rawChapters", SAMPLE_SIZES.rawChapters ?? DEFAULT_SAMPLE_SIZE);
+  it("should sample dimChapters", async () => {
+    const result = await sampleCollection(db, "dimChapters", SAMPLE_SIZES.dimChapters ?? DEFAULT_SAMPLE_SIZE);
     results.push(result);
     writeResultToDisk(result);
-    console.log(`  rawChapters: ${result.documentCount} docs, sampled ${result.sampleSize}`);
+    console.log(`  dimChapters: ${result.documentCount} docs, sampled ${result.sampleSize}`);
     assert.ok(result.documentCount >= 0);
   });
 
-  it("should sample chapters", async () => {
-    const result = await sampleCollection(db, "chapters", SAMPLE_SIZES.chapters ?? DEFAULT_SAMPLE_SIZE);
+  // Canonical reference data
+  it("should sample canonicalLanguages", async () => {
+    const result = await sampleCollection(
+      db,
+      "canonicalLanguages",
+      SAMPLE_SIZES.canonicalLanguages ?? DEFAULT_SAMPLE_SIZE
+    );
     results.push(result);
     writeResultToDisk(result);
-    console.log(`  chapters: ${result.documentCount} docs, sampled ${result.sampleSize}`);
+    console.log(`  canonicalLanguages: ${result.documentCount} docs, sampled ${result.sampleSize}`);
     assert.ok(result.documentCount >= 0);
   });
 
-  it("should sample verses", async () => {
-    const result = await sampleCollection(db, "verses", SAMPLE_SIZES.verses ?? DEFAULT_SAMPLE_SIZE);
+  it("should sample canonicalBibles", async () => {
+    const result = await sampleCollection(
+      db,
+      "canonicalBibles",
+      SAMPLE_SIZES.canonicalBibles ?? DEFAULT_SAMPLE_SIZE
+    );
     results.push(result);
     writeResultToDisk(result);
-    console.log(`  verses: ${result.documentCount} docs, sampled ${result.sampleSize}`);
+    console.log(`  canonicalBibles: ${result.documentCount} docs, sampled ${result.sampleSize}`);
+    assert.ok(result.documentCount >= 0);
+  });
+
+  it("should sample canonicalBooks", async () => {
+    const result = await sampleCollection(
+      db,
+      "canonicalBooks",
+      SAMPLE_SIZES.canonicalBooks ?? DEFAULT_SAMPLE_SIZE
+    );
+    results.push(result);
+    writeResultToDisk(result);
+    console.log(`  canonicalBooks: ${result.documentCount} docs, sampled ${result.sampleSize}`);
+    assert.ok(result.documentCount >= 0);
+  });
+
+  // Canonical raw and transformed data
+  it("should sample canonicalRawChapters", async () => {
+    const result = await sampleCollection(
+      db,
+      "canonicalRawChapters",
+      SAMPLE_SIZES.canonicalRawChapters ?? DEFAULT_SAMPLE_SIZE
+    );
+    results.push(result);
+    writeResultToDisk(result);
+    console.log(`  canonicalRawChapters: ${result.documentCount} docs, sampled ${result.sampleSize}`);
+    assert.ok(result.documentCount >= 0);
+  });
+
+  it("should sample canonicalChapters", async () => {
+    const result = await sampleCollection(
+      db,
+      "canonicalChapters",
+      SAMPLE_SIZES.canonicalChapters ?? DEFAULT_SAMPLE_SIZE
+    );
+    results.push(result);
+    writeResultToDisk(result);
+    console.log(`  canonicalChapters: ${result.documentCount} docs, sampled ${result.sampleSize}`);
+    assert.ok(result.documentCount >= 0);
+  });
+
+  it("should sample canonicalVerses", async () => {
+    const result = await sampleCollection(
+      db,
+      "canonicalVerses",
+      SAMPLE_SIZES.canonicalVerses ?? DEFAULT_SAMPLE_SIZE
+    );
+    results.push(result);
+    writeResultToDisk(result);
+    console.log(`  canonicalVerses: ${result.documentCount} docs, sampled ${result.sampleSize}`);
     assert.ok(result.documentCount >= 0);
   });
 
@@ -268,6 +333,18 @@ describe("Collection Samples", () => {
     assert.ok(result.documentCount >= 0);
   });
 
+  it("should sample modelProfileMap", async () => {
+    const result = await sampleCollection(
+      db,
+      "modelProfileMap",
+      SAMPLE_SIZES.modelProfileMap ?? DEFAULT_SAMPLE_SIZE
+    );
+    results.push(result);
+    writeResultToDisk(result);
+    console.log(`  modelProfileMap: ${result.documentCount} docs, sampled ${result.sampleSize}`);
+    assert.ok(result.documentCount >= 0);
+  });
+
   // Runs and results
   it("should sample runs", async () => {
     const result = await sampleCollection(db, "runs", SAMPLE_SIZES.runs ?? DEFAULT_SAMPLE_SIZE);
@@ -285,19 +362,63 @@ describe("Collection Samples", () => {
     assert.ok(result.documentCount >= 0);
   });
 
-  it("should sample chapterResults", async () => {
-    const result = await sampleCollection(db, "chapterResults", SAMPLE_SIZES.chapterResults ?? DEFAULT_SAMPLE_SIZE);
+  it("should sample llmRawResponses", async () => {
+    const result = await sampleCollection(
+      db,
+      "llmRawResponses",
+      SAMPLE_SIZES.llmRawResponses ?? DEFAULT_SAMPLE_SIZE
+    );
     results.push(result);
     writeResultToDisk(result);
-    console.log(`  chapterResults: ${result.documentCount} docs, sampled ${result.sampleSize}`);
+    console.log(`  llmRawResponses: ${result.documentCount} docs, sampled ${result.sampleSize}`);
     assert.ok(result.documentCount >= 0);
   });
 
-  it("should sample verseResults", async () => {
-    const result = await sampleCollection(db, "verseResults", SAMPLE_SIZES.verseResults ?? DEFAULT_SAMPLE_SIZE);
+  it("should sample llmVerseResults", async () => {
+    const result = await sampleCollection(
+      db,
+      "llmVerseResults",
+      SAMPLE_SIZES.llmVerseResults ?? DEFAULT_SAMPLE_SIZE
+    );
     results.push(result);
     writeResultToDisk(result);
-    console.log(`  verseResults: ${result.documentCount} docs, sampled ${result.sampleSize}`);
+    console.log(`  llmVerseResults: ${result.documentCount} docs, sampled ${result.sampleSize}`);
+    assert.ok(result.documentCount >= 0);
+  });
+
+  it("should sample aggregationChapters", async () => {
+    const result = await sampleCollection(
+      db,
+      "aggregationChapters",
+      SAMPLE_SIZES.aggregationChapters ?? DEFAULT_SAMPLE_SIZE
+    );
+    results.push(result);
+    writeResultToDisk(result);
+    console.log(`  aggregationChapters: ${result.documentCount} docs, sampled ${result.sampleSize}`);
+    assert.ok(result.documentCount >= 0);
+  });
+
+  it("should sample aggregationBooks", async () => {
+    const result = await sampleCollection(
+      db,
+      "aggregationBooks",
+      SAMPLE_SIZES.aggregationBooks ?? DEFAULT_SAMPLE_SIZE
+    );
+    results.push(result);
+    writeResultToDisk(result);
+    console.log(`  aggregationBooks: ${result.documentCount} docs, sampled ${result.sampleSize}`);
+    assert.ok(result.documentCount >= 0);
+  });
+
+  it("should sample aggregationBibles", async () => {
+    const result = await sampleCollection(
+      db,
+      "aggregationBibles",
+      SAMPLE_SIZES.aggregationBibles ?? DEFAULT_SAMPLE_SIZE
+    );
+    results.push(result);
+    writeResultToDisk(result);
+    console.log(`  aggregationBibles: ${result.documentCount} docs, sampled ${result.sampleSize}`);
     assert.ok(result.documentCount >= 0);
   });
 

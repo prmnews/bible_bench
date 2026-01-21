@@ -5,14 +5,15 @@ import { compareText } from "@/lib/evaluation";
 import { sha256 } from "@/lib/hash";
 import { generateModelResponse } from "@/lib/model-providers";
 import {
-  ChapterModel,
+  CanonicalChapterModel,
+  CanonicalVerseModel,
+  LlmRawResponseModel,
+  LlmVerseResultModel,
   ModelModel,
-  ModelTransformMapModel,
+  ModelProfileMapModel,
   RunItemModel,
   RunModel,
   TransformProfileModel,
-  VerseModel,
-  VerseResultModel,
 } from "@/lib/models";
 import { connectToDatabase } from "@/lib/mongodb";
 import {
@@ -86,7 +87,7 @@ function createRunLogger(existingLogs?: RunLogEntry[]) {
 }
 
 async function resolveModelOutputProfile(modelId: number) {
-  const mapping = await ModelTransformMapModel.findOne({ modelId }).lean();
+  const mapping = await ModelProfileMapModel.findOne({ modelId }).lean();
   if (mapping?.modelProfileId) {
     const profile = await TransformProfileModel.findOne({
       profileId: mapping.modelProfileId,
@@ -121,7 +122,7 @@ async function resolveTargetIds(
       if (bibleId === undefined) {
         throw new Error("bibleId is required for bible scope.");
       }
-      const chapters = await ChapterModel.find({ bibleId }, { chapterId: 1 })
+      const chapters = await CanonicalChapterModel.find({ bibleId }, { chapterId: 1 })
         .sort({ chapterId: 1 })
         .lean();
       return chapters.map((chapter) => chapter.chapterId);
@@ -132,7 +133,7 @@ async function resolveTargetIds(
       if (bookId === undefined) {
         throw new Error("bookId is required for book scope.");
       }
-      const chapters = await ChapterModel.find({ bookId }, { chapterId: 1 })
+      const chapters = await CanonicalChapterModel.find({ bookId }, { chapterId: 1 })
         .sort({ chapterId: 1 })
         .lean();
       return chapters.map((chapter) => chapter.chapterId);
@@ -154,7 +155,7 @@ async function resolveTargetIds(
     if (bibleId === undefined) {
       throw new Error("bibleId is required for bible scope.");
     }
-    const verses = await VerseModel.find({ bibleId }, { verseId: 1 })
+    const verses = await CanonicalVerseModel.find({ bibleId }, { verseId: 1 })
       .sort({ verseId: 1 })
       .lean();
     return verses.map((verse) => verse.verseId);
@@ -165,7 +166,7 @@ async function resolveTargetIds(
     if (bookId === undefined) {
       throw new Error("bookId is required for book scope.");
     }
-    const verses = await VerseModel.find({ bookId }, { verseId: 1 })
+    const verses = await CanonicalVerseModel.find({ bookId }, { verseId: 1 })
       .sort({ verseId: 1 })
       .lean();
     return verses.map((verse) => verse.verseId);
@@ -176,7 +177,7 @@ async function resolveTargetIds(
     if (chapterId === undefined) {
       throw new Error("chapterId is required for chapter scope.");
     }
-    const verses = await VerseModel.find({ chapterId }, { verseId: 1 })
+    const verses = await CanonicalVerseModel.find({ chapterId }, { verseId: 1 })
       .sort({ verseId: 1 })
       .lean();
     return verses.map((verse) => verse.verseId);
@@ -248,13 +249,13 @@ async function executeRunItems(params: {
 
     try {
       if (targetType === "chapter") {
-        const chapter = await ChapterModel.findOne({ chapterId: targetId }).lean();
+        const chapter = await CanonicalChapterModel.findOne({ chapterId: targetId }).lean();
         if (!chapter) {
           throw new Error("Chapter not found.");
         }
 
         // Get canonical verses for this chapter
-        const canonicalVerses = await VerseModel.find(
+        const canonicalVerses = await CanonicalVerseModel.find(
           { chapterId: chapter.chapterId },
           { verseId: 1, verseNumber: 1, textProcessed: 1, hashProcessed: 1 }
         )
@@ -266,7 +267,7 @@ async function executeRunItems(params: {
         }
 
         const startTime = Date.now();
-        const { extractedText, parseError } = await generateModelResponse({
+        const { responseRaw, parsed, extractedText, parseError } = await generateModelResponse({
           targetType: "chapter",
           targetId,
           reference: chapter.reference,
@@ -276,6 +277,24 @@ async function executeRunItems(params: {
         });
         const latencyMs = Date.now() - startTime;
         const latencyPerVerse = Math.round(latencyMs / canonicalVerses.length);
+
+        await LlmRawResponseModel.create({
+          responseId: createResultId(),
+          runId,
+          modelId,
+          targetType: "chapter",
+          targetId,
+          evaluatedAt: attemptTime,
+          responseRaw,
+          parsed,
+          parseError,
+          extractedText,
+          latencyMs,
+          audit: {
+            createdAt: attemptTime,
+            createdBy: "model_run",
+          },
+        });
 
         // If JSON parsing failed, throw an error
         if (parseError || extractedText === null) {
@@ -309,7 +328,7 @@ async function executeRunItems(params: {
             responseProcessed
           );
 
-          await VerseResultModel.create({
+          await LlmVerseResultModel.create({
             resultId: createResultId(),
             runId,
             modelId,
@@ -333,13 +352,13 @@ async function executeRunItems(params: {
           });
         }
       } else {
-        const verse = await VerseModel.findOne({ verseId: targetId }).lean();
+        const verse = await CanonicalVerseModel.findOne({ verseId: targetId }).lean();
         if (!verse) {
           throw new Error("Verse not found.");
         }
 
         const startTime = Date.now();
-        const { responseRaw, extractedText, parseError } = await generateModelResponse({
+        const { responseRaw, parsed, extractedText, parseError } = await generateModelResponse({
           targetType: "verse",
           targetId,
           reference: verse.reference,
@@ -348,6 +367,24 @@ async function executeRunItems(params: {
           model,
         });
         const latencyMs = Date.now() - startTime;
+
+        await LlmRawResponseModel.create({
+          responseId: createResultId(),
+          runId,
+          modelId,
+          targetType: "verse",
+          targetId,
+          evaluatedAt: attemptTime,
+          responseRaw,
+          parsed,
+          parseError,
+          extractedText,
+          latencyMs,
+          audit: {
+            createdAt: attemptTime,
+            createdBy: "model_run",
+          },
+        });
 
         // If JSON parsing failed, throw an error
         if (parseError || extractedText === null) {
@@ -366,7 +403,7 @@ async function executeRunItems(params: {
           responseProcessed
         );
 
-        await VerseResultModel.create({
+        await LlmVerseResultModel.create({
           resultId: createResultId(),
           runId,
           modelId,

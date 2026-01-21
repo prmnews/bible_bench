@@ -9,22 +9,27 @@ This document shows collection shapes and sample documents for MongoDB Atlas. Th
 - dimLanguages
 - dimBibles
 - dimBooks
-- rawChapters
-- chapters
-- verses
+- dimChapters
+- canonicalLanguages
+- canonicalBibles
+- canonicalBooks
+- canonicalRawChapters
+- canonicalChapters
+- canonicalVerses
 - models
 - transformProfiles
-- modelTransformMap
+- modelProfileMap
 - runs
 - runItems
-- chapterResults (deprecated - use verseResults + aggregates)
-- verseResults
-- chapterAggregates (materialized roll-up)
-- bookAggregates (materialized roll-up)
-- bibleAggregates (materialized roll-up)
+- llmRawResponses
+- llmVerseResults
+- aggregationChapters (materialized roll-up)
+- aggregationBooks (materialized roll-up)
+- aggregationBibles (materialized roll-up)
 - canonicalTestVerses
-- userQueries
 - appConfig
+- schemaValidatorRuns
+- etlRuns
 
 ## dimLanguages
 ```json
@@ -63,7 +68,59 @@ This document shows collection shapes and sample documents for MongoDB Atlas. Th
 }
 ```
 
-## rawChapters
+## dimChapters
+```json
+{
+  "_id": "ObjectId",
+  "chapterId": 43003,
+  "bibleId": 1001,
+  "bookId": 430,
+  "chapterNumber": 3,
+  "reference": "John 3",
+  "chapterName": "For God So Loved",
+  "verseCount": 36,
+  "audit": { "createdAt": "2026-01-17T00:00:00Z", "createdBy": "admin" }
+}
+```
+
+## canonicalLanguages
+```json
+{
+  "_id": "ObjectId",
+  "languageId": 1,
+  "isoCode": "en",
+  "name": "English",
+  "audit": { "createdAt": "2026-01-17T00:00:00Z", "createdBy": "admin" }
+}
+```
+
+## canonicalBibles
+```json
+{
+  "_id": "ObjectId",
+  "bibleId": 1001,
+  "apiBibleId": "de4e12af7f28f599-02",
+  "languageId": 1,
+  "name": "King James Version",
+  "source": "ABS",
+  "audit": { "createdAt": "2026-01-17T00:00:00Z", "createdBy": "admin" }
+}
+```
+
+## canonicalBooks
+```json
+{
+  "_id": "ObjectId",
+  "bookId": 430,
+  "bibleId": 1001,
+  "bookCode": "JHN",
+  "bookName": "John",
+  "bookIndex": 43,
+  "audit": { "createdAt": "2026-01-17T00:00:00Z", "createdBy": "admin" }
+}
+```
+
+## canonicalRawChapters
 ```json
 {
   "_id": "ObjectId",
@@ -79,7 +136,7 @@ This document shows collection shapes and sample documents for MongoDB Atlas. Th
 }
 ```
 
-## chapters
+## canonicalChapters
 ```json
 {
   "_id": "ObjectId",
@@ -107,7 +164,7 @@ This document shows collection shapes and sample documents for MongoDB Atlas. Th
 }
 ```
 
-## verses
+## canonicalVerses
 ```json
 {
   "_id": "ObjectId",
@@ -173,12 +230,11 @@ This document shows collection shapes and sample documents for MongoDB Atlas. Th
 }
 ```
 
-## modelTransformMap
+## modelProfileMap
 ```json
 {
   "_id": "ObjectId",
   "modelId": 10,
-  "canonicalProfileId": 101,
   "modelProfileId": 201,
   "audit": { "createdAt": "2026-01-17T00:00:00Z", "createdBy": "admin" }
 }
@@ -215,26 +271,26 @@ This document shows collection shapes and sample documents for MongoDB Atlas. Th
 }
 ```
 
-## chapterResults
+## llmRawResponses
 ```json
 {
   "_id": "ObjectId",
-  "resultId": 900001,
+  "responseId": 800001,
   "runId": "run_2026-01-17_001",
   "modelId": 10,
-  "chapterId": 43003,
-  "responseRaw": "John 3 (KJV)...",
-  "responseProcessed": "There was a man...",
-  "hashRaw": "sha256...",
-  "hashProcessed": "sha256...",
-  "hashMatch": false,
-  "fidelityScore": 96.34,
-  "diff": { "substitutions": [], "omissions": [], "additions": [], "transpositions": [] },
+  "targetType": "chapter",
+  "targetId": 43003,
+  "evaluatedAt": "2026-01-17T00:00:10Z",
+  "responseRaw": "{...raw provider response...}",
+  "parsed": { "book": "John", "chapter": "3", "verses": [] },
+  "parseError": null,
+  "extractedText": "For God so loved the world...",
+  "latencyMs": 1234,
   "audit": { "createdAt": "2026-01-17T00:00:10Z", "createdBy": "model_run" }
 }
 ```
 
-## verseResults
+## llmVerseResults
 ```json
 {
   "_id": "ObjectId",
@@ -258,8 +314,8 @@ This document shows collection shapes and sample documents for MongoDB Atlas. Th
 }
 ```
 
-## chapterAggregates
-Materialized chapter-level metrics rolled up from verse results.
+## aggregationChapters
+Materialized chapter-level metrics rolled up from llmVerseResults.
 ```json
 {
   "_id": "ObjectId",
@@ -276,8 +332,8 @@ Materialized chapter-level metrics rolled up from verse results.
 }
 ```
 
-## bookAggregates
-Materialized book-level metrics rolled up from chapter aggregates.
+## aggregationBooks
+Materialized book-level metrics rolled up from aggregationChapters.
 ```json
 {
   "_id": "ObjectId",
@@ -294,8 +350,8 @@ Materialized book-level metrics rolled up from chapter aggregates.
 }
 ```
 
-## bibleAggregates
-Materialized bible-level metrics rolled up from book aggregates.
+## aggregationBibles
+Materialized bible-level metrics rolled up from aggregationBooks.
 ```json
 {
   "_id": "ObjectId",
@@ -324,26 +380,6 @@ Materialized bible-level metrics rolled up from book aggregates.
 }
 ```
 
-## userQueries
-```json
-{
-  "_id": "ObjectId",
-  "queryId": 70001,
-  "timestamp": "2026-01-17T00:00:00Z",
-  "modelId": 10,
-  "queryType": "verse_range",
-  "scope": { "bookId": 430, "chapterNumber": 3, "verseStart": 1, "verseEnd": 10 },
-  "responseRaw": "1 There was a man...",
-  "responseProcessed": "There was a man...",
-  "hashRaw": "sha256...",
-  "hashProcessed": "sha256...",
-  "hashMatch": false,
-  "diff": {},
-  "metadata": { "sessionId": "abc", "userAgent": "..." },
-  "audit": { "createdAt": "2026-01-17T00:00:00Z", "createdBy": "public" }
-}
-```
-
 ## appConfig
 ```json
 {
@@ -361,17 +397,18 @@ Materialized bible-level metrics rolled up from book aggregates.
 - languageId, bibleId, bookId, chapterId, verseId, modelId, profileId, runId, key
 
 ### Lookup Indexes
-- verses.chapterId, chapters.bookId
-- verseResults: { runId, modelId, verseId }
-- verseResults: { modelId, bibleId, evaluatedAt }
-- verseResults: { modelId, chapterId }
-- verseResults: { modelId, bookId }
+- canonicalVerses: { chapterId }
+- canonicalChapters: { bookId }
+- llmVerseResults: { runId, modelId, verseId }
+- llmVerseResults: { modelId, bibleId, evaluatedAt }
+- llmVerseResults: { modelId, chapterId }
+- llmVerseResults: { modelId, bookId }
 
 ### Aggregate Indexes
-- chapterAggregates: { chapterId, modelId, runId } (unique)
-- chapterAggregates: { modelId, bibleId, evaluatedAt }
-- bookAggregates: { bookId, modelId, runId } (unique)
-- bookAggregates: { modelId, bibleId, evaluatedAt }
-- bibleAggregates: { bibleId, modelId, runId } (unique)
-- bibleAggregates: { modelId, bibleId, evaluatedAt }
+- aggregationChapters: { chapterId, modelId, runId } (unique)
+- aggregationChapters: { modelId, bibleId, evaluatedAt }
+- aggregationBooks: { bookId, modelId, runId } (unique)
+- aggregationBooks: { modelId, bibleId, evaluatedAt }
+- aggregationBibles: { bibleId, modelId, runId } (unique)
+- aggregationBibles: { modelId, bibleId, evaluatedAt }
 

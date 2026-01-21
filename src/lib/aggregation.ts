@@ -7,11 +7,11 @@
  */
 
 import {
-  BibleAggregateModel,
-  BookAggregateModel,
-  ChapterAggregateModel,
+  AggregationBibleModel,
+  AggregationBookModel,
+  AggregationChapterModel,
+  LlmVerseResultModel,
   RunModel,
-  VerseResultModel,
 } from "@/lib/models";
 import { connectToDatabase } from "@/lib/mongodb";
 
@@ -24,7 +24,7 @@ type AggregationResult = {
 
 /**
  * Compute and store chapter-level aggregates for a run.
- * Groups verseResults by chapterId and computes metrics.
+ * Groups llmVerseResults by chapterId and computes metrics.
  */
 export async function computeChapterAggregates(runId: string): Promise<number> {
   await connectToDatabase();
@@ -39,7 +39,7 @@ export async function computeChapterAggregates(runId: string): Promise<number> {
   const evaluatedAt = (run.completedAt as Date) ?? (run.startedAt as Date);
 
   // Aggregate verse results by chapter
-  const chapterAggregations = await VerseResultModel.aggregate([
+  const chapterAggregations = await LlmVerseResultModel.aggregate([
     { $match: { runId } },
     {
       $group: {
@@ -60,7 +60,7 @@ export async function computeChapterAggregates(runId: string): Promise<number> {
     const perfectRate =
       agg.verseCount > 0 ? Number((agg.matchCount / agg.verseCount).toFixed(4)) : 0;
 
-    await ChapterAggregateModel.updateOne(
+    await AggregationChapterModel.updateOne(
       {
         chapterId: agg._id.chapterId,
         modelId,
@@ -104,7 +104,7 @@ export async function computeBookAggregates(runId: string): Promise<number> {
   const evaluatedAt = (run.completedAt as Date) ?? (run.startedAt as Date);
 
   // Aggregate from chapter aggregates
-  const bookAggregations = await ChapterAggregateModel.aggregate([
+  const bookAggregations = await AggregationChapterModel.aggregate([
     { $match: { runId } },
     {
       $group: {
@@ -125,7 +125,7 @@ export async function computeBookAggregates(runId: string): Promise<number> {
     const perfectRate =
       agg.verseCount > 0 ? Number((agg.matchCount / agg.verseCount).toFixed(4)) : 0;
 
-    await BookAggregateModel.updateOne(
+    await AggregationBookModel.updateOne(
       {
         bookId: agg._id.bookId,
         modelId,
@@ -169,7 +169,7 @@ export async function computeBibleAggregates(runId: string): Promise<number> {
   const evaluatedAt = (run.completedAt as Date) ?? (run.startedAt as Date);
 
   // Aggregate from book aggregates
-  const bibleAggregations = await BookAggregateModel.aggregate([
+  const bibleAggregations = await AggregationBookModel.aggregate([
     { $match: { runId } },
     {
       $group: {
@@ -188,7 +188,7 @@ export async function computeBibleAggregates(runId: string): Promise<number> {
     const perfectRate =
       agg.verseCount > 0 ? Number((agg.matchCount / agg.verseCount).toFixed(4)) : 0;
 
-    await BibleAggregateModel.updateOne(
+    await AggregationBibleModel.updateOne(
       {
         bibleId: agg._id,
         modelId,

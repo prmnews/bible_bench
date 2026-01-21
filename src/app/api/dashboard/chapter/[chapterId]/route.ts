@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { ChapterAggregateModel, VerseResultModel } from "@/lib/models";
+import { AggregationChapterModel, LlmVerseResultModel } from "@/lib/models";
 import { connectToDatabase } from "@/lib/mongodb";
 
 type RouteContext = {
@@ -23,7 +23,7 @@ export async function GET(
   await connectToDatabase();
 
   // Try to use stored chapter aggregates first
-  const aggregates = await ChapterAggregateModel.find(
+  const aggregates = await AggregationChapterModel.find(
     { chapterId },
     {
       _id: 0,
@@ -55,7 +55,7 @@ export async function GET(
   }
 
   // Fallback: aggregate from verse results
-  const verseAggregation = await VerseResultModel.aggregate([
+  const verseAggregation = await LlmVerseResultModel.aggregate([
     { $match: { chapterId } },
     {
       $group: {

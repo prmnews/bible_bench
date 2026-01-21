@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { isAdminAvailable } from "@/lib/admin";
-import { RawChapterModel } from "@/lib/models";
+import { CanonicalRawChapterModel } from "@/lib/models";
 import { connectToDatabase } from "@/lib/mongodb";
 
 type RawChapterIngestPayload = {
@@ -140,7 +140,7 @@ export async function POST(request: Request) {
       updateSet.sourceRef = validation.data.sourceRef;
     }
 
-    const result = await RawChapterModel.updateOne(
+    const result = await CanonicalRawChapterModel.updateOne(
       { rawChapterId: validation.data.rawChapterId },
       {
         $set: updateSet,

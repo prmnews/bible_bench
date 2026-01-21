@@ -4,9 +4,9 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 
 type Counts = {
-  rawChapters: number;
-  chapters: number;
-  verses: number;
+  canonicalRawChapters: number;
+  canonicalChapters: number;
+  canonicalVerses: number;
   models: number;
   runs: number;
 };
@@ -333,9 +333,9 @@ export default function AdminDashboardPage() {
   }
 
   const counts = data?.counts ?? {
-    rawChapters: 0,
-    chapters: 0,
-    verses: 0,
+    canonicalRawChapters: 0,
+    canonicalChapters: 0,
+    canonicalVerses: 0,
     models: 0,
     runs: 0,
   };
@@ -370,18 +370,18 @@ export default function AdminDashboardPage() {
       {/* Stats Grid */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
         <StatCard
-          title="Raw Chapters"
-          value={counts.rawChapters.toLocaleString()}
+          title="Canonical Raw Chapters"
+          value={counts.canonicalRawChapters.toLocaleString()}
           subtitle="Ingested from files"
         />
         <StatCard
-          title="Chapters"
-          value={counts.chapters.toLocaleString()}
+          title="Canonical Chapters"
+          value={counts.canonicalChapters.toLocaleString()}
           subtitle="Transformed"
         />
         <StatCard
-          title="Verses"
-          value={counts.verses.toLocaleString()}
+          title="Canonical Verses"
+          value={counts.canonicalVerses.toLocaleString()}
           subtitle="Extracted"
         />
         <StatCard

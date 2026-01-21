@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server";
 
 import {
+  AggregationBibleModel,
+  AggregationBookModel,
+  AggregationChapterModel,
   AppConfigModel,
-  BibleAggregateModel,
-  BookAggregateModel,
-  ChapterAggregateModel,
+  LlmVerseResultModel,
   ModelModel,
   RunModel,
-  VerseResultModel,
 } from "@/lib/models";
 import { connectToDatabase } from "@/lib/mongodb";
 import { summarizeResults } from "@/lib/results";
@@ -72,9 +72,9 @@ export async function GET(
         },
         latestRunId,
         metrics: { total: 0, matches: 0, perfectRate: 0, avgFidelity: 0 },
-        bibleAggregates: [],
-        bookAggregates: [],
-        chapterAggregates: [],
+        aggregationBibles: [],
+        aggregationBooks: [],
+        aggregationChapters: [],
         timeSeries: [],
       },
     });
@@ -82,20 +82,20 @@ export async function GET(
 
   // Get stored aggregates
   const [bibleAggregates, bookAggregates, chapterAggregates] = await Promise.all([
-    BibleAggregateModel.find(
+    AggregationBibleModel.find(
       { modelId, runId: { $in: runIds } },
       { _id: 0, bibleId: 1, runId: 1, avgFidelity: 1, perfectRate: 1, verseCount: 1, evaluatedAt: 1 }
     )
       .sort({ evaluatedAt: -1 })
       .lean(),
-    BookAggregateModel.find(
+    AggregationBookModel.find(
       { modelId, runId: { $in: runIds } },
       { _id: 0, bookId: 1, bibleId: 1, runId: 1, avgFidelity: 1, perfectRate: 1, evaluatedAt: 1 }
     )
       .sort({ bookId: 1 })
       .limit(100)
       .lean(),
-    ChapterAggregateModel.find(
+    AggregationChapterModel.find(
       { modelId, runId: { $in: runIds } },
       { _id: 0, chapterId: 1, bookId: 1, runId: 1, avgFidelity: 1, perfectRate: 1, evaluatedAt: 1 }
     )
@@ -120,7 +120,7 @@ export async function GET(
     };
   } else {
     // Fallback to verse-level
-    const verseResults = await VerseResultModel.find(
+    const verseResults = await LlmVerseResultModel.find(
       { modelId, runId: { $in: runIds } },
       { _id: 0, hashMatch: 1, fidelityScore: 1 }
     ).lean();
@@ -144,15 +144,15 @@ export async function GET(
       },
       latestRunId,
       metrics,
-      bibleAggregates: bibleAggregates.map((agg) => ({
+      aggregationBibles: bibleAggregates.map((agg) => ({
         ...agg,
         evaluatedAt: (agg.evaluatedAt as Date)?.toISOString(),
       })),
-      bookAggregates: bookAggregates.map((agg) => ({
+      aggregationBooks: bookAggregates.map((agg) => ({
         ...agg,
         evaluatedAt: (agg.evaluatedAt as Date)?.toISOString(),
       })),
-      chapterAggregates: chapterAggregates.map((agg) => ({
+      aggregationChapters: chapterAggregates.map((agg) => ({
         ...agg,
         evaluatedAt: (agg.evaluatedAt as Date)?.toISOString(),
       })),

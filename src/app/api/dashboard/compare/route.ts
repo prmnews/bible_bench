@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 import {
-  BibleAggregateModel,
+  AggregationBibleModel,
   ModelModel,
 } from "@/lib/models";
 import { connectToDatabase } from "@/lib/mongodb";
@@ -58,7 +58,7 @@ export async function GET(request: Request) {
   }
 
   // Get latest bible aggregate for each model
-  const latestAggregates = await BibleAggregateModel.aggregate([
+  const latestAggregates = await AggregationBibleModel.aggregate([
     { $match: aggFilter },
     { $sort: { evaluatedAt: -1 } },
     {
@@ -76,7 +76,7 @@ export async function GET(request: Request) {
   ]);
 
   // Get time series for all models
-  const timeSeries = await BibleAggregateModel.find(
+  const timeSeries = await AggregationBibleModel.find(
     aggFilter,
     { _id: 0, modelId: 1, bibleId: 1, avgFidelity: 1, perfectRate: 1, evaluatedAt: 1 }
   )

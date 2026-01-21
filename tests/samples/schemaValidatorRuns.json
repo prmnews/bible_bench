@@ -53,17 +53,37 @@
           "ok": true
         },
         {
-          "name": "rawChapters",
+          "name": "dimChapters",
           "action": "update",
           "ok": true
         },
         {
-          "name": "chapters",
+          "name": "canonicalLanguages",
           "action": "update",
           "ok": true
         },
         {
-          "name": "verses",
+          "name": "canonicalBibles",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "canonicalBooks",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "canonicalRawChapters",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "canonicalChapters",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "canonicalVerses",
           "action": "update",
           "ok": true
         },
@@ -74,7 +94,7 @@
           "error": "namespace bible-bench.models already exists, but with different options: { uuid: UUID(\"66df584d-1160-425b-a097-4ff3b7ee16b1\") }"
         },
         {
-          "name": "modelTransformMap",
+          "name": "modelProfileMap",
           "action": "update",
           "ok": true
         },
@@ -94,22 +114,32 @@
           "ok": true
         },
         {
-          "name": "chapterResults",
+          "name": "llmRawResponses",
           "action": "update",
           "ok": true
         },
         {
-          "name": "verseResults",
+          "name": "llmVerseResults",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "aggregationChapters",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "aggregationBooks",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "aggregationBibles",
           "action": "update",
           "ok": true
         },
         {
           "name": "canonicalTestVerses",
-          "action": "update",
-          "ok": true
-        },
-        {
-          "name": "userQueries",
           "action": "update",
           "ok": true
         },
@@ -178,17 +208,37 @@
           "ok": true
         },
         {
-          "name": "rawChapters",
+          "name": "dimChapters",
           "action": "update",
           "ok": true
         },
         {
-          "name": "chapters",
+          "name": "canonicalLanguages",
           "action": "update",
           "ok": true
         },
         {
-          "name": "verses",
+          "name": "canonicalBibles",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "canonicalBooks",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "canonicalRawChapters",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "canonicalChapters",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "canonicalVerses",
           "action": "update",
           "ok": true
         },
@@ -199,7 +249,7 @@
           "error": "namespace bible-bench.models already exists, but with different options: { uuid: UUID(\"66df584d-1160-425b-a097-4ff3b7ee16b1\") }"
         },
         {
-          "name": "modelTransformMap",
+          "name": "modelProfileMap",
           "action": "update",
           "ok": true
         },
@@ -219,22 +269,32 @@
           "ok": true
         },
         {
-          "name": "chapterResults",
+          "name": "llmRawResponses",
           "action": "update",
           "ok": true
         },
         {
-          "name": "verseResults",
+          "name": "llmVerseResults",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "aggregationChapters",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "aggregationBooks",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "aggregationBibles",
           "action": "update",
           "ok": true
         },
         {
           "name": "canonicalTestVerses",
-          "action": "update",
-          "ok": true
-        },
-        {
-          "name": "userQueries",
           "action": "update",
           "ok": true
         },
@@ -286,17 +346,37 @@
           "ok": true
         },
         {
-          "name": "rawChapters",
+          "name": "dimChapters",
           "action": "update",
           "ok": true
         },
         {
-          "name": "chapters",
+          "name": "canonicalLanguages",
           "action": "update",
           "ok": true
         },
         {
-          "name": "verses",
+          "name": "canonicalBibles",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "canonicalBooks",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "canonicalRawChapters",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "canonicalChapters",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "canonicalVerses",
           "action": "update",
           "ok": true
         },
@@ -306,7 +386,7 @@
           "ok": true
         },
         {
-          "name": "modelTransformMap",
+          "name": "modelProfileMap",
           "action": "update",
           "ok": true
         },
@@ -326,22 +406,32 @@
           "ok": true
         },
         {
-          "name": "chapterResults",
+          "name": "llmRawResponses",
           "action": "update",
           "ok": true
         },
         {
-          "name": "verseResults",
+          "name": "llmVerseResults",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "aggregationChapters",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "aggregationBooks",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "aggregationBibles",
           "action": "update",
           "ok": true
         },
         {
           "name": "canonicalTestVerses",
-          "action": "update",
-          "ok": true
-        },
-        {
-          "name": "userQueries",
           "action": "update",
           "ok": true
         },

@@ -8,7 +8,7 @@ Provide a config-driven, model-specific transformation pipeline for canonical te
 
 ## 2. Collections
 - transformProfiles
-- modelTransformMap
+- modelProfileMap
 
 ## 3. transformProfiles Document
 ```json
@@ -50,12 +50,11 @@ Provide a config-driven, model-specific transformation pipeline for canonical te
 }
 ```
 
-## 4. modelTransformMap Document
+## 4. modelProfileMap Document
 ```json
 {
   "_id": "ObjectId",
   "modelId": 10,
-  "canonicalProfileId": 101,
   "modelProfileId": 201,
   "audit": { "createdAt": "2026-01-17T00:00:00Z", "createdBy": "admin" }
 }

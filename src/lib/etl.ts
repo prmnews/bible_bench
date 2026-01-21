@@ -5,10 +5,10 @@ import { extractAbsVerses, flattenAbsText } from "@/lib/abs";
 import { sha256 } from "@/lib/hash";
 import { parseKjvFilename } from "@/lib/kjv-files";
 import {
-  ChapterModel,
-  RawChapterModel,
+  CanonicalChapterModel,
+  CanonicalRawChapterModel,
+  CanonicalVerseModel,
   TransformProfileModel,
-  VerseModel,
 } from "@/lib/models";
 import { connectToDatabase } from "@/lib/mongodb";
 import { applyTransformProfile } from "@/lib/transforms";
@@ -81,7 +81,7 @@ export async function ingestKjvChapters(
     const hashRaw = sha256(JSON.stringify(rawPayload));
     const sourceHash = hashRaw;
 
-    await RawChapterModel.updateOne(
+    await CanonicalRawChapterModel.updateOne(
       { rawChapterId: meta.rawChapterId },
       {
         $set: {
@@ -148,7 +148,7 @@ export async function transformChapters(
     return { ok: false, status: 404, error: "Transform profile not found." };
   }
 
-  let query = RawChapterModel.find(
+  let query = CanonicalRawChapterModel.find(
     params.rawChapterIds && params.rawChapterIds.length > 0
       ? { rawChapterId: { $in: params.rawChapterIds } }
       : {}
@@ -179,7 +179,7 @@ export async function transformChapters(
     const chapterId = rawChapter.rawChapterId;
     chapterIds.push(chapterId);
 
-    await ChapterModel.updateOne(
+    await CanonicalChapterModel.updateOne(
       { chapterId },
       {
         $set: {
@@ -269,7 +269,7 @@ export async function transformVerses(
   }
 
   const chapterIds = params.rawChapterIds ?? params.chapterIds;
-  let query = RawChapterModel.find(
+  let query = CanonicalRawChapterModel.find(
     chapterIds && chapterIds.length > 0
       ? { rawChapterId: { $in: chapterIds } }
       : {}
@@ -314,7 +314,7 @@ export async function transformVerses(
 
       verseIds.push(verseId);
 
-      await VerseModel.updateOne(
+      await CanonicalVerseModel.updateOne(
         { verseId },
         {
           $set: {

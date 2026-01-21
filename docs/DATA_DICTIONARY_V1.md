@@ -31,7 +31,39 @@ Updated: 2026-01-17
 - bookIndex (int, 1-66)
 - audit (object)
 
-## rawChapters
+## dimChapters
+- chapterId (int, PK)
+- bibleId (int, FK -> dimBibles.bibleId)
+- bookId (int, FK -> dimBooks.bookId)
+- chapterNumber (int)
+- reference (string)
+- chapterName (string)
+- verseCount (int)
+- audit (object)
+
+## canonicalLanguages
+- languageId (int, PK)
+- isoCode (string)
+- name (string)
+- audit (object)
+
+## canonicalBibles
+- bibleId (int, PK)
+- apiBibleId (string)
+- languageId (int, FK -> canonicalLanguages.languageId)
+- name (string)
+- source (string)
+- audit (object)
+
+## canonicalBooks
+- bookId (int, PK)
+- bibleId (int, FK -> canonicalBibles.bibleId)
+- bookCode (string, e.g., JHN)
+- bookName (string)
+- bookIndex (int, 1-66)
+- audit (object)
+
+## canonicalRawChapters
 - rawChapterId (int, PK)
 - bibleId (int, FK)
 - bookId (int, FK)
@@ -42,7 +74,7 @@ Updated: 2026-01-17
 - source (string)
 - audit (object)
 
-## chapters
+## canonicalChapters
 - chapterId (int, PK)
 - bibleId (int, FK)
 - bookId (int, FK)
@@ -52,14 +84,14 @@ Updated: 2026-01-17
 - textProcessed (string)
 - hashRaw (string)
 - hashProcessed (string)
-- rawChapterId (int, FK -> rawChapters.rawChapterId)
+- rawChapterId (int, FK -> canonicalRawChapters.rawChapterId)
 - transformProfileId (int, FK -> transformProfiles.profileId)
 - etlControl (object)
 - audit (object)
 
-## verses
+## canonicalVerses
 - verseId (int, PK)
-- chapterId (int, FK -> chapters.chapterId)
+- chapterId (int, FK -> canonicalChapters.chapterId)
 - bibleId (int, FK)
 - bookId (int, FK)
 - chapterNumber (int)
@@ -92,9 +124,8 @@ Updated: 2026-01-17
 - isActive (boolean)
 - audit (object)
 
-## modelTransformMap
+## modelProfileMap
 - modelId (int, FK -> models.modelId)
-- canonicalProfileId (int, FK -> transformProfiles.profileId)
 - modelProfileId (int, FK -> transformProfiles.profileId)
 - audit (object)
 
@@ -119,25 +150,29 @@ Updated: 2026-01-17
 - lastError (object)
 - updatedAt (date)
 
-## chapterResults
-- resultId (int, PK)
+## llmRawResponses
+- responseId (int, PK)
 - runId (string, FK)
 - modelId (int, FK)
-- chapterId (int, FK)
+- targetType (string: chapter|verse)
+- targetId (int)
+- evaluatedAt (date)
 - responseRaw (string)
-- responseProcessed (string)
-- hashRaw (string)
-- hashProcessed (string)
-- hashMatch (boolean)
-- fidelityScore (number)
-- diff (object)
+- parsed (object)
+- parseError (string)
+- extractedText (string)
+- latencyMs (number)
 - audit (object)
 
-## verseResults
+## llmVerseResults
 - resultId (int, PK)
 - runId (string, FK)
 - modelId (int, FK)
 - verseId (int, FK)
+- chapterId (int, FK)
+- bookId (int, FK)
+- bibleId (int, FK)
+- evaluatedAt (date)
 - responseRaw (string)
 - responseProcessed (string)
 - hashRaw (string)
@@ -145,7 +180,44 @@ Updated: 2026-01-17
 - hashMatch (boolean)
 - fidelityScore (number)
 - diff (object)
+- latencyMs (number)
 - audit (object)
+
+## aggregationChapters
+- chapterId (int, FK)
+- modelId (int, FK)
+- bibleId (int, FK)
+- bookId (int, FK)
+- runId (string, FK)
+- evaluatedAt (date)
+- avgFidelity (number)
+- perfectRate (number)
+- verseCount (int)
+- matchCount (int)
+
+## aggregationBooks
+- bookId (int, FK)
+- modelId (int, FK)
+- bibleId (int, FK)
+- runId (string, FK)
+- evaluatedAt (date)
+- avgFidelity (number)
+- perfectRate (number)
+- chapterCount (int)
+- verseCount (int)
+- matchCount (int)
+
+## aggregationBibles
+- bibleId (int, FK)
+- modelId (int, FK)
+- runId (string, FK)
+- evaluatedAt (date)
+- avgFidelity (number)
+- perfectRate (number)
+- bookCount (int)
+- chapterCount (int)
+- verseCount (int)
+- matchCount (int)
 
 ## canonicalTestVerses
 - testId (int, PK)
@@ -153,21 +225,6 @@ Updated: 2026-01-17
 - category (string)
 - notes (string)
 - addedAt (date)
-
-## userQueries
-- queryId (int, PK)
-- timestamp (date)
-- modelId (int, FK)
-- queryType (string: chapter|verse_range)
-- scope (object)
-- responseRaw (string)
-- responseProcessed (string)
-- hashRaw (string)
-- hashProcessed (string)
-- hashMatch (boolean)
-- diff (object)
-- metadata (object)
-- audit (object)
 
 ## appConfig
 - key (string, PK)

@@ -1,14 +1,14 @@
 import { NextResponse } from "next/server";
 
 import {
+  AggregationBibleModel,
   AppConfigModel,
-  BibleAggregateModel,
-  ChapterModel,
+  CanonicalChapterModel,
+  CanonicalRawChapterModel,
+  CanonicalVerseModel,
+  LlmVerseResultModel,
   ModelModel,
-  RawChapterModel,
   RunModel,
-  VerseModel,
-  VerseResultModel,
 } from "@/lib/models";
 import { connectToDatabase } from "@/lib/mongodb";
 import { summarizeResults } from "@/lib/results";
@@ -52,9 +52,9 @@ export async function GET() {
     latestRunDoc,
     recentFailedRuns,
   ] = await Promise.all([
-    RawChapterModel.countDocuments(),
-    ChapterModel.countDocuments(),
-    VerseModel.countDocuments(),
+    CanonicalRawChapterModel.countDocuments(),
+    CanonicalChapterModel.countDocuments(),
+    CanonicalVerseModel.countDocuments(),
     ModelModel.countDocuments({ isActive: true }),
     RunModel.countDocuments(),
     ModelModel.find(
@@ -136,9 +136,9 @@ export async function GET() {
 
   const latestRunId = latestRunDoc?.runId ?? null;
   const counts = {
-    rawChapters: rawChapterCount,
-    chapters: chapterCount,
-    verses: verseCount,
+    canonicalRawChapters: rawChapterCount,
+    canonicalChapters: chapterCount,
+    canonicalVerses: verseCount,
     models: modelCount,
     runs: runCount,
   };
@@ -177,7 +177,7 @@ export async function GET() {
     }
 
     // Try to use stored bible aggregates first (fast path)
-    const bibleAggregates = await BibleAggregateModel.find(
+    const bibleAggregates = await AggregationBibleModel.find(
       { modelId: model.modelId, runId: { $in: runIds } },
       { _id: 0, avgFidelity: 1, perfectRate: 1, evaluatedAt: 1 }
     )
@@ -199,7 +199,7 @@ export async function GET() {
       });
     } else {
       // Fallback to verse-level results (slower, for backward compatibility)
-      const verseResults = await VerseResultModel.find(
+      const verseResults = await LlmVerseResultModel.find(
         { modelId: model.modelId, runId: { $in: runIds } },
         { _id: 0, hashMatch: 1, fidelityScore: 1 }
       ).lean();
