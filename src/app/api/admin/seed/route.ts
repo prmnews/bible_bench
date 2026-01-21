@@ -463,7 +463,7 @@ async function seedChapters(): Promise<{
   const now = new Date();
   let created = 0;
   let existing = 0;
-  let skipped = 0;
+  const skipped = 0;
 
   // Process each book
   for (const [bookId, bookChapters] of chaptersByBook) {
