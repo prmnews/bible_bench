@@ -2,8 +2,8 @@ import { NextResponse } from "next/server";
 
 import {
   AppConfigModel,
+  BibleAggregateModel,
   ChapterModel,
-  ChapterResultModel,
   ModelModel,
   RawChapterModel,
   RunModel,
@@ -148,6 +148,7 @@ export async function GET() {
     displayName: string;
     perfectRate: number;
     avgFidelity: number;
+    evaluatedAt?: string;
   }>;
 
   for (const model of models) {
@@ -175,24 +176,42 @@ export async function GET() {
       continue;
     }
 
-    const [chapterResults, verseResults] = await Promise.all([
-      ChapterResultModel.find(
-        { modelId: model.modelId, runId: { $in: runIds } },
-        { _id: 0, hashMatch: 1, fidelityScore: 1 }
-      ).lean(),
-      VerseResultModel.find(
-        { modelId: model.modelId, runId: { $in: runIds } },
-        { _id: 0, hashMatch: 1, fidelityScore: 1 }
-      ).lean(),
-    ]);
+    // Try to use stored bible aggregates first (fast path)
+    const bibleAggregates = await BibleAggregateModel.find(
+      { modelId: model.modelId, runId: { $in: runIds } },
+      { _id: 0, avgFidelity: 1, perfectRate: 1, evaluatedAt: 1 }
+    )
+      .sort({ evaluatedAt: -1 })
+      .lean();
 
-    const summary = summarizeResults([...chapterResults, ...verseResults]);
-    summaries.push({
-      modelId: model.modelId,
-      displayName: model.displayName,
-      perfectRate: summary.perfectRate,
-      avgFidelity: summary.avgFidelity,
-    });
+    if (bibleAggregates.length > 0) {
+      // Use stored aggregates - average across all matching bibles
+      const totalFidelity = bibleAggregates.reduce((sum, agg) => sum + (agg.avgFidelity as number), 0);
+      const totalPerfectRate = bibleAggregates.reduce((sum, agg) => sum + (agg.perfectRate as number), 0);
+      const latestEvaluatedAt = bibleAggregates[0]?.evaluatedAt as Date | undefined;
+
+      summaries.push({
+        modelId: model.modelId,
+        displayName: model.displayName,
+        perfectRate: Number((totalPerfectRate / bibleAggregates.length).toFixed(4)),
+        avgFidelity: Number((totalFidelity / bibleAggregates.length).toFixed(2)),
+        evaluatedAt: latestEvaluatedAt?.toISOString(),
+      });
+    } else {
+      // Fallback to verse-level results (slower, for backward compatibility)
+      const verseResults = await VerseResultModel.find(
+        { modelId: model.modelId, runId: { $in: runIds } },
+        { _id: 0, hashMatch: 1, fidelityScore: 1 }
+      ).lean();
+
+      const summary = summarizeResults(verseResults);
+      summaries.push({
+        modelId: model.modelId,
+        displayName: model.displayName,
+        perfectRate: summary.perfectRate,
+        avgFidelity: summary.avgFidelity,
+      });
+    }
   }
 
   return NextResponse.json({

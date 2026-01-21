@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { ChapterResultModel } from "@/lib/models";
+import { ChapterAggregateModel, VerseResultModel } from "@/lib/models";
 import { connectToDatabase } from "@/lib/mongodb";
 
 type RouteContext = {
@@ -21,12 +21,63 @@ export async function GET(
   }
 
   await connectToDatabase();
-  const results = await ChapterResultModel.find(
+
+  // Try to use stored chapter aggregates first
+  const aggregates = await ChapterAggregateModel.find(
     { chapterId },
-    { _id: 0, runId: 1, modelId: 1, hashMatch: 1, fidelityScore: 1, diff: 1 }
+    {
+      _id: 0,
+      runId: 1,
+      modelId: 1,
+      avgFidelity: 1,
+      perfectRate: 1,
+      verseCount: 1,
+      matchCount: 1,
+      evaluatedAt: 1,
+    }
   )
-    .sort({ modelId: 1 })
+    .sort({ modelId: 1, evaluatedAt: -1 })
     .lean();
 
-  return NextResponse.json({ ok: true, data: { chapterId, results } });
+  if (aggregates.length > 0) {
+    // Use stored aggregates
+    const results = aggregates.map((agg) => ({
+      runId: agg.runId,
+      modelId: agg.modelId,
+      avgFidelity: agg.avgFidelity,
+      perfectRate: agg.perfectRate,
+      verseCount: agg.verseCount,
+      matchCount: agg.matchCount,
+      evaluatedAt: (agg.evaluatedAt as Date)?.toISOString(),
+    }));
+
+    return NextResponse.json({ ok: true, data: { chapterId, results, source: "aggregate" } });
+  }
+
+  // Fallback: aggregate from verse results
+  const verseAggregation = await VerseResultModel.aggregate([
+    { $match: { chapterId } },
+    {
+      $group: {
+        _id: { runId: "$runId", modelId: "$modelId" },
+        avgFidelity: { $avg: "$fidelityScore" },
+        verseCount: { $sum: 1 },
+        matchCount: { $sum: { $cond: ["$hashMatch", 1, 0] } },
+        evaluatedAt: { $max: "$evaluatedAt" },
+      },
+    },
+    { $sort: { "_id.modelId": 1, evaluatedAt: -1 } },
+  ]);
+
+  const results = verseAggregation.map((agg) => ({
+    runId: agg._id.runId,
+    modelId: agg._id.modelId,
+    avgFidelity: Number(agg.avgFidelity.toFixed(2)),
+    perfectRate: agg.verseCount > 0 ? Number((agg.matchCount / agg.verseCount).toFixed(4)) : 0,
+    verseCount: agg.verseCount,
+    matchCount: agg.matchCount,
+    evaluatedAt: agg.evaluatedAt?.toISOString?.(),
+  }));
+
+  return NextResponse.json({ ok: true, data: { chapterId, results, source: "computed" } });
 }

@@ -6,7 +6,6 @@ import { sha256 } from "@/lib/hash";
 import { generateModelResponse } from "@/lib/model-providers";
 import {
   ChapterModel,
-  ChapterResultModel,
   ModelModel,
   ModelTransformMapModel,
   RunItemModel,
@@ -16,6 +15,12 @@ import {
   VerseResultModel,
 } from "@/lib/models";
 import { connectToDatabase } from "@/lib/mongodb";
+import {
+  parseModelVersesAuto,
+  mapToCanonicalVerses,
+  type CanonicalVerse,
+} from "@/lib/verse-parser";
+import { computeAllAggregates } from "@/lib/aggregation";
 
 type RunType = "MODEL_CHAPTER" | "MODEL_VERSE";
 type RunScope = "bible" | "book" | "chapter" | "verse";
@@ -248,8 +253,20 @@ async function executeRunItems(params: {
           throw new Error("Chapter not found.");
         }
 
+        // Get canonical verses for this chapter
+        const canonicalVerses = await VerseModel.find(
+          { chapterId: chapter.chapterId },
+          { verseId: 1, verseNumber: 1, textProcessed: 1, hashProcessed: 1 }
+        )
+          .sort({ verseNumber: 1 })
+          .lean();
+
+        if (canonicalVerses.length === 0) {
+          throw new Error("No canonical verses found for chapter.");
+        }
+
         const startTime = Date.now();
-        const { responseRaw, extractedText, parseError } = await generateModelResponse({
+        const { extractedText, parseError } = await generateModelResponse({
           targetType: "chapter",
           targetId,
           reference: chapter.reference,
@@ -258,42 +275,63 @@ async function executeRunItems(params: {
           model,
         });
         const latencyMs = Date.now() - startTime;
+        const latencyPerVerse = Math.round(latencyMs / canonicalVerses.length);
 
         // If JSON parsing failed, throw an error
         if (parseError || extractedText === null) {
           throw new Error(parseError ?? "Failed to extract text from model response.");
         }
 
-        // Apply minimal normalization to extracted text (whitespace/trim only)
-        const responseProcessed = modelProfile
-          ? applyTransformProfile(extractedText, modelProfile)
-          : extractedText;
-        const hashRaw = sha256(responseRaw);
-        const hashProcessed = sha256(responseProcessed);
-        const hashMatch = hashProcessed === chapter.hashProcessed;
-        const { fidelityScore, diff } = compareText(
-          chapter.textProcessed,
-          responseProcessed
-        );
+        // Parse the chapter response into individual verses
+        const parseResult = parseModelVersesAuto(extractedText);
 
-        await ChapterResultModel.create({
-          resultId: createResultId(),
-          runId,
-          modelId,
-          chapterId: chapter.chapterId,
-          responseRaw,
-          responseProcessed,
-          hashRaw,
-          hashProcessed,
-          hashMatch,
-          fidelityScore,
-          diff,
-          latencyMs,
-          audit: {
-            createdAt: attemptTime,
-            createdBy: "model_run",
-          },
-        });
+        // Map parsed verses to canonical verses
+        const canonicalForMapping: CanonicalVerse[] = canonicalVerses.map((v) => ({
+          verseId: v.verseId,
+          verseNumber: v.verseNumber,
+          textProcessed: v.textProcessed,
+          hashProcessed: v.hashProcessed,
+        }));
+        const mapResult = mapToCanonicalVerses(parseResult.verses, canonicalForMapping);
+
+        // Create verse results for each canonical verse
+        for (const mapped of mapResult.mapped) {
+          // Apply transform profile to extracted verse text
+          const extractedText = mapped.extractedText;
+          const responseProcessed = modelProfile
+            ? applyTransformProfile(extractedText, modelProfile)
+            : extractedText;
+          const hashRaw = sha256(extractedText);
+          const hashProcessed = sha256(responseProcessed);
+          const hashMatch = hashProcessed === mapped.canonicalHash;
+          const { fidelityScore, diff } = compareText(
+            mapped.canonicalText,
+            responseProcessed
+          );
+
+          await VerseResultModel.create({
+            resultId: createResultId(),
+            runId,
+            modelId,
+            verseId: mapped.verseId,
+            chapterId: chapter.chapterId,
+            bookId: chapter.bookId,
+            bibleId: chapter.bibleId,
+            evaluatedAt: attemptTime,
+            responseRaw: extractedText, // Store raw extracted verse text
+            responseProcessed,
+            hashRaw,
+            hashProcessed,
+            hashMatch,
+            fidelityScore: mapped.matched ? fidelityScore : 0, // 0 if verse was missing
+            diff: mapped.matched ? diff : { missing: true },
+            latencyMs: latencyPerVerse,
+            audit: {
+              createdAt: attemptTime,
+              createdBy: "model_run",
+            },
+          });
+        }
       } else {
         const verse = await VerseModel.findOne({ verseId: targetId }).lean();
         if (!verse) {
@@ -333,6 +371,10 @@ async function executeRunItems(params: {
           runId,
           modelId,
           verseId: verse.verseId,
+          chapterId: verse.chapterId,
+          bookId: verse.bookId,
+          bibleId: verse.bibleId,
+          evaluatedAt: attemptTime,
           responseRaw,
           responseProcessed,
           hashRaw,
@@ -443,24 +485,27 @@ export async function startModelRun(params: StartRunParams): Promise<RunResult> 
     scopeParams.skip = params.skip;
   }
 
+  // Create the run document outside try-catch so failures propagate up
+  // rather than being caught by error handling that assumes the document exists
+  await RunModel.create({
+    runId,
+    runType: params.runType,
+    modelId: params.modelId,
+    scope: params.scope,
+    scopeIds: params.scopeIds,
+    scopeParams: Object.keys(scopeParams).length === 0 ? {} : scopeParams,
+    status: "running",
+    startedAt,
+    metrics: { total: 0, success: 0, failed: 0 },
+    logs,
+    errorSummary: null,
+    audit: {
+      createdAt: startedAt,
+      createdBy,
+    },
+  });
+
   try {
-    await RunModel.create({
-      runId,
-      runType: params.runType,
-      modelId: params.modelId,
-      scope: params.scope,
-      scopeIds: params.scopeIds,
-      scopeParams: Object.keys(scopeParams).length === 0 ? {} : scopeParams,
-      status: "running",
-      startedAt,
-      metrics: { total: 0, success: 0, failed: 0 },
-      logs,
-      errorSummary: null,
-      audit: {
-        createdAt: startedAt,
-        createdBy,
-      },
-    });
     const resolvedIds = await resolveTargetIds(targetType, params.scope, params.scopeIds);
     const startIndex = params.skip ?? 0;
     const endIndex =
@@ -510,6 +555,23 @@ export async function startModelRun(params: StartRunParams): Promise<RunResult> 
         },
       }
     );
+
+    // Compute and store aggregates after run completion
+    log("aggregation", "info", "Computing aggregates...");
+    const aggResult = await computeAllAggregates(runId);
+    log(
+      "aggregation",
+      aggResult.errors.length > 0 ? "warn" : "info",
+      `Aggregation complete: ${aggResult.chaptersProcessed} chapters, ${aggResult.booksProcessed} books, ${aggResult.biblesProcessed} bibles.`
+    );
+    if (aggResult.errors.length > 0) {
+      for (const err of aggResult.errors) {
+        log("aggregation", "error", err);
+      }
+    }
+
+    // Update logs with aggregation entries
+    await RunModel.updateOne({ runId }, { $set: { logs } });
 
     return {
       ok: true,
@@ -637,6 +699,18 @@ export async function retryFailedRunItems(runId: string): Promise<RunResult> {
       },
     }
   );
+
+  // Re-compute aggregates after retry
+  log("aggregation", "info", "Re-computing aggregates after retry...");
+  const aggResult = await computeAllAggregates(runId);
+  log(
+    "aggregation",
+    aggResult.errors.length > 0 ? "warn" : "info",
+    `Aggregation complete: ${aggResult.chaptersProcessed} chapters, ${aggResult.booksProcessed} books, ${aggResult.biblesProcessed} bibles.`
+  );
+
+  // Update logs with aggregation entries
+  await RunModel.updateOne({ runId }, { $set: { logs } });
 
   return {
     ok: true,

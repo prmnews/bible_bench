@@ -18,6 +18,7 @@ type ModelPayload = {
   version: string;
   routingMethod: string;
   isActive: boolean;
+  releasedAt?: Date | null;
   apiConfigEncrypted?: Record<string, unknown> | null;
   capabilities?: ModelCapabilitiesPayload;
 };
@@ -110,6 +111,23 @@ function validatePayload(payload: unknown): ValidationResult {
     return { ok: false, error: "capabilities must be an object of boolean flags." };
   }
 
+  // Parse releasedAt (ISO date string or null)
+  let releasedAt: Date | null | undefined;
+  const releasedAtValue = payload["releasedAt"];
+  if (releasedAtValue === null) {
+    releasedAt = null;
+  } else if (releasedAtValue === undefined) {
+    releasedAt = undefined;
+  } else if (typeof releasedAtValue === "string") {
+    const parsed = new Date(releasedAtValue);
+    if (Number.isNaN(parsed.getTime())) {
+      return { ok: false, error: "releasedAt must be a valid ISO date string." };
+    }
+    releasedAt = parsed;
+  } else {
+    return { ok: false, error: "releasedAt must be an ISO date string or null." };
+  }
+
   return {
     ok: true,
     data: {
@@ -119,6 +137,7 @@ function validatePayload(payload: unknown): ValidationResult {
       version: version.trim(),
       routingMethod: routingMethod.trim(),
       isActive,
+      releasedAt,
       apiConfigEncrypted: apiConfigEncrypted === undefined ? undefined : apiConfigEncrypted,
       capabilities: capabilities ?? undefined,
     },
@@ -166,6 +185,10 @@ export async function POST(request: Request) {
     routingMethod: validation.data.routingMethod,
     isActive: validation.data.isActive,
   };
+
+  if (validation.data.releasedAt !== undefined) {
+    updateSet.releasedAt = validation.data.releasedAt;
+  }
 
   if (validation.data.apiConfigEncrypted !== undefined) {
     updateSet.apiConfigEncrypted = validation.data.apiConfigEncrypted ?? {};

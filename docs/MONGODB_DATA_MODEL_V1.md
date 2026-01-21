@@ -17,8 +17,11 @@ This document shows collection shapes and sample documents for MongoDB Atlas. Th
 - modelTransformMap
 - runs
 - runItems
-- chapterResults
+- chapterResults (deprecated - use verseResults + aggregates)
 - verseResults
+- chapterAggregates (materialized roll-up)
+- bookAggregates (materialized roll-up)
+- bibleAggregates (materialized roll-up)
 - canonicalTestVerses
 - userQueries
 - appConfig
@@ -143,7 +146,14 @@ This document shows collection shapes and sample documents for MongoDB Atlas. Th
   "version": "2025-12",
   "routingMethod": "direct",
   "isActive": true,
+  "releasedAt": "2025-12-01T00:00:00Z",
   "apiConfigEncrypted": { "ciphertext": "..." },
+  "capabilities": {
+    "supportsJsonSchema": true,
+    "supportsToolCalls": true,
+    "supportsStrictJson": true,
+    "supportsStreaming": true
+  },
   "audit": { "createdAt": "2026-01-17T00:00:00Z", "createdBy": "admin" }
 }
 ```
@@ -232,6 +242,10 @@ This document shows collection shapes and sample documents for MongoDB Atlas. Th
   "runId": "run_2026-01-17_002",
   "modelId": 10,
   "verseId": 43003016,
+  "chapterId": 43003,
+  "bookId": 430,
+  "bibleId": 1001,
+  "evaluatedAt": "2026-01-17T00:00:10Z",
   "responseRaw": "For God so loved the world...",
   "responseProcessed": "For God so loved the world...",
   "hashRaw": "sha256...",
@@ -239,7 +253,62 @@ This document shows collection shapes and sample documents for MongoDB Atlas. Th
   "hashMatch": true,
   "fidelityScore": 100.0,
   "diff": {},
+  "latencyMs": 150,
   "audit": { "createdAt": "2026-01-17T00:00:10Z", "createdBy": "model_run" }
+}
+```
+
+## chapterAggregates
+Materialized chapter-level metrics rolled up from verse results.
+```json
+{
+  "_id": "ObjectId",
+  "chapterId": 43003,
+  "modelId": 10,
+  "bibleId": 1001,
+  "bookId": 430,
+  "runId": "run_2026-01-17_001",
+  "evaluatedAt": "2026-01-17T01:00:00Z",
+  "avgFidelity": 96.34,
+  "perfectRate": 0.85,
+  "verseCount": 36,
+  "matchCount": 31
+}
+```
+
+## bookAggregates
+Materialized book-level metrics rolled up from chapter aggregates.
+```json
+{
+  "_id": "ObjectId",
+  "bookId": 430,
+  "modelId": 10,
+  "bibleId": 1001,
+  "runId": "run_2026-01-17_001",
+  "evaluatedAt": "2026-01-17T01:00:00Z",
+  "avgFidelity": 95.12,
+  "perfectRate": 0.82,
+  "chapterCount": 21,
+  "verseCount": 879,
+  "matchCount": 721
+}
+```
+
+## bibleAggregates
+Materialized bible-level metrics rolled up from book aggregates.
+```json
+{
+  "_id": "ObjectId",
+  "bibleId": 1001,
+  "modelId": 10,
+  "runId": "run_2026-01-17_001",
+  "evaluatedAt": "2026-01-17T01:00:00Z",
+  "avgFidelity": 94.50,
+  "perfectRate": 0.78,
+  "bookCount": 66,
+  "chapterCount": 1189,
+  "verseCount": 31102,
+  "matchCount": 24259
 }
 ```
 
@@ -287,6 +356,22 @@ This document shows collection shapes and sample documents for MongoDB Atlas. Th
 ```
 
 ## Suggested Indexes
-- Unique: languageId, bibleId, bookId, chapterId, verseId, modelId, profileId, runId, key
-- Lookup: verses.chapterId, chapters.bookId, results.runId+modelId+chapterId, results.runId+modelId+verseId
+
+### Unique Indexes
+- languageId, bibleId, bookId, chapterId, verseId, modelId, profileId, runId, key
+
+### Lookup Indexes
+- verses.chapterId, chapters.bookId
+- verseResults: { runId, modelId, verseId }
+- verseResults: { modelId, bibleId, evaluatedAt }
+- verseResults: { modelId, chapterId }
+- verseResults: { modelId, bookId }
+
+### Aggregate Indexes
+- chapterAggregates: { chapterId, modelId, runId } (unique)
+- chapterAggregates: { modelId, bibleId, evaluatedAt }
+- bookAggregates: { bookId, modelId, runId } (unique)
+- bookAggregates: { modelId, bibleId, evaluatedAt }
+- bibleAggregates: { bibleId, modelId, runId } (unique)
+- bibleAggregates: { modelId, bibleId, evaluatedAt }
 

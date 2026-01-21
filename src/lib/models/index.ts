@@ -347,6 +347,7 @@ export const modelsValidator: JsonSchemaValidator = {
       version: stringSchema,
       routingMethod: stringSchema,
       isActive: boolSchema,
+      releasedAt: nullableDateSchema,
       apiConfigEncrypted: {
         bsonType: ["object", "null"],
         additionalProperties: true,
@@ -507,6 +508,10 @@ export const verseResultsValidator: JsonSchemaValidator = {
       "runId",
       "modelId",
       "verseId",
+      "chapterId",
+      "bookId",
+      "bibleId",
+      "evaluatedAt",
       "responseRaw",
       "responseProcessed",
       "hashRaw",
@@ -521,6 +526,10 @@ export const verseResultsValidator: JsonSchemaValidator = {
       runId: stringSchema,
       modelId: numberSchema,
       verseId: numberSchema,
+      chapterId: numberSchema,
+      bookId: numberSchema,
+      bibleId: numberSchema,
+      evaluatedAt: dateSchema,
       responseRaw: stringSchema,
       responseProcessed: stringSchema,
       hashRaw: stringSchema,
@@ -607,6 +616,97 @@ export const appConfigValidator: JsonSchemaValidator = {
       value: stringSchema,
       modifiedAt: dateSchema,
       modifiedBy: stringSchema,
+    },
+    additionalProperties: true,
+  },
+};
+
+// Aggregate validators for materialized roll-ups
+export const chapterAggregatesValidator: JsonSchemaValidator = {
+  $jsonSchema: {
+    bsonType: "object",
+    required: [
+      "chapterId",
+      "modelId",
+      "bibleId",
+      "runId",
+      "evaluatedAt",
+      "avgFidelity",
+      "perfectRate",
+      "verseCount",
+      "matchCount",
+    ],
+    properties: {
+      chapterId: numberSchema,
+      modelId: numberSchema,
+      bibleId: numberSchema,
+      bookId: numberSchema,
+      runId: stringSchema,
+      evaluatedAt: dateSchema,
+      avgFidelity: numberSchema,
+      perfectRate: numberSchema,
+      verseCount: numberSchema,
+      matchCount: numberSchema,
+    },
+    additionalProperties: true,
+  },
+};
+
+export const bookAggregatesValidator: JsonSchemaValidator = {
+  $jsonSchema: {
+    bsonType: "object",
+    required: [
+      "bookId",
+      "modelId",
+      "bibleId",
+      "runId",
+      "evaluatedAt",
+      "avgFidelity",
+      "perfectRate",
+      "chapterCount",
+      "verseCount",
+    ],
+    properties: {
+      bookId: numberSchema,
+      modelId: numberSchema,
+      bibleId: numberSchema,
+      runId: stringSchema,
+      evaluatedAt: dateSchema,
+      avgFidelity: numberSchema,
+      perfectRate: numberSchema,
+      chapterCount: numberSchema,
+      verseCount: numberSchema,
+      matchCount: numberSchema,
+    },
+    additionalProperties: true,
+  },
+};
+
+export const bibleAggregatesValidator: JsonSchemaValidator = {
+  $jsonSchema: {
+    bsonType: "object",
+    required: [
+      "bibleId",
+      "modelId",
+      "runId",
+      "evaluatedAt",
+      "avgFidelity",
+      "perfectRate",
+      "bookCount",
+      "chapterCount",
+      "verseCount",
+    ],
+    properties: {
+      bibleId: numberSchema,
+      modelId: numberSchema,
+      runId: stringSchema,
+      evaluatedAt: dateSchema,
+      avgFidelity: numberSchema,
+      perfectRate: numberSchema,
+      bookCount: numberSchema,
+      chapterCount: numberSchema,
+      verseCount: numberSchema,
+      matchCount: numberSchema,
     },
     additionalProperties: true,
   },
@@ -818,6 +918,7 @@ const modelSchema = new Schema({
   version: { type: String, required: true },
   routingMethod: { type: String, required: true },
   isActive: { type: Boolean, required: true, default: true },
+  releasedAt: { type: Date, default: null }, // For time-series analysis
   apiConfigEncrypted: { type: Schema.Types.Mixed, default: {} },
   capabilities: { type: modelCapabilitySchema, default: {} },
   audit: { type: auditSchema, required: true },
@@ -923,6 +1024,11 @@ const verseResultSchema = new Schema({
   runId: { type: String, required: true },
   modelId: { type: Number, required: true },
   verseId: { type: Number, required: true },
+  // Hierarchy fields for efficient roll-up aggregation
+  chapterId: { type: Number, required: true },
+  bookId: { type: Number, required: true },
+  bibleId: { type: Number, required: true },
+  evaluatedAt: { type: Date, required: true }, // Time dimension
   responseRaw: { type: String, required: true },
   responseProcessed: { type: String, required: true },
   hashRaw: { type: String, required: true },
@@ -937,8 +1043,71 @@ const verseResultSchema = new Schema({
 verseResultSchema.index({ resultId: 1 }, { unique: true });
 verseResultSchema.index({ runId: 1, modelId: 1, verseId: 1 });
 verseResultSchema.index({ verseId: 1 });
+// Model-centric indexes for dashboard queries
+verseResultSchema.index({ modelId: 1, bibleId: 1, evaluatedAt: -1 });
+verseResultSchema.index({ modelId: 1, chapterId: 1 });
+verseResultSchema.index({ modelId: 1, bookId: 1 });
 
 type VerseResult = InferSchemaType<typeof verseResultSchema>;
+
+// Aggregate schemas for materialized roll-ups
+const chapterAggregateSchema = new Schema({
+  chapterId: { type: Number, required: true },
+  modelId: { type: Number, required: true },
+  bibleId: { type: Number, required: true },
+  bookId: { type: Number, required: true },
+  runId: { type: String, required: true },
+  evaluatedAt: { type: Date, required: true },
+  avgFidelity: { type: Number, required: true },
+  perfectRate: { type: Number, required: true },
+  verseCount: { type: Number, required: true },
+  matchCount: { type: Number, required: true },
+});
+
+chapterAggregateSchema.index({ chapterId: 1, modelId: 1, runId: 1 }, { unique: true });
+chapterAggregateSchema.index({ modelId: 1, bibleId: 1, evaluatedAt: -1 });
+chapterAggregateSchema.index({ modelId: 1, bookId: 1 });
+chapterAggregateSchema.index({ runId: 1 });
+
+type ChapterAggregate = InferSchemaType<typeof chapterAggregateSchema>;
+
+const bookAggregateSchema = new Schema({
+  bookId: { type: Number, required: true },
+  modelId: { type: Number, required: true },
+  bibleId: { type: Number, required: true },
+  runId: { type: String, required: true },
+  evaluatedAt: { type: Date, required: true },
+  avgFidelity: { type: Number, required: true },
+  perfectRate: { type: Number, required: true },
+  chapterCount: { type: Number, required: true },
+  verseCount: { type: Number, required: true },
+  matchCount: { type: Number, required: true },
+});
+
+bookAggregateSchema.index({ bookId: 1, modelId: 1, runId: 1 }, { unique: true });
+bookAggregateSchema.index({ modelId: 1, bibleId: 1, evaluatedAt: -1 });
+bookAggregateSchema.index({ runId: 1 });
+
+type BookAggregate = InferSchemaType<typeof bookAggregateSchema>;
+
+const bibleAggregateSchema = new Schema({
+  bibleId: { type: Number, required: true },
+  modelId: { type: Number, required: true },
+  runId: { type: String, required: true },
+  evaluatedAt: { type: Date, required: true },
+  avgFidelity: { type: Number, required: true },
+  perfectRate: { type: Number, required: true },
+  bookCount: { type: Number, required: true },
+  chapterCount: { type: Number, required: true },
+  verseCount: { type: Number, required: true },
+  matchCount: { type: Number, required: true },
+});
+
+bibleAggregateSchema.index({ bibleId: 1, modelId: 1, runId: 1 }, { unique: true });
+bibleAggregateSchema.index({ modelId: 1, bibleId: 1, evaluatedAt: -1 });
+bibleAggregateSchema.index({ runId: 1 });
+
+type BibleAggregate = InferSchemaType<typeof bibleAggregateSchema>;
 
 const canonicalTestVerseSchema = new Schema({
   testId: { type: Number, required: true },
@@ -1056,6 +1225,22 @@ export const VerseResultModel =
   mongoose.models.VerseResult ??
   mongoose.model<VerseResult>("VerseResult", verseResultSchema, "verseResults");
 
+export const ChapterAggregateModel =
+  mongoose.models.ChapterAggregate ??
+  mongoose.model<ChapterAggregate>(
+    "ChapterAggregate",
+    chapterAggregateSchema,
+    "chapterAggregates"
+  );
+
+export const BookAggregateModel =
+  mongoose.models.BookAggregate ??
+  mongoose.model<BookAggregate>("BookAggregate", bookAggregateSchema, "bookAggregates");
+
+export const BibleAggregateModel =
+  mongoose.models.BibleAggregate ??
+  mongoose.model<BibleAggregate>("BibleAggregate", bibleAggregateSchema, "bibleAggregates");
+
 export const CanonicalTestVerseModel =
   mongoose.models.CanonicalTestVerse ??
   mongoose.model<CanonicalTestVerse>(
@@ -1086,6 +1271,9 @@ const collectionValidators = [
   { name: "runItems", validator: runItemsValidator },
   { name: "chapterResults", validator: chapterResultsValidator },
   { name: "verseResults", validator: verseResultsValidator },
+  { name: "chapterAggregates", validator: chapterAggregatesValidator },
+  { name: "bookAggregates", validator: bookAggregatesValidator },
+  { name: "bibleAggregates", validator: bibleAggregatesValidator },
   { name: "canonicalTestVerses", validator: canonicalTestVersesValidator },
   { name: "userQueries", validator: userQueriesValidator },
   { name: "appConfig", validator: appConfigValidator },
