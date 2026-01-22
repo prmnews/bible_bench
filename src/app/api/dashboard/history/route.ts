@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { ChapterResultModel, RunModel, VerseResultModel } from "@/lib/models";
+import { LlmVerseResultModel, RunModel } from "@/lib/models";
 import { connectToDatabase } from "@/lib/mongodb";
 
 type AggregateRow = {
@@ -26,33 +26,18 @@ export async function GET(request: Request) {
     .sort({ startedAt: 1 })
     .lean();
 
-  const [chapterAgg, verseAgg] = await Promise.all([
-    ChapterResultModel.aggregate<AggregateRow>([
-      { $match: { modelId } },
-      {
-        $group: {
-          _id: "$runId",
-          total: { $sum: 1 },
-          matches: {
-            $sum: { $cond: [{ $eq: ["$hashMatch", true] }, 1, 0] },
-          },
-          avgFidelity: { $avg: "$fidelityScore" },
+  const verseAgg = await LlmVerseResultModel.aggregate<AggregateRow>([
+    { $match: { modelId } },
+    {
+      $group: {
+        _id: "$runId",
+        total: { $sum: 1 },
+        matches: {
+          $sum: { $cond: [{ $eq: ["$hashMatch", true] }, 1, 0] },
         },
+        avgFidelity: { $avg: "$fidelityScore" },
       },
-    ]),
-    VerseResultModel.aggregate<AggregateRow>([
-      { $match: { modelId } },
-      {
-        $group: {
-          _id: "$runId",
-          total: { $sum: 1 },
-          matches: {
-            $sum: { $cond: [{ $eq: ["$hashMatch", true] }, 1, 0] },
-          },
-          avgFidelity: { $avg: "$fidelityScore" },
-        },
-      },
-    ]),
+    },
   ]);
 
   const metricsByRun = new Map<
@@ -70,7 +55,6 @@ export async function GET(request: Request) {
     });
   };
 
-  chapterAgg.forEach(mergeRow);
   verseAgg.forEach(mergeRow);
 
   const history = runs.map((run) => {

@@ -5,17 +5,23 @@ import { compareText } from "@/lib/evaluation";
 import { sha256 } from "@/lib/hash";
 import { generateModelResponse } from "@/lib/model-providers";
 import {
-  ChapterModel,
-  ChapterResultModel,
+  CanonicalChapterModel,
+  CanonicalVerseModel,
+  LlmRawResponseModel,
+  LlmVerseResultModel,
   ModelModel,
-  ModelTransformMapModel,
+  ModelProfileMapModel,
   RunItemModel,
   RunModel,
   TransformProfileModel,
-  VerseModel,
-  VerseResultModel,
 } from "@/lib/models";
 import { connectToDatabase } from "@/lib/mongodb";
+import {
+  parseModelVersesAuto,
+  mapToCanonicalVerses,
+  type CanonicalVerse,
+} from "@/lib/verse-parser";
+import { computeAllAggregates } from "@/lib/aggregation";
 
 type RunType = "MODEL_CHAPTER" | "MODEL_VERSE";
 type RunScope = "bible" | "book" | "chapter" | "verse";
@@ -34,6 +40,13 @@ type RunErrorSummary = {
   failedCount: number;
   lastError: string | null;
   lastErrorAt: Date | null;
+};
+
+type ParsedVerse = {
+  verseNumber: number;
+  text: string;
+  startOffset: number;
+  endOffset: number;
 };
 
 type RunMetrics = {
@@ -80,8 +93,48 @@ function createRunLogger(existingLogs?: RunLogEntry[]) {
   return { logs, log };
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function parseChapterVersesFromJson(parsed: unknown): ParsedVerse[] | null {
+  if (!isRecord(parsed)) {
+    return null;
+  }
+
+  const verses = parsed["verses"];
+  if (!Array.isArray(verses)) {
+    return null;
+  }
+
+  const parsedVerses: ParsedVerse[] = [];
+  for (const verse of verses) {
+    if (!isRecord(verse)) {
+      continue;
+    }
+    const verseNumberValue = verse["verseNumber"];
+    const verseTextValue = verse["verseText"];
+    const verseNumber = Number(verseNumberValue);
+    if (!Number.isFinite(verseNumber) || typeof verseTextValue !== "string") {
+      continue;
+    }
+    const text = verseTextValue.trim();
+    if (!text) {
+      continue;
+    }
+    parsedVerses.push({
+      verseNumber,
+      text,
+      startOffset: 0,
+      endOffset: 0,
+    });
+  }
+
+  return parsedVerses.length > 0 ? parsedVerses : null;
+}
+
 async function resolveModelOutputProfile(modelId: number) {
-  const mapping = await ModelTransformMapModel.findOne({ modelId }).lean();
+  const mapping = await ModelProfileMapModel.findOne({ modelId }).lean();
   if (mapping?.modelProfileId) {
     const profile = await TransformProfileModel.findOne({
       profileId: mapping.modelProfileId,
@@ -116,7 +169,7 @@ async function resolveTargetIds(
       if (bibleId === undefined) {
         throw new Error("bibleId is required for bible scope.");
       }
-      const chapters = await ChapterModel.find({ bibleId }, { chapterId: 1 })
+      const chapters = await CanonicalChapterModel.find({ bibleId }, { chapterId: 1 })
         .sort({ chapterId: 1 })
         .lean();
       return chapters.map((chapter) => chapter.chapterId);
@@ -127,7 +180,7 @@ async function resolveTargetIds(
       if (bookId === undefined) {
         throw new Error("bookId is required for book scope.");
       }
-      const chapters = await ChapterModel.find({ bookId }, { chapterId: 1 })
+      const chapters = await CanonicalChapterModel.find({ bookId }, { chapterId: 1 })
         .sort({ chapterId: 1 })
         .lean();
       return chapters.map((chapter) => chapter.chapterId);
@@ -149,7 +202,7 @@ async function resolveTargetIds(
     if (bibleId === undefined) {
       throw new Error("bibleId is required for bible scope.");
     }
-    const verses = await VerseModel.find({ bibleId }, { verseId: 1 })
+    const verses = await CanonicalVerseModel.find({ bibleId }, { verseId: 1 })
       .sort({ verseId: 1 })
       .lean();
     return verses.map((verse) => verse.verseId);
@@ -160,7 +213,7 @@ async function resolveTargetIds(
     if (bookId === undefined) {
       throw new Error("bookId is required for book scope.");
     }
-    const verses = await VerseModel.find({ bookId }, { verseId: 1 })
+    const verses = await CanonicalVerseModel.find({ bookId }, { verseId: 1 })
       .sort({ verseId: 1 })
       .lean();
     return verses.map((verse) => verse.verseId);
@@ -171,7 +224,7 @@ async function resolveTargetIds(
     if (chapterId === undefined) {
       throw new Error("chapterId is required for chapter scope.");
     }
-    const verses = await VerseModel.find({ chapterId }, { verseId: 1 })
+    const verses = await CanonicalVerseModel.find({ chapterId }, { verseId: 1 })
       .sort({ verseId: 1 })
       .lean();
     return verses.map((verse) => verse.verseId);
@@ -243,13 +296,32 @@ async function executeRunItems(params: {
 
     try {
       if (targetType === "chapter") {
-        const chapter = await ChapterModel.findOne({ chapterId: targetId }).lean();
+        const chapter = await CanonicalChapterModel.findOne({ chapterId: targetId }).lean();
         if (!chapter) {
           throw new Error("Chapter not found.");
         }
 
+        // Get canonical verses for this chapter
+        const canonicalVerses = await CanonicalVerseModel.find(
+          { chapterId: chapter.chapterId },
+          { verseId: 1, verseNumber: 1, textProcessed: 1, hashProcessed: 1 }
+        )
+          .sort({ verseNumber: 1 })
+          .lean();
+
+        if (canonicalVerses.length === 0) {
+          throw new Error("No canonical verses found for chapter.");
+        }
+
         const startTime = Date.now();
-        const { responseRaw, extractedText, parseError } = await generateModelResponse({
+        const {
+          responseRaw,
+          parsed,
+          extractedText,
+          parseError,
+          systemPrompt,
+          userPrompt,
+        } = await generateModelResponse({
           targetType: "chapter",
           targetId,
           reference: chapter.reference,
@@ -258,50 +330,107 @@ async function executeRunItems(params: {
           model,
         });
         const latencyMs = Date.now() - startTime;
+        const latencyPerVerse = Math.round(latencyMs / canonicalVerses.length);
 
-        // If JSON parsing failed, throw an error
-        if (parseError || extractedText === null) {
-          throw new Error(parseError ?? "Failed to extract text from model response.");
-        }
-
-        // Apply minimal normalization to extracted text (whitespace/trim only)
-        const responseProcessed = modelProfile
-          ? applyTransformProfile(extractedText, modelProfile)
-          : extractedText;
-        const hashRaw = sha256(responseRaw);
-        const hashProcessed = sha256(responseProcessed);
-        const hashMatch = hashProcessed === chapter.hashProcessed;
-        const { fidelityScore, diff } = compareText(
-          chapter.textProcessed,
-          responseProcessed
-        );
-
-        await ChapterResultModel.create({
-          resultId: createResultId(),
+        await LlmRawResponseModel.create({
+          responseId: createResultId(),
           runId,
           modelId,
-          chapterId: chapter.chapterId,
+          targetType: "chapter",
+          targetId,
+          evaluatedAt: attemptTime,
           responseRaw,
-          responseProcessed,
-          hashRaw,
-          hashProcessed,
-          hashMatch,
-          fidelityScore,
-          diff,
+          systemPrompt,
+          userPrompt,
+          parsed,
+          parseError,
+          extractedText,
           latencyMs,
           audit: {
             createdAt: attemptTime,
             createdBy: "model_run",
           },
         });
+
+        // If JSON parsing failed, throw an error
+        if (parseError || extractedText === null) {
+          throw new Error(parseError ?? "Failed to extract text from model response.");
+        }
+
+        // Parse the chapter response into individual verses
+        const parsedVerses = parseChapterVersesFromJson(parsed);
+        const parseResult = parsedVerses
+          ? { verses: parsedVerses, warnings: [], unmatchedText: [] }
+          : parseModelVersesAuto(extractedText);
+
+        // Map parsed verses to canonical verses
+        const canonicalForMapping: CanonicalVerse[] = canonicalVerses.map((v) => ({
+          verseId: v.verseId,
+          verseNumber: v.verseNumber,
+          textProcessed: v.textProcessed,
+          hashProcessed: v.hashProcessed,
+        }));
+        const mapResult = mapToCanonicalVerses(parseResult.verses, canonicalForMapping);
+
+        // Create verse results for each canonical verse
+        for (const mapped of mapResult.mapped) {
+          // Apply transform profile to extracted verse text
+          const extractedText = mapped.extractedText;
+          const responseProcessed = modelProfile
+            ? applyTransformProfile(extractedText, modelProfile)
+            : extractedText;
+          const hashRaw = sha256(extractedText);
+          const hashProcessed = sha256(responseProcessed);
+          const hashMatch = hashProcessed === mapped.canonicalHash;
+          const { fidelityScore, diff } = compareText(
+            mapped.canonicalText,
+            responseProcessed
+          );
+
+          await LlmVerseResultModel.updateOne(
+            { runId, modelId, verseId: mapped.verseId },
+            {
+              $set: {
+                resultId: createResultId(),
+                runId,
+                modelId,
+                verseId: mapped.verseId,
+                chapterId: chapter.chapterId,
+                bookId: chapter.bookId,
+                bibleId: chapter.bibleId,
+                evaluatedAt: attemptTime,
+                responseRaw: extractedText, // Store raw extracted verse text
+                responseProcessed,
+                hashRaw,
+                hashProcessed,
+                hashMatch,
+                fidelityScore: mapped.matched ? fidelityScore : 0, // 0 if verse was missing
+                diff: mapped.matched ? diff : { missing: true },
+                latencyMs: latencyPerVerse,
+                audit: {
+                  createdAt: attemptTime,
+                  createdBy: "model_run",
+                },
+              },
+            },
+            { upsert: true }
+          );
+        }
       } else {
-        const verse = await VerseModel.findOne({ verseId: targetId }).lean();
+        const verse = await CanonicalVerseModel.findOne({ verseId: targetId }).lean();
         if (!verse) {
           throw new Error("Verse not found.");
         }
 
         const startTime = Date.now();
-        const { responseRaw, extractedText, parseError } = await generateModelResponse({
+        const {
+          responseRaw,
+          parsed,
+          extractedText,
+          parseError,
+          systemPrompt,
+          userPrompt,
+        } = await generateModelResponse({
           targetType: "verse",
           targetId,
           reference: verse.reference,
@@ -310,6 +439,26 @@ async function executeRunItems(params: {
           model,
         });
         const latencyMs = Date.now() - startTime;
+
+        await LlmRawResponseModel.create({
+          responseId: createResultId(),
+          runId,
+          modelId,
+          targetType: "verse",
+          targetId,
+          evaluatedAt: attemptTime,
+          responseRaw,
+          systemPrompt,
+          userPrompt,
+          parsed,
+          parseError,
+          extractedText,
+          latencyMs,
+          audit: {
+            createdAt: attemptTime,
+            createdBy: "model_run",
+          },
+        });
 
         // If JSON parsing failed, throw an error
         if (parseError || extractedText === null) {
@@ -328,11 +477,15 @@ async function executeRunItems(params: {
           responseProcessed
         );
 
-        await VerseResultModel.create({
+        await LlmVerseResultModel.create({
           resultId: createResultId(),
           runId,
           modelId,
           verseId: verse.verseId,
+          chapterId: verse.chapterId,
+          bookId: verse.bookId,
+          bibleId: verse.bibleId,
+          evaluatedAt: attemptTime,
           responseRaw,
           responseProcessed,
           hashRaw,
@@ -443,24 +596,27 @@ export async function startModelRun(params: StartRunParams): Promise<RunResult> 
     scopeParams.skip = params.skip;
   }
 
+  // Create the run document outside try-catch so failures propagate up
+  // rather than being caught by error handling that assumes the document exists
+  await RunModel.create({
+    runId,
+    runType: params.runType,
+    modelId: params.modelId,
+    scope: params.scope,
+    scopeIds: params.scopeIds,
+    scopeParams: Object.keys(scopeParams).length === 0 ? {} : scopeParams,
+    status: "running",
+    startedAt,
+    metrics: { total: 0, success: 0, failed: 0 },
+    logs,
+    errorSummary: null,
+    audit: {
+      createdAt: startedAt,
+      createdBy,
+    },
+  });
+
   try {
-    await RunModel.create({
-      runId,
-      runType: params.runType,
-      modelId: params.modelId,
-      scope: params.scope,
-      scopeIds: params.scopeIds,
-      scopeParams: Object.keys(scopeParams).length === 0 ? {} : scopeParams,
-      status: "running",
-      startedAt,
-      metrics: { total: 0, success: 0, failed: 0 },
-      logs,
-      errorSummary: null,
-      audit: {
-        createdAt: startedAt,
-        createdBy,
-      },
-    });
     const resolvedIds = await resolveTargetIds(targetType, params.scope, params.scopeIds);
     const startIndex = params.skip ?? 0;
     const endIndex =
@@ -510,6 +666,23 @@ export async function startModelRun(params: StartRunParams): Promise<RunResult> 
         },
       }
     );
+
+    // Compute and store aggregates after run completion
+    log("aggregation", "info", "Computing aggregates...");
+    const aggResult = await computeAllAggregates(runId);
+    log(
+      "aggregation",
+      aggResult.errors.length > 0 ? "warn" : "info",
+      `Aggregation complete: ${aggResult.chaptersProcessed} chapters, ${aggResult.booksProcessed} books, ${aggResult.biblesProcessed} bibles.`
+    );
+    if (aggResult.errors.length > 0) {
+      for (const err of aggResult.errors) {
+        log("aggregation", "error", err);
+      }
+    }
+
+    // Update logs with aggregation entries
+    await RunModel.updateOne({ runId }, { $set: { logs } });
 
     return {
       ok: true,
@@ -637,6 +810,18 @@ export async function retryFailedRunItems(runId: string): Promise<RunResult> {
       },
     }
   );
+
+  // Re-compute aggregates after retry
+  log("aggregation", "info", "Re-computing aggregates after retry...");
+  const aggResult = await computeAllAggregates(runId);
+  log(
+    "aggregation",
+    aggResult.errors.length > 0 ? "warn" : "info",
+    `Aggregation complete: ${aggResult.chaptersProcessed} chapters, ${aggResult.booksProcessed} books, ${aggResult.biblesProcessed} bibles.`
+  );
+
+  // Update logs with aggregation entries
+  await RunModel.updateOne({ runId }, { $set: { logs } });
 
   return {
     ok: true,

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { VerseResultModel } from "@/lib/models";
+import { LlmVerseResultModel } from "@/lib/models";
 import { connectToDatabase } from "@/lib/mongodb";
 
 type RouteContext = {
@@ -21,7 +21,7 @@ export async function GET(
   }
 
   await connectToDatabase();
-  const results = await VerseResultModel.find(
+  const results = await LlmVerseResultModel.find(
     { verseId },
     { _id: 0, runId: 1, modelId: 1, hashMatch: 1, fidelityScore: 1, diff: 1 }
   )

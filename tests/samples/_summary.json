@@ -21,21 +21,49 @@
     "validationErrorCount": 0
   },
   {
-    "collection": "rawChapters",
+    "collection": "dimChapters",
+    "documentCount": 1189,
+    "sampleSize": 10,
+    "fieldCount": 12,
+    "validationErrorCount": 0
+  },
+  {
+    "collection": "canonicalLanguages",
+    "documentCount": 1,
+    "sampleSize": 1,
+    "fieldCount": 8,
+    "validationErrorCount": 0
+  },
+  {
+    "collection": "canonicalBibles",
+    "documentCount": 1,
+    "sampleSize": 1,
+    "fieldCount": 10,
+    "validationErrorCount": 0
+  },
+  {
+    "collection": "canonicalBooks",
+    "documentCount": 66,
+    "sampleSize": 10,
+    "fieldCount": 10,
+    "validationErrorCount": 0
+  },
+  {
+    "collection": "canonicalRawChapters",
     "documentCount": 1189,
     "sampleSize": 3,
     "fieldCount": 26,
     "validationErrorCount": 0
   },
   {
-    "collection": "chapters",
+    "collection": "canonicalChapters",
     "documentCount": 1189,
     "sampleSize": 5,
     "fieldCount": 24,
     "validationErrorCount": 0
   },
   {
-    "collection": "verses",
+    "collection": "canonicalVerses",
     "documentCount": 31102,
     "sampleSize": 10,
     "fieldCount": 27,
@@ -56,6 +84,13 @@
     "validationErrorCount": 0
   },
   {
+    "collection": "modelProfileMap",
+    "documentCount": 0,
+    "sampleSize": 0,
+    "fieldCount": 0,
+    "validationErrorCount": 0
+  },
+  {
     "collection": "runs",
     "documentCount": 0,
     "sampleSize": 0,
@@ -70,14 +105,35 @@
     "validationErrorCount": 0
   },
   {
-    "collection": "chapterResults",
+    "collection": "llmRawResponses",
     "documentCount": 0,
     "sampleSize": 0,
     "fieldCount": 0,
     "validationErrorCount": 0
   },
   {
-    "collection": "verseResults",
+    "collection": "llmVerseResults",
+    "documentCount": 0,
+    "sampleSize": 0,
+    "fieldCount": 0,
+    "validationErrorCount": 0
+  },
+  {
+    "collection": "aggregationChapters",
+    "documentCount": 0,
+    "sampleSize": 0,
+    "fieldCount": 0,
+    "validationErrorCount": 0
+  },
+  {
+    "collection": "aggregationBooks",
+    "documentCount": 0,
+    "sampleSize": 0,
+    "fieldCount": 0,
+    "validationErrorCount": 0
+  },
+  {
+    "collection": "aggregationBibles",
     "documentCount": 0,
     "sampleSize": 0,
     "fieldCount": 0,

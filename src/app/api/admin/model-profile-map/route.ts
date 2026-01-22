@@ -1,17 +1,16 @@
 import { NextResponse } from "next/server";
 
 import { isAdminAvailable } from "@/lib/admin";
-import { ModelTransformMapModel } from "@/lib/models";
+import { ModelProfileMapModel } from "@/lib/models";
 import { connectToDatabase } from "@/lib/mongodb";
 
-type ModelTransformMapPayload = {
+type ModelProfileMapPayload = {
   modelId: number;
-  canonicalProfileId: number;
   modelProfileId: number;
 };
 
 type ValidationResult =
-  | { ok: true; data: ModelTransformMapPayload }
+  | { ok: true; data: ModelProfileMapPayload }
   | { ok: false; error: string };
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -32,11 +31,6 @@ function validatePayload(payload: unknown): ValidationResult {
     return { ok: false, error: "modelId must be a number." };
   }
 
-  const canonicalProfileId = payload["canonicalProfileId"];
-  if (!isNumber(canonicalProfileId)) {
-    return { ok: false, error: "canonicalProfileId must be a number." };
-  }
-
   const modelProfileId = payload["modelProfileId"];
   if (!isNumber(modelProfileId)) {
     return { ok: false, error: "modelProfileId must be a number." };
@@ -46,7 +40,6 @@ function validatePayload(payload: unknown): ValidationResult {
     ok: true,
     data: {
       modelId,
-      canonicalProfileId,
       modelProfileId,
     },
   };
@@ -60,7 +53,7 @@ export async function GET() {
   }
 
   await connectToDatabase();
-  const mappings = await ModelTransformMapModel.find({}, { _id: 0 })
+  const mappings = await ModelProfileMapModel.find({}, { _id: 0 })
     .sort({ modelId: 1 })
     .lean();
   return NextResponse.json({ ok: true, data: mappings });
@@ -86,11 +79,10 @@ export async function POST(request: Request) {
   await connectToDatabase();
   const now = new Date();
 
-  const mapping = await ModelTransformMapModel.findOneAndUpdate(
+  const mapping = await ModelProfileMapModel.findOneAndUpdate(
     { modelId: validation.data.modelId },
     {
       $set: {
-        canonicalProfileId: validation.data.canonicalProfileId,
         modelProfileId: validation.data.modelProfileId,
       },
       $setOnInsert: {

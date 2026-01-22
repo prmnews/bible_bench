@@ -36,7 +36,7 @@ function ConfigRow({
   isSaving,
 }: {
   config: ConfigItem;
-  onUpdate: (key: string, value: string) => void;
+  onUpdate: (key: string, value: string) => Promise<boolean>;
   onDelete: (key: string) => void;
   isSaving: boolean;
 }) {
@@ -51,9 +51,11 @@ function ConfigRow({
     onUpdate(config.key, newValue);
   };
 
-  const handleSave = () => {
-    onUpdate(config.key, editValue);
-    setIsEditing(false);
+  const handleSave = async () => {
+    const success = await onUpdate(config.key, editValue);
+    if (success) {
+      setIsEditing(false);
+    }
   };
 
   const handleCancel = () => {
@@ -152,20 +154,22 @@ function NewConfigForm({
   onAdd,
   isAdding,
 }: {
-  onAdd: (key: string, value: string) => void;
+  onAdd: (key: string, value: string) => Promise<boolean>;
   isAdding: boolean;
 }) {
   const [showForm, setShowForm] = useState(false);
   const [newKey, setNewKey] = useState("");
   const [newValue, setNewValue] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newKey.trim() && newValue.trim()) {
-      onAdd(newKey.trim().toUpperCase(), newValue.trim());
-      setNewKey("");
-      setNewValue("");
-      setShowForm(false);
+      const success = await onAdd(newKey.trim().toUpperCase(), newValue.trim());
+      if (success) {
+        setNewKey("");
+        setNewValue("");
+        setShowForm(false);
+      }
     }
   };
 
@@ -264,7 +268,7 @@ export default function AdminConfigPage() {
     fetchConfigs();
   }, [fetchConfigs]);
 
-  const handleUpdate = async (key: string, value: string) => {
+  const handleUpdate = async (key: string, value: string): Promise<boolean> => {
     setSaving(key);
     try {
       const res = await fetch(`/api/admin/config/${key}`, {
@@ -275,11 +279,14 @@ export default function AdminConfigPage() {
       const json = await res.json();
       if (json.ok) {
         fetchConfigs();
+        return true;
       } else {
         setError(json.error ?? "Failed to update config.");
+        return false;
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to update config.");
+      return false;
     } finally {
       setSaving(null);
     }
@@ -306,7 +313,7 @@ export default function AdminConfigPage() {
     }
   };
 
-  const handleAdd = async (key: string, value: string) => {
+  const handleAdd = async (key: string, value: string): Promise<boolean> => {
     setSaving(key);
     try {
       const res = await fetch(`/api/admin/config/${key}`, {
@@ -317,11 +324,14 @@ export default function AdminConfigPage() {
       const json = await res.json();
       if (json.ok) {
         fetchConfigs();
+        return true;
       } else {
         setError(json.error ?? "Failed to add config.");
+        return false;
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to add config.");
+      return false;
     } finally {
       setSaving(null);
     }

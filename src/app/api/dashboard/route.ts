@@ -1,14 +1,14 @@
 import { NextResponse } from "next/server";
 
 import {
+  AggregationBibleModel,
   AppConfigModel,
-  ChapterModel,
-  ChapterResultModel,
+  CanonicalChapterModel,
+  CanonicalRawChapterModel,
+  CanonicalVerseModel,
+  LlmVerseResultModel,
   ModelModel,
-  RawChapterModel,
   RunModel,
-  VerseModel,
-  VerseResultModel,
 } from "@/lib/models";
 import { connectToDatabase } from "@/lib/mongodb";
 import { summarizeResults } from "@/lib/results";
@@ -41,6 +41,7 @@ async function getShowLatestOnly() {
 export async function GET() {
   await connectToDatabase();
   const showLatestOnly = await getShowLatestOnly();
+  const runFilter = { runType: { $ne: "ETL" } };
   
   const [
     rawChapterCount,
@@ -52,11 +53,11 @@ export async function GET() {
     latestRunDoc,
     recentFailedRuns,
   ] = await Promise.all([
-    RawChapterModel.countDocuments(),
-    ChapterModel.countDocuments(),
-    VerseModel.countDocuments(),
+    CanonicalRawChapterModel.countDocuments(),
+    CanonicalChapterModel.countDocuments(),
+    CanonicalVerseModel.countDocuments(),
     ModelModel.countDocuments({ isActive: true }),
-    RunModel.countDocuments(),
+    RunModel.countDocuments(runFilter),
     ModelModel.find(
       { isActive: true },
       { _id: 0, modelId: 1, displayName: 1, provider: 1, version: 1 }
@@ -64,7 +65,7 @@ export async function GET() {
       .sort({ modelId: 1 })
       .lean(),
     RunModel.findOne(
-      {},
+      runFilter,
       {
         _id: 0,
         runId: 1,
@@ -81,7 +82,7 @@ export async function GET() {
       .sort({ startedAt: -1 })
       .lean(),
     RunModel.find(
-      { "errorSummary.lastError": { $ne: null } },
+      { ...runFilter, "errorSummary.lastError": { $ne: null } },
       {
         _id: 0,
         runId: 1,
@@ -136,9 +137,9 @@ export async function GET() {
 
   const latestRunId = latestRunDoc?.runId ?? null;
   const counts = {
-    rawChapters: rawChapterCount,
-    chapters: chapterCount,
-    verses: verseCount,
+    canonicalRawChapters: rawChapterCount,
+    canonicalChapters: chapterCount,
+    canonicalVerses: verseCount,
     models: modelCount,
     runs: runCount,
   };
@@ -148,6 +149,7 @@ export async function GET() {
     displayName: string;
     perfectRate: number;
     avgFidelity: number;
+    evaluatedAt?: string;
   }>;
 
   for (const model of models) {
@@ -175,24 +177,42 @@ export async function GET() {
       continue;
     }
 
-    const [chapterResults, verseResults] = await Promise.all([
-      ChapterResultModel.find(
-        { modelId: model.modelId, runId: { $in: runIds } },
-        { _id: 0, hashMatch: 1, fidelityScore: 1 }
-      ).lean(),
-      VerseResultModel.find(
-        { modelId: model.modelId, runId: { $in: runIds } },
-        { _id: 0, hashMatch: 1, fidelityScore: 1 }
-      ).lean(),
-    ]);
+    // Try to use stored bible aggregates first (fast path)
+    const bibleAggregates = await AggregationBibleModel.find(
+      { modelId: model.modelId, runId: { $in: runIds } },
+      { _id: 0, avgFidelity: 1, perfectRate: 1, evaluatedAt: 1 }
+    )
+      .sort({ evaluatedAt: -1 })
+      .lean();
 
-    const summary = summarizeResults([...chapterResults, ...verseResults]);
-    summaries.push({
-      modelId: model.modelId,
-      displayName: model.displayName,
-      perfectRate: summary.perfectRate,
-      avgFidelity: summary.avgFidelity,
-    });
+    if (bibleAggregates.length > 0) {
+      // Use stored aggregates - average across all matching bibles
+      const totalFidelity = bibleAggregates.reduce((sum, agg) => sum + (agg.avgFidelity as number), 0);
+      const totalPerfectRate = bibleAggregates.reduce((sum, agg) => sum + (agg.perfectRate as number), 0);
+      const latestEvaluatedAt = bibleAggregates[0]?.evaluatedAt as Date | undefined;
+
+      summaries.push({
+        modelId: model.modelId,
+        displayName: model.displayName,
+        perfectRate: Number((totalPerfectRate / bibleAggregates.length).toFixed(4)),
+        avgFidelity: Number((totalFidelity / bibleAggregates.length).toFixed(2)),
+        evaluatedAt: latestEvaluatedAt?.toISOString(),
+      });
+    } else {
+      // Fallback to verse-level results (slower, for backward compatibility)
+      const verseResults = await LlmVerseResultModel.find(
+        { modelId: model.modelId, runId: { $in: runIds } },
+        { _id: 0, hashMatch: 1, fidelityScore: 1 }
+      ).lean();
+
+      const summary = summarizeResults(verseResults);
+      summaries.push({
+        modelId: model.modelId,
+        displayName: model.displayName,
+        perfectRate: summary.perfectRate,
+        avgFidelity: summary.avgFidelity,
+      });
+    }
   }
 
   return NextResponse.json({

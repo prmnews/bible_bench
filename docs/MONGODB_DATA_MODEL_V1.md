@@ -9,19 +9,25 @@ This document shows collection shapes and sample documents for MongoDB Atlas. Th
 - dimLanguages
 - dimBibles
 - dimBooks
-- rawChapters
-- chapters
-- verses
+- dimChapters
+- canonicalLanguages
+- canonicalBibles
+- canonicalBooks
+- canonicalRawChapters
+- canonicalChapters
+- canonicalVerses
 - models
 - transformProfiles
-- modelTransformMap
+- modelProfileMap
 - runs
 - runItems
-- chapterResults
-- verseResults
-- canonicalTestVerses
-- userQueries
+- llmRawResponses
+- llmVerseResults
+- aggregationChapters (materialized roll-up)
+- aggregationBooks (materialized roll-up)
+- aggregationBibles (materialized roll-up)
 - appConfig
+- schemaValidatorRuns
 
 ## dimLanguages
 ```json
@@ -60,7 +66,59 @@ This document shows collection shapes and sample documents for MongoDB Atlas. Th
 }
 ```
 
-## rawChapters
+## dimChapters
+```json
+{
+  "_id": "ObjectId",
+  "chapterId": 43003,
+  "bibleId": 1001,
+  "bookId": 430,
+  "chapterNumber": 3,
+  "reference": "John 3",
+  "chapterName": "For God So Loved",
+  "verseCount": 36,
+  "audit": { "createdAt": "2026-01-17T00:00:00Z", "createdBy": "admin" }
+}
+```
+
+## canonicalLanguages
+```json
+{
+  "_id": "ObjectId",
+  "languageId": 1,
+  "isoCode": "en",
+  "name": "English",
+  "audit": { "createdAt": "2026-01-17T00:00:00Z", "createdBy": "admin" }
+}
+```
+
+## canonicalBibles
+```json
+{
+  "_id": "ObjectId",
+  "bibleId": 1001,
+  "apiBibleId": "de4e12af7f28f599-02",
+  "languageId": 1,
+  "name": "King James Version",
+  "source": "ABS",
+  "audit": { "createdAt": "2026-01-17T00:00:00Z", "createdBy": "admin" }
+}
+```
+
+## canonicalBooks
+```json
+{
+  "_id": "ObjectId",
+  "bookId": 430,
+  "bibleId": 1001,
+  "bookCode": "JHN",
+  "bookName": "John",
+  "bookIndex": 43,
+  "audit": { "createdAt": "2026-01-17T00:00:00Z", "createdBy": "admin" }
+}
+```
+
+## canonicalRawChapters
 ```json
 {
   "_id": "ObjectId",
@@ -76,7 +134,7 @@ This document shows collection shapes and sample documents for MongoDB Atlas. Th
 }
 ```
 
-## chapters
+## canonicalChapters
 ```json
 {
   "_id": "ObjectId",
@@ -104,7 +162,7 @@ This document shows collection shapes and sample documents for MongoDB Atlas. Th
 }
 ```
 
-## verses
+## canonicalVerses
 ```json
 {
   "_id": "ObjectId",
@@ -143,7 +201,14 @@ This document shows collection shapes and sample documents for MongoDB Atlas. Th
   "version": "2025-12",
   "routingMethod": "direct",
   "isActive": true,
+  "releasedAt": "2025-12-01T00:00:00Z",
   "apiConfigEncrypted": { "ciphertext": "..." },
+  "capabilities": {
+    "supportsJsonSchema": true,
+    "supportsToolCalls": true,
+    "supportsStrictJson": true,
+    "supportsStreaming": true
+  },
   "audit": { "createdAt": "2026-01-17T00:00:00Z", "createdBy": "admin" }
 }
 ```
@@ -163,12 +228,11 @@ This document shows collection shapes and sample documents for MongoDB Atlas. Th
 }
 ```
 
-## modelTransformMap
+## modelProfileMap
 ```json
 {
   "_id": "ObjectId",
   "modelId": 10,
-  "canonicalProfileId": 101,
   "modelProfileId": 201,
   "audit": { "createdAt": "2026-01-17T00:00:00Z", "createdBy": "admin" }
 }
@@ -205,26 +269,26 @@ This document shows collection shapes and sample documents for MongoDB Atlas. Th
 }
 ```
 
-## chapterResults
+## llmRawResponses
 ```json
 {
   "_id": "ObjectId",
-  "resultId": 900001,
+  "responseId": 800001,
   "runId": "run_2026-01-17_001",
   "modelId": 10,
-  "chapterId": 43003,
-  "responseRaw": "John 3 (KJV)...",
-  "responseProcessed": "There was a man...",
-  "hashRaw": "sha256...",
-  "hashProcessed": "sha256...",
-  "hashMatch": false,
-  "fidelityScore": 96.34,
-  "diff": { "substitutions": [], "omissions": [], "additions": [], "transpositions": [] },
+  "targetType": "chapter",
+  "targetId": 43003,
+  "evaluatedAt": "2026-01-17T00:00:10Z",
+  "responseRaw": "{...raw provider response...}",
+  "parsed": { "book": "John", "chapter": "3", "verses": [] },
+  "parseError": null,
+  "extractedText": "For God so loved the world...",
+  "latencyMs": 1234,
   "audit": { "createdAt": "2026-01-17T00:00:10Z", "createdBy": "model_run" }
 }
 ```
 
-## verseResults
+## llmVerseResults
 ```json
 {
   "_id": "ObjectId",
@@ -232,6 +296,10 @@ This document shows collection shapes and sample documents for MongoDB Atlas. Th
   "runId": "run_2026-01-17_002",
   "modelId": 10,
   "verseId": 43003016,
+  "chapterId": 43003,
+  "bookId": 430,
+  "bibleId": 1001,
+  "evaluatedAt": "2026-01-17T00:00:10Z",
   "responseRaw": "For God so loved the world...",
   "responseProcessed": "For God so loved the world...",
   "hashRaw": "sha256...",
@@ -239,39 +307,62 @@ This document shows collection shapes and sample documents for MongoDB Atlas. Th
   "hashMatch": true,
   "fidelityScore": 100.0,
   "diff": {},
+  "latencyMs": 150,
   "audit": { "createdAt": "2026-01-17T00:00:10Z", "createdBy": "model_run" }
 }
 ```
 
-## canonicalTestVerses
+## aggregationChapters
+Materialized chapter-level metrics rolled up from llmVerseResults.
 ```json
 {
   "_id": "ObjectId",
-  "testId": 501,
-  "verseId": 43003016,
-  "category": "high_profile",
-  "notes": "John 3:16",
-  "addedAt": "2026-01-17T00:00:00Z"
+  "chapterId": 43003,
+  "modelId": 10,
+  "bibleId": 1001,
+  "bookId": 430,
+  "runId": "run_2026-01-17_001",
+  "evaluatedAt": "2026-01-17T01:00:00Z",
+  "avgFidelity": 96.34,
+  "perfectRate": 0.85,
+  "verseCount": 36,
+  "matchCount": 31
 }
 ```
 
-## userQueries
+## aggregationBooks
+Materialized book-level metrics rolled up from aggregationChapters.
 ```json
 {
   "_id": "ObjectId",
-  "queryId": 70001,
-  "timestamp": "2026-01-17T00:00:00Z",
+  "bookId": 430,
   "modelId": 10,
-  "queryType": "verse_range",
-  "scope": { "bookId": 430, "chapterNumber": 3, "verseStart": 1, "verseEnd": 10 },
-  "responseRaw": "1 There was a man...",
-  "responseProcessed": "There was a man...",
-  "hashRaw": "sha256...",
-  "hashProcessed": "sha256...",
-  "hashMatch": false,
-  "diff": {},
-  "metadata": { "sessionId": "abc", "userAgent": "..." },
-  "audit": { "createdAt": "2026-01-17T00:00:00Z", "createdBy": "public" }
+  "bibleId": 1001,
+  "runId": "run_2026-01-17_001",
+  "evaluatedAt": "2026-01-17T01:00:00Z",
+  "avgFidelity": 95.12,
+  "perfectRate": 0.82,
+  "chapterCount": 21,
+  "verseCount": 879,
+  "matchCount": 721
+}
+```
+
+## aggregationBibles
+Materialized bible-level metrics rolled up from aggregationBooks.
+```json
+{
+  "_id": "ObjectId",
+  "bibleId": 1001,
+  "modelId": 10,
+  "runId": "run_2026-01-17_001",
+  "evaluatedAt": "2026-01-17T01:00:00Z",
+  "avgFidelity": 94.50,
+  "perfectRate": 0.78,
+  "bookCount": 66,
+  "chapterCount": 1189,
+  "verseCount": 31102,
+  "matchCount": 24259
 }
 ```
 
@@ -287,6 +378,23 @@ This document shows collection shapes and sample documents for MongoDB Atlas. Th
 ```
 
 ## Suggested Indexes
-- Unique: languageId, bibleId, bookId, chapterId, verseId, modelId, profileId, runId, key
-- Lookup: verses.chapterId, chapters.bookId, results.runId+modelId+chapterId, results.runId+modelId+verseId
+
+### Unique Indexes
+- languageId, bibleId, bookId, chapterId, verseId, modelId, profileId, runId, key
+
+### Lookup Indexes
+- canonicalVerses: { chapterId }
+- canonicalChapters: { bookId }
+- llmVerseResults: { runId, modelId, verseId }
+- llmVerseResults: { modelId, bibleId, evaluatedAt }
+- llmVerseResults: { modelId, chapterId }
+- llmVerseResults: { modelId, bookId }
+
+### Aggregate Indexes
+- aggregationChapters: { chapterId, modelId, runId } (unique)
+- aggregationChapters: { modelId, bibleId, evaluatedAt }
+- aggregationBooks: { bookId, modelId, runId } (unique)
+- aggregationBooks: { modelId, bibleId, evaluatedAt }
+- aggregationBibles: { bibleId, modelId, runId } (unique)
+- aggregationBibles: { modelId, bibleId, evaluatedAt }
 

@@ -1,11 +1,13 @@
 import { NextResponse } from "next/server";
 
 import {
+  AggregationBibleModel,
+  AggregationBookModel,
+  AggregationChapterModel,
   AppConfigModel,
-  ChapterResultModel,
+  LlmVerseResultModel,
   ModelModel,
   RunModel,
-  VerseResultModel,
 } from "@/lib/models";
 import { connectToDatabase } from "@/lib/mongodb";
 import { summarizeResults } from "@/lib/results";
@@ -34,7 +36,7 @@ export async function GET(
   await connectToDatabase();
   const model = await ModelModel.findOne(
     { modelId },
-    { _id: 0, modelId: 1, displayName: 1, provider: 1, version: 1 }
+    { _id: 0, modelId: 1, displayName: 1, provider: 1, version: 1, releasedAt: 1 }
   ).lean();
   if (!model) {
     return NextResponse.json({ ok: false, error: "Model not found." }, { status: 404 });
@@ -64,40 +66,97 @@ export async function GET(
     return NextResponse.json({
       ok: true,
       data: {
-        model,
+        model: {
+          ...model,
+          releasedAt: (model.releasedAt as Date)?.toISOString?.() ?? null,
+        },
         latestRunId,
         metrics: { total: 0, matches: 0, perfectRate: 0, avgFidelity: 0 },
-        chapterResults: [],
-        verseResults: [],
+        aggregationBibles: [],
+        aggregationBooks: [],
+        aggregationChapters: [],
+        timeSeries: [],
       },
     });
   }
 
-  const [chapterResults, verseResults] = await Promise.all([
-    ChapterResultModel.find(
+  // Get stored aggregates
+  const [bibleAggregates, bookAggregates, chapterAggregates] = await Promise.all([
+    AggregationBibleModel.find(
       { modelId, runId: { $in: runIds } },
-      { _id: 0, runId: 1, chapterId: 1, hashMatch: 1, fidelityScore: 1, diff: 1 }
+      { _id: 0, bibleId: 1, runId: 1, avgFidelity: 1, perfectRate: 1, verseCount: 1, evaluatedAt: 1 }
+    )
+      .sort({ evaluatedAt: -1 })
+      .lean(),
+    AggregationBookModel.find(
+      { modelId, runId: { $in: runIds } },
+      { _id: 0, bookId: 1, bibleId: 1, runId: 1, avgFidelity: 1, perfectRate: 1, evaluatedAt: 1 }
+    )
+      .sort({ bookId: 1 })
+      .limit(100)
+      .lean(),
+    AggregationChapterModel.find(
+      { modelId, runId: { $in: runIds } },
+      { _id: 0, chapterId: 1, bookId: 1, runId: 1, avgFidelity: 1, perfectRate: 1, evaluatedAt: 1 }
     )
       .sort({ chapterId: 1 })
-      .lean(),
-    VerseResultModel.find(
-      { modelId, runId: { $in: runIds } },
-      { _id: 0, runId: 1, verseId: 1, hashMatch: 1, fidelityScore: 1, diff: 1 }
-    )
-      .sort({ verseId: 1 })
+      .limit(100)
       .lean(),
   ]);
 
-  const summary = summarizeResults([...chapterResults, ...verseResults]);
+  // Calculate overall metrics from bible aggregates or fallback
+  let metrics: { total: number; matches: number; perfectRate: number; avgFidelity: number };
+
+  if (bibleAggregates.length > 0) {
+    const totalFidelity = bibleAggregates.reduce((sum, agg) => sum + (agg.avgFidelity as number), 0);
+    const totalPerfectRate = bibleAggregates.reduce((sum, agg) => sum + (agg.perfectRate as number), 0);
+    const totalVerses = bibleAggregates.reduce((sum, agg) => sum + (agg.verseCount as number), 0);
+
+    metrics = {
+      total: totalVerses,
+      matches: Math.round(totalVerses * (totalPerfectRate / bibleAggregates.length)),
+      perfectRate: Number((totalPerfectRate / bibleAggregates.length).toFixed(4)),
+      avgFidelity: Number((totalFidelity / bibleAggregates.length).toFixed(2)),
+    };
+  } else {
+    // Fallback to verse-level
+    const verseResults = await LlmVerseResultModel.find(
+      { modelId, runId: { $in: runIds } },
+      { _id: 0, hashMatch: 1, fidelityScore: 1 }
+    ).lean();
+    metrics = summarizeResults(verseResults);
+  }
+
+  // Build time series data for chart (X: evaluatedAt, Y: avgFidelity)
+  const timeSeries = bibleAggregates.map((agg) => ({
+    evaluatedAt: (agg.evaluatedAt as Date)?.toISOString(),
+    avgFidelity: agg.avgFidelity,
+    perfectRate: agg.perfectRate,
+    bibleId: agg.bibleId,
+  }));
 
   return NextResponse.json({
     ok: true,
     data: {
-      model,
+      model: {
+        ...model,
+        releasedAt: (model.releasedAt as Date)?.toISOString?.() ?? null,
+      },
       latestRunId,
-      metrics: summary,
-      chapterResults,
-      verseResults,
+      metrics,
+      aggregationBibles: bibleAggregates.map((agg) => ({
+        ...agg,
+        evaluatedAt: (agg.evaluatedAt as Date)?.toISOString(),
+      })),
+      aggregationBooks: bookAggregates.map((agg) => ({
+        ...agg,
+        evaluatedAt: (agg.evaluatedAt as Date)?.toISOString(),
+      })),
+      aggregationChapters: chapterAggregates.map((agg) => ({
+        ...agg,
+        evaluatedAt: (agg.evaluatedAt as Date)?.toISOString(),
+      })),
+      timeSeries,
     },
   });
 }

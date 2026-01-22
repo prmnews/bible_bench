@@ -108,7 +108,80 @@ export const dimBooksValidator: JsonSchemaValidator = {
   },
 };
 
-export const rawChaptersValidator: JsonSchemaValidator = {
+export const dimChaptersValidator: JsonSchemaValidator = {
+  $jsonSchema: {
+    bsonType: "object",
+    required: [
+      "chapterId",
+      "bibleId",
+      "bookId",
+      "chapterNumber",
+      "reference",
+      "chapterName",
+      "verseCount",
+      "audit",
+    ],
+    properties: {
+      chapterId: numberSchema,
+      bibleId: numberSchema,
+      bookId: numberSchema,
+      chapterNumber: numberSchema,
+      reference: stringSchema,
+      chapterName: stringSchema,
+      verseCount: numberSchema,
+      audit: auditJsonSchema,
+    },
+    additionalProperties: true,
+  },
+};
+
+export const canonicalLanguagesValidator: JsonSchemaValidator = {
+  $jsonSchema: {
+    bsonType: "object",
+    required: ["languageId", "isoCode", "name", "audit"],
+    properties: {
+      languageId: numberSchema,
+      isoCode: stringSchema,
+      name: stringSchema,
+      audit: auditJsonSchema,
+    },
+    additionalProperties: true,
+  },
+};
+
+export const canonicalBiblesValidator: JsonSchemaValidator = {
+  $jsonSchema: {
+    bsonType: "object",
+    required: ["bibleId", "apiBibleId", "languageId", "name", "source", "audit"],
+    properties: {
+      bibleId: numberSchema,
+      apiBibleId: stringSchema,
+      languageId: numberSchema,
+      name: stringSchema,
+      source: stringSchema,
+      audit: auditJsonSchema,
+    },
+    additionalProperties: true,
+  },
+};
+
+export const canonicalBooksValidator: JsonSchemaValidator = {
+  $jsonSchema: {
+    bsonType: "object",
+    required: ["bookId", "bibleId", "bookCode", "bookName", "bookIndex", "audit"],
+    properties: {
+      bookId: numberSchema,
+      bibleId: numberSchema,
+      bookCode: stringSchema,
+      bookName: stringSchema,
+      bookIndex: numberSchema,
+      audit: auditJsonSchema,
+    },
+    additionalProperties: true,
+  },
+};
+
+export const canonicalRawChaptersValidator: JsonSchemaValidator = {
   $jsonSchema: {
     bsonType: "object",
     required: [
@@ -144,7 +217,7 @@ export const rawChaptersValidator: JsonSchemaValidator = {
   },
 };
 
-export const chaptersValidator: JsonSchemaValidator = {
+export const canonicalChaptersValidator: JsonSchemaValidator = {
   $jsonSchema: {
     bsonType: "object",
     required: [
@@ -181,7 +254,7 @@ export const chaptersValidator: JsonSchemaValidator = {
   },
 };
 
-export const versesValidator: JsonSchemaValidator = {
+export const canonicalVersesValidator: JsonSchemaValidator = {
   $jsonSchema: {
     bsonType: "object",
     required: [
@@ -288,46 +361,6 @@ export const schemaValidatorRunsValidator: JsonSchemaValidator = {
   },
 };
 
-export const etlRunsValidator: JsonSchemaValidator = {
-  $jsonSchema: {
-    bsonType: "object",
-    required: ["runId", "status", "startedAt", "summary", "logs", "audit"],
-    properties: {
-      runId: stringSchema,
-      status: stringSchema,
-      startedAt: dateSchema,
-      completedAt: nullableDateSchema,
-      metrics: {
-        bsonType: "object",
-        additionalProperties: true,
-      },
-      stages: {
-        bsonType: "object",
-        additionalProperties: true,
-      },
-      summary: {
-        bsonType: "object",
-        additionalProperties: true,
-      },
-      logs: {
-        bsonType: "array",
-        items: {
-          bsonType: "object",
-          properties: {
-            stage: stringSchema,
-            level: stringSchema,
-            message: stringSchema,
-            timestamp: dateSchema,
-          },
-          additionalProperties: true,
-        },
-      },
-      audit: auditJsonSchema,
-    },
-    additionalProperties: true,
-  },
-};
-
 export const modelsValidator: JsonSchemaValidator = {
   $jsonSchema: {
     bsonType: "object",
@@ -347,6 +380,7 @@ export const modelsValidator: JsonSchemaValidator = {
       version: stringSchema,
       routingMethod: stringSchema,
       isActive: boolSchema,
+      releasedAt: nullableDateSchema,
       apiConfigEncrypted: {
         bsonType: ["object", "null"],
         additionalProperties: true,
@@ -367,13 +401,12 @@ export const modelsValidator: JsonSchemaValidator = {
   },
 };
 
-export const modelTransformMapValidator: JsonSchemaValidator = {
+export const modelProfileMapValidator: JsonSchemaValidator = {
   $jsonSchema: {
     bsonType: "object",
-    required: ["modelId", "canonicalProfileId", "modelProfileId", "audit"],
+    required: ["modelId", "modelProfileId", "audit"],
     properties: {
       modelId: numberSchema,
-      canonicalProfileId: numberSchema,
       modelProfileId: numberSchema,
       audit: auditJsonSchema,
     },
@@ -460,38 +493,35 @@ export const runItemsValidator: JsonSchemaValidator = {
   },
 };
 
-export const chapterResultsValidator: JsonSchemaValidator = {
+export const llmRawResponsesValidator: JsonSchemaValidator = {
   $jsonSchema: {
     bsonType: "object",
     required: [
-      "resultId",
+      "responseId",
       "runId",
       "modelId",
-      "chapterId",
+      "targetType",
+      "targetId",
+      "evaluatedAt",
       "responseRaw",
-      "responseProcessed",
-      "hashRaw",
-      "hashProcessed",
-      "hashMatch",
-      "fidelityScore",
-      "diff",
       "audit",
     ],
     properties: {
-      resultId: numberSchema,
+      responseId: numberSchema,
       runId: stringSchema,
       modelId: numberSchema,
-      chapterId: numberSchema,
+      targetType: stringSchema,
+      targetId: numberSchema,
+      evaluatedAt: dateSchema,
       responseRaw: stringSchema,
-      responseProcessed: stringSchema,
-      hashRaw: stringSchema,
-      hashProcessed: stringSchema,
-      hashMatch: boolSchema,
-      fidelityScore: numberSchema,
-      diff: {
-        bsonType: "object",
+      systemPrompt: nullableStringSchema,
+      userPrompt: nullableStringSchema,
+      parsed: {
+        bsonType: ["object", "null"],
         additionalProperties: true,
       },
+      parseError: nullableStringSchema,
+      extractedText: nullableStringSchema,
       latencyMs: numberSchema,
       audit: auditJsonSchema,
     },
@@ -499,7 +529,7 @@ export const chapterResultsValidator: JsonSchemaValidator = {
   },
 };
 
-export const verseResultsValidator: JsonSchemaValidator = {
+export const llmVerseResultsValidator: JsonSchemaValidator = {
   $jsonSchema: {
     bsonType: "object",
     required: [
@@ -507,6 +537,10 @@ export const verseResultsValidator: JsonSchemaValidator = {
       "runId",
       "modelId",
       "verseId",
+      "chapterId",
+      "bookId",
+      "bibleId",
+      "evaluatedAt",
       "responseRaw",
       "responseProcessed",
       "hashRaw",
@@ -521,6 +555,10 @@ export const verseResultsValidator: JsonSchemaValidator = {
       runId: stringSchema,
       modelId: numberSchema,
       verseId: numberSchema,
+      chapterId: numberSchema,
+      bookId: numberSchema,
+      bibleId: numberSchema,
+      evaluatedAt: dateSchema,
       responseRaw: stringSchema,
       responseProcessed: stringSchema,
       hashRaw: stringSchema,
@@ -532,66 +570,6 @@ export const verseResultsValidator: JsonSchemaValidator = {
         additionalProperties: true,
       },
       latencyMs: numberSchema,
-      audit: auditJsonSchema,
-    },
-    additionalProperties: true,
-  },
-};
-
-export const canonicalTestVersesValidator: JsonSchemaValidator = {
-  $jsonSchema: {
-    bsonType: "object",
-    required: ["testId", "verseId", "category", "addedAt"],
-    properties: {
-      testId: numberSchema,
-      verseId: numberSchema,
-      category: stringSchema,
-      notes: nullableStringSchema,
-      addedAt: dateSchema,
-    },
-    additionalProperties: true,
-  },
-};
-
-export const userQueriesValidator: JsonSchemaValidator = {
-  $jsonSchema: {
-    bsonType: "object",
-    required: [
-      "queryId",
-      "timestamp",
-      "modelId",
-      "queryType",
-      "scope",
-      "responseRaw",
-      "responseProcessed",
-      "hashRaw",
-      "hashProcessed",
-      "hashMatch",
-      "diff",
-      "audit",
-    ],
-    properties: {
-      queryId: numberSchema,
-      timestamp: dateSchema,
-      modelId: numberSchema,
-      queryType: stringSchema,
-      scope: {
-        bsonType: "object",
-        additionalProperties: true,
-      },
-      responseRaw: stringSchema,
-      responseProcessed: stringSchema,
-      hashRaw: stringSchema,
-      hashProcessed: stringSchema,
-      hashMatch: boolSchema,
-      diff: {
-        bsonType: "object",
-        additionalProperties: true,
-      },
-      metadata: {
-        bsonType: "object",
-        additionalProperties: true,
-      },
       audit: auditJsonSchema,
     },
     additionalProperties: true,
@@ -607,6 +585,97 @@ export const appConfigValidator: JsonSchemaValidator = {
       value: stringSchema,
       modifiedAt: dateSchema,
       modifiedBy: stringSchema,
+    },
+    additionalProperties: true,
+  },
+};
+
+// Aggregate validators for materialized roll-ups
+export const aggregationChaptersValidator: JsonSchemaValidator = {
+  $jsonSchema: {
+    bsonType: "object",
+    required: [
+      "chapterId",
+      "modelId",
+      "bibleId",
+      "runId",
+      "evaluatedAt",
+      "avgFidelity",
+      "perfectRate",
+      "verseCount",
+      "matchCount",
+    ],
+    properties: {
+      chapterId: numberSchema,
+      modelId: numberSchema,
+      bibleId: numberSchema,
+      bookId: numberSchema,
+      runId: stringSchema,
+      evaluatedAt: dateSchema,
+      avgFidelity: numberSchema,
+      perfectRate: numberSchema,
+      verseCount: numberSchema,
+      matchCount: numberSchema,
+    },
+    additionalProperties: true,
+  },
+};
+
+export const aggregationBooksValidator: JsonSchemaValidator = {
+  $jsonSchema: {
+    bsonType: "object",
+    required: [
+      "bookId",
+      "modelId",
+      "bibleId",
+      "runId",
+      "evaluatedAt",
+      "avgFidelity",
+      "perfectRate",
+      "chapterCount",
+      "verseCount",
+    ],
+    properties: {
+      bookId: numberSchema,
+      modelId: numberSchema,
+      bibleId: numberSchema,
+      runId: stringSchema,
+      evaluatedAt: dateSchema,
+      avgFidelity: numberSchema,
+      perfectRate: numberSchema,
+      chapterCount: numberSchema,
+      verseCount: numberSchema,
+      matchCount: numberSchema,
+    },
+    additionalProperties: true,
+  },
+};
+
+export const aggregationBiblesValidator: JsonSchemaValidator = {
+  $jsonSchema: {
+    bsonType: "object",
+    required: [
+      "bibleId",
+      "modelId",
+      "runId",
+      "evaluatedAt",
+      "avgFidelity",
+      "perfectRate",
+      "bookCount",
+      "chapterCount",
+      "verseCount",
+    ],
+    properties: {
+      bibleId: numberSchema,
+      modelId: numberSchema,
+      runId: stringSchema,
+      evaluatedAt: dateSchema,
+      avgFidelity: numberSchema,
+      perfectRate: numberSchema,
+      bookCount: numberSchema,
+      chapterCount: numberSchema,
+      verseCount: numberSchema,
+      matchCount: numberSchema,
     },
     additionalProperties: true,
   },
@@ -673,7 +742,64 @@ dimBookSchema.index({ bibleId: 1, bookCode: 1 }, { unique: true });
 
 type DimBook = InferSchemaType<typeof dimBookSchema>;
 
-const rawChapterSchema = new Schema({
+const dimChapterSchema = new Schema({
+  chapterId: { type: Number, required: true },
+  bibleId: { type: Number, required: true },
+  bookId: { type: Number, required: true },
+  chapterNumber: { type: Number, required: true },
+  reference: { type: String, required: true },
+  chapterName: { type: String, required: true },
+  verseCount: { type: Number, required: true },
+  audit: { type: auditSchema, required: true },
+});
+
+dimChapterSchema.index({ chapterId: 1 }, { unique: true });
+dimChapterSchema.index({ bibleId: 1, bookId: 1 });
+dimChapterSchema.index({ bookId: 1, chapterNumber: 1 });
+
+type DimChapter = InferSchemaType<typeof dimChapterSchema>;
+
+const canonicalLanguageSchema = new Schema({
+  languageId: { type: Number, required: true },
+  isoCode: { type: String, required: true },
+  name: { type: String, required: true },
+  audit: { type: auditSchema, required: true },
+});
+
+canonicalLanguageSchema.index({ languageId: 1 }, { unique: true });
+
+type CanonicalLanguage = InferSchemaType<typeof canonicalLanguageSchema>;
+
+const canonicalBibleSchema = new Schema({
+  bibleId: { type: Number, required: true },
+  apiBibleId: { type: String, required: true },
+  languageId: { type: Number, required: true },
+  name: { type: String, required: true },
+  source: { type: String, required: true },
+  audit: { type: auditSchema, required: true },
+});
+
+canonicalBibleSchema.index({ bibleId: 1 }, { unique: true });
+canonicalBibleSchema.index({ languageId: 1, name: 1 });
+
+type CanonicalBible = InferSchemaType<typeof canonicalBibleSchema>;
+
+const canonicalBookSchema = new Schema({
+  bookId: { type: Number, required: true },
+  bibleId: { type: Number, required: true },
+  bookCode: { type: String, required: true },
+  bookName: { type: String, required: true },
+  bookIndex: { type: Number, required: true },
+  audit: { type: auditSchema, required: true },
+});
+
+canonicalBookSchema.index({ bookId: 1 }, { unique: true });
+canonicalBookSchema.index({ bibleId: 1 });
+canonicalBookSchema.index({ bibleId: 1, bookCode: 1 }, { unique: true });
+
+type CanonicalBook = InferSchemaType<typeof canonicalBookSchema>;
+
+const canonicalRawChapterSchema = new Schema({
   rawChapterId: { type: Number, required: true },
   bibleId: { type: Number, required: true },
   bookId: { type: Number, required: true },
@@ -689,12 +815,12 @@ const rawChapterSchema = new Schema({
   audit: { type: auditSchema, required: true },
 });
 
-rawChapterSchema.index({ rawChapterId: 1 }, { unique: true });
-rawChapterSchema.index({ bibleId: 1, bookId: 1, chapterNumber: 1 });
+canonicalRawChapterSchema.index({ rawChapterId: 1 }, { unique: true });
+canonicalRawChapterSchema.index({ bibleId: 1, bookId: 1, chapterNumber: 1 });
 
-type RawChapter = InferSchemaType<typeof rawChapterSchema>;
+type CanonicalRawChapter = InferSchemaType<typeof canonicalRawChapterSchema>;
 
-const chapterSchema = new Schema({
+const canonicalChapterSchema = new Schema({
   chapterId: { type: Number, required: true },
   bibleId: { type: Number, required: true },
   bookId: { type: Number, required: true },
@@ -710,13 +836,13 @@ const chapterSchema = new Schema({
   audit: { type: auditSchema, required: true },
 });
 
-chapterSchema.index({ chapterId: 1 }, { unique: true });
-chapterSchema.index({ bookId: 1 });
-chapterSchema.index({ bibleId: 1, bookId: 1, chapterNumber: 1 });
+canonicalChapterSchema.index({ chapterId: 1 }, { unique: true });
+canonicalChapterSchema.index({ bookId: 1 });
+canonicalChapterSchema.index({ bibleId: 1, bookId: 1, chapterNumber: 1 });
 
-type Chapter = InferSchemaType<typeof chapterSchema>;
+type CanonicalChapter = InferSchemaType<typeof canonicalChapterSchema>;
 
-const verseSchema = new Schema({
+const canonicalVerseSchema = new Schema({
   verseId: { type: Number, required: true },
   chapterId: { type: Number, required: true },
   bibleId: { type: Number, required: true },
@@ -735,11 +861,11 @@ const verseSchema = new Schema({
   audit: { type: auditSchema, required: true },
 });
 
-verseSchema.index({ verseId: 1 }, { unique: true });
-verseSchema.index({ chapterId: 1 });
-verseSchema.index({ chapterId: 1, verseNumber: 1 });
+canonicalVerseSchema.index({ verseId: 1 }, { unique: true });
+canonicalVerseSchema.index({ chapterId: 1 });
+canonicalVerseSchema.index({ chapterId: 1, verseNumber: 1 });
 
-type Verse = InferSchemaType<typeof verseSchema>;
+type CanonicalVerse = InferSchemaType<typeof canonicalVerseSchema>;
 
 const transformStepSchema = new Schema(
   {
@@ -785,22 +911,6 @@ schemaValidatorRunSchema.index({ runId: 1 }, { unique: true });
 
 type SchemaValidatorRun = InferSchemaType<typeof schemaValidatorRunSchema>;
 
-const etlRunSchema = new Schema({
-  runId: { type: String, required: true },
-  status: { type: String, required: true },
-  startedAt: { type: Date, required: true },
-  completedAt: { type: Date, default: null },
-  metrics: { type: Schema.Types.Mixed, default: {} },
-  stages: { type: Schema.Types.Mixed, default: {} },
-  summary: { type: Schema.Types.Mixed, required: true },
-  logs: { type: [Schema.Types.Mixed], required: true, default: [] },
-  audit: { type: auditSchema, required: true },
-});
-
-etlRunSchema.index({ runId: 1 }, { unique: true });
-
-type EtlRun = InferSchemaType<typeof etlRunSchema>;
-
 const modelCapabilitySchema = new Schema(
   {
     supportsJsonSchema: { type: Boolean, default: false },
@@ -818,6 +928,7 @@ const modelSchema = new Schema({
   version: { type: String, required: true },
   routingMethod: { type: String, required: true },
   isActive: { type: Boolean, required: true, default: true },
+  releasedAt: { type: Date, default: null }, // For time-series analysis
   apiConfigEncrypted: { type: Schema.Types.Mixed, default: {} },
   capabilities: { type: modelCapabilitySchema, default: {} },
   audit: { type: auditSchema, required: true },
@@ -829,16 +940,15 @@ modelSchema.index({ isActive: 1 });
 
 type ModelRegistry = InferSchemaType<typeof modelSchema>;
 
-const modelTransformMapSchema = new Schema({
+const modelProfileMapSchema = new Schema({
   modelId: { type: Number, required: true },
-  canonicalProfileId: { type: Number, required: true },
   modelProfileId: { type: Number, required: true },
   audit: { type: auditSchema, required: true },
 });
 
-modelTransformMapSchema.index({ modelId: 1 }, { unique: true });
+modelProfileMapSchema.index({ modelId: 1 }, { unique: true });
 
-type ModelTransformMap = InferSchemaType<typeof modelTransformMapSchema>;
+type ModelProfileMap = InferSchemaType<typeof modelProfileMapSchema>;
 
 const runLogSchema = new Schema(
   {
@@ -896,11 +1006,39 @@ runItemSchema.index({ runId: 1, status: 1 });
 
 type RunItem = InferSchemaType<typeof runItemSchema>;
 
-const chapterResultSchema = new Schema({
+const llmRawResponseSchema = new Schema({
+  responseId: { type: Number, required: true },
+  runId: { type: String, required: true },
+  modelId: { type: Number, required: true },
+  targetType: { type: String, required: true },
+  targetId: { type: Number, required: true },
+  evaluatedAt: { type: Date, required: true },
+  responseRaw: { type: String, required: true },
+  systemPrompt: { type: String, default: null },
+  userPrompt: { type: String, default: null },
+  parsed: { type: Schema.Types.Mixed, default: null },
+  parseError: { type: String, default: null },
+  extractedText: { type: String, default: null },
+  latencyMs: { type: Number },
+  audit: { type: auditSchema, required: true },
+});
+
+llmRawResponseSchema.index({ responseId: 1 }, { unique: true });
+llmRawResponseSchema.index({ runId: 1, modelId: 1, targetType: 1, targetId: 1 });
+llmRawResponseSchema.index({ modelId: 1, evaluatedAt: -1 });
+
+type LlmRawResponse = InferSchemaType<typeof llmRawResponseSchema>;
+
+const llmVerseResultSchema = new Schema({
   resultId: { type: Number, required: true },
   runId: { type: String, required: true },
   modelId: { type: Number, required: true },
+  verseId: { type: Number, required: true },
+  // Hierarchy fields for efficient roll-up aggregation
   chapterId: { type: Number, required: true },
+  bookId: { type: Number, required: true },
+  bibleId: { type: Number, required: true },
+  evaluatedAt: { type: Date, required: true }, // Time dimension
   responseRaw: { type: String, required: true },
   responseProcessed: { type: String, required: true },
   hashRaw: { type: String, required: true },
@@ -912,67 +1050,74 @@ const chapterResultSchema = new Schema({
   audit: { type: auditSchema, required: true },
 });
 
-chapterResultSchema.index({ resultId: 1 }, { unique: true });
-chapterResultSchema.index({ runId: 1, modelId: 1, chapterId: 1 });
-chapterResultSchema.index({ chapterId: 1 });
+llmVerseResultSchema.index({ resultId: 1 }, { unique: true });
+llmVerseResultSchema.index({ runId: 1, modelId: 1, verseId: 1 });
+llmVerseResultSchema.index({ verseId: 1 });
+// Model-centric indexes for dashboard queries
+llmVerseResultSchema.index({ modelId: 1, bibleId: 1, evaluatedAt: -1 });
+llmVerseResultSchema.index({ modelId: 1, chapterId: 1 });
+llmVerseResultSchema.index({ modelId: 1, bookId: 1 });
 
-type ChapterResult = InferSchemaType<typeof chapterResultSchema>;
+type LlmVerseResult = InferSchemaType<typeof llmVerseResultSchema>;
 
-const verseResultSchema = new Schema({
-  resultId: { type: Number, required: true },
+// Aggregate schemas for materialized roll-ups
+const aggregationChapterSchema = new Schema({
+  chapterId: { type: Number, required: true },
+  modelId: { type: Number, required: true },
+  bibleId: { type: Number, required: true },
+  bookId: { type: Number, required: true },
   runId: { type: String, required: true },
+  evaluatedAt: { type: Date, required: true },
+  avgFidelity: { type: Number, required: true },
+  perfectRate: { type: Number, required: true },
+  verseCount: { type: Number, required: true },
+  matchCount: { type: Number, required: true },
+});
+
+aggregationChapterSchema.index({ chapterId: 1, modelId: 1, runId: 1 }, { unique: true });
+aggregationChapterSchema.index({ modelId: 1, bibleId: 1, evaluatedAt: -1 });
+aggregationChapterSchema.index({ modelId: 1, bookId: 1 });
+aggregationChapterSchema.index({ runId: 1 });
+
+type AggregationChapter = InferSchemaType<typeof aggregationChapterSchema>;
+
+const aggregationBookSchema = new Schema({
+  bookId: { type: Number, required: true },
   modelId: { type: Number, required: true },
-  verseId: { type: Number, required: true },
-  responseRaw: { type: String, required: true },
-  responseProcessed: { type: String, required: true },
-  hashRaw: { type: String, required: true },
-  hashProcessed: { type: String, required: true },
-  hashMatch: { type: Boolean, required: true },
-  fidelityScore: { type: Number, required: true },
-  diff: { type: Schema.Types.Mixed, required: true },
-  latencyMs: { type: Number },
-  audit: { type: auditSchema, required: true },
+  bibleId: { type: Number, required: true },
+  runId: { type: String, required: true },
+  evaluatedAt: { type: Date, required: true },
+  avgFidelity: { type: Number, required: true },
+  perfectRate: { type: Number, required: true },
+  chapterCount: { type: Number, required: true },
+  verseCount: { type: Number, required: true },
+  matchCount: { type: Number, required: true },
 });
 
-verseResultSchema.index({ resultId: 1 }, { unique: true });
-verseResultSchema.index({ runId: 1, modelId: 1, verseId: 1 });
-verseResultSchema.index({ verseId: 1 });
+aggregationBookSchema.index({ bookId: 1, modelId: 1, runId: 1 }, { unique: true });
+aggregationBookSchema.index({ modelId: 1, bibleId: 1, evaluatedAt: -1 });
+aggregationBookSchema.index({ runId: 1 });
 
-type VerseResult = InferSchemaType<typeof verseResultSchema>;
+type AggregationBook = InferSchemaType<typeof aggregationBookSchema>;
 
-const canonicalTestVerseSchema = new Schema({
-  testId: { type: Number, required: true },
-  verseId: { type: Number, required: true },
-  category: { type: String, required: true },
-  notes: { type: String, default: null },
-  addedAt: { type: Date, required: true },
-});
-
-canonicalTestVerseSchema.index({ testId: 1 }, { unique: true });
-canonicalTestVerseSchema.index({ verseId: 1 });
-
-type CanonicalTestVerse = InferSchemaType<typeof canonicalTestVerseSchema>;
-
-const userQuerySchema = new Schema({
-  queryId: { type: Number, required: true },
-  timestamp: { type: Date, required: true },
+const aggregationBibleSchema = new Schema({
+  bibleId: { type: Number, required: true },
   modelId: { type: Number, required: true },
-  queryType: { type: String, required: true },
-  scope: { type: Schema.Types.Mixed, required: true },
-  responseRaw: { type: String, required: true },
-  responseProcessed: { type: String, required: true },
-  hashRaw: { type: String, required: true },
-  hashProcessed: { type: String, required: true },
-  hashMatch: { type: Boolean, required: true },
-  diff: { type: Schema.Types.Mixed, required: true },
-  metadata: { type: Schema.Types.Mixed, default: {} },
-  audit: { type: auditSchema, required: true },
+  runId: { type: String, required: true },
+  evaluatedAt: { type: Date, required: true },
+  avgFidelity: { type: Number, required: true },
+  perfectRate: { type: Number, required: true },
+  bookCount: { type: Number, required: true },
+  chapterCount: { type: Number, required: true },
+  verseCount: { type: Number, required: true },
+  matchCount: { type: Number, required: true },
 });
 
-userQuerySchema.index({ queryId: 1 }, { unique: true });
-userQuerySchema.index({ modelId: 1, timestamp: -1 });
+aggregationBibleSchema.index({ bibleId: 1, modelId: 1, runId: 1 }, { unique: true });
+aggregationBibleSchema.index({ modelId: 1, bibleId: 1, evaluatedAt: -1 });
+aggregationBibleSchema.index({ runId: 1 });
 
-type UserQuery = InferSchemaType<typeof userQuerySchema>;
+type AggregationBible = InferSchemaType<typeof aggregationBibleSchema>;
 
 const appConfigSchema = new Schema({
   key: { type: String, required: true },
@@ -997,17 +1142,45 @@ export const DimBookModel =
   mongoose.models.DimBook ??
   mongoose.model<DimBook>("DimBook", dimBookSchema, "dimBooks");
 
-export const RawChapterModel =
-  mongoose.models.RawChapter ??
-  mongoose.model<RawChapter>("RawChapter", rawChapterSchema, "rawChapters");
+export const DimChapterModel =
+  mongoose.models.DimChapter ??
+  mongoose.model<DimChapter>("DimChapter", dimChapterSchema, "dimChapters");
 
-export const ChapterModel =
-  mongoose.models.Chapter ??
-  mongoose.model<Chapter>("Chapter", chapterSchema, "chapters");
+export const CanonicalLanguageModel =
+  mongoose.models.CanonicalLanguage ??
+  mongoose.model<CanonicalLanguage>(
+    "CanonicalLanguage",
+    canonicalLanguageSchema,
+    "canonicalLanguages"
+  );
 
-export const VerseModel =
-  mongoose.models.Verse ??
-  mongoose.model<Verse>("Verse", verseSchema, "verses");
+export const CanonicalBibleModel =
+  mongoose.models.CanonicalBible ??
+  mongoose.model<CanonicalBible>("CanonicalBible", canonicalBibleSchema, "canonicalBibles");
+
+export const CanonicalBookModel =
+  mongoose.models.CanonicalBook ??
+  mongoose.model<CanonicalBook>("CanonicalBook", canonicalBookSchema, "canonicalBooks");
+
+export const CanonicalRawChapterModel =
+  mongoose.models.CanonicalRawChapter ??
+  mongoose.model<CanonicalRawChapter>(
+    "CanonicalRawChapter",
+    canonicalRawChapterSchema,
+    "canonicalRawChapters"
+  );
+
+export const CanonicalChapterModel =
+  mongoose.models.CanonicalChapter ??
+  mongoose.model<CanonicalChapter>(
+    "CanonicalChapter",
+    canonicalChapterSchema,
+    "canonicalChapters"
+  );
+
+export const CanonicalVerseModel =
+  mongoose.models.CanonicalVerse ??
+  mongoose.model<CanonicalVerse>("CanonicalVerse", canonicalVerseSchema, "canonicalVerses");
 
 export const TransformProfileModel =
   mongoose.models.TransformProfile ??
@@ -1025,20 +1198,16 @@ export const SchemaValidatorRunModel =
     "schemaValidatorRuns"
   );
 
-export const EtlRunModel =
-  mongoose.models.EtlRun ??
-  mongoose.model<EtlRun>("EtlRun", etlRunSchema, "etlRuns");
-
 export const ModelModel =
   mongoose.models.ModelRegistry ??
   mongoose.model<ModelRegistry>("ModelRegistry", modelSchema, "models");
 
-export const ModelTransformMapModel =
-  mongoose.models.ModelTransformMap ??
-  mongoose.model<ModelTransformMap>(
-    "ModelTransformMap",
-    modelTransformMapSchema,
-    "modelTransformMap"
+export const ModelProfileMapModel =
+  mongoose.models.ModelProfileMap ??
+  mongoose.model<ModelProfileMap>(
+    "ModelProfileMap",
+    modelProfileMapSchema,
+    "modelProfileMap"
   );
 
 export const RunModel =
@@ -1048,25 +1217,37 @@ export const RunItemModel =
   mongoose.models.RunItem ??
   mongoose.model<RunItem>("RunItem", runItemSchema, "runItems");
 
-export const ChapterResultModel =
-  mongoose.models.ChapterResult ??
-  mongoose.model<ChapterResult>("ChapterResult", chapterResultSchema, "chapterResults");
+export const LlmRawResponseModel =
+  mongoose.models.LlmRawResponse ??
+  mongoose.model<LlmRawResponse>("LlmRawResponse", llmRawResponseSchema, "llmRawResponses");
 
-export const VerseResultModel =
-  mongoose.models.VerseResult ??
-  mongoose.model<VerseResult>("VerseResult", verseResultSchema, "verseResults");
+export const LlmVerseResultModel =
+  mongoose.models.LlmVerseResult ??
+  mongoose.model<LlmVerseResult>("LlmVerseResult", llmVerseResultSchema, "llmVerseResults");
 
-export const CanonicalTestVerseModel =
-  mongoose.models.CanonicalTestVerse ??
-  mongoose.model<CanonicalTestVerse>(
-    "CanonicalTestVerse",
-    canonicalTestVerseSchema,
-    "canonicalTestVerses"
+export const AggregationChapterModel =
+  mongoose.models.AggregationChapter ??
+  mongoose.model<AggregationChapter>(
+    "AggregationChapter",
+    aggregationChapterSchema,
+    "aggregationChapters"
   );
 
-export const UserQueryModel =
-  mongoose.models.UserQuery ??
-  mongoose.model<UserQuery>("UserQuery", userQuerySchema, "userQueries");
+export const AggregationBookModel =
+  mongoose.models.AggregationBook ??
+  mongoose.model<AggregationBook>(
+    "AggregationBook",
+    aggregationBookSchema,
+    "aggregationBooks"
+  );
+
+export const AggregationBibleModel =
+  mongoose.models.AggregationBible ??
+  mongoose.model<AggregationBible>(
+    "AggregationBible",
+    aggregationBibleSchema,
+    "aggregationBibles"
+  );
 
 export const AppConfigModel =
   mongoose.models.AppConfig ??
@@ -1076,21 +1257,25 @@ const collectionValidators = [
   { name: "dimLanguages", validator: dimLanguagesValidator },
   { name: "dimBibles", validator: dimBiblesValidator },
   { name: "dimBooks", validator: dimBooksValidator },
-  { name: "rawChapters", validator: rawChaptersValidator },
-  { name: "chapters", validator: chaptersValidator },
-  { name: "verses", validator: versesValidator },
+  { name: "dimChapters", validator: dimChaptersValidator },
+  { name: "canonicalLanguages", validator: canonicalLanguagesValidator },
+  { name: "canonicalBibles", validator: canonicalBiblesValidator },
+  { name: "canonicalBooks", validator: canonicalBooksValidator },
+  { name: "canonicalRawChapters", validator: canonicalRawChaptersValidator },
+  { name: "canonicalChapters", validator: canonicalChaptersValidator },
+  { name: "canonicalVerses", validator: canonicalVersesValidator },
   { name: "models", validator: modelsValidator },
-  { name: "modelTransformMap", validator: modelTransformMapValidator },
+  { name: "modelProfileMap", validator: modelProfileMapValidator },
   { name: "transformProfiles", validator: transformProfilesValidator },
   { name: "runs", validator: runsValidator },
   { name: "runItems", validator: runItemsValidator },
-  { name: "chapterResults", validator: chapterResultsValidator },
-  { name: "verseResults", validator: verseResultsValidator },
-  { name: "canonicalTestVerses", validator: canonicalTestVersesValidator },
-  { name: "userQueries", validator: userQueriesValidator },
+  { name: "llmRawResponses", validator: llmRawResponsesValidator },
+  { name: "llmVerseResults", validator: llmVerseResultsValidator },
+  { name: "aggregationChapters", validator: aggregationChaptersValidator },
+  { name: "aggregationBooks", validator: aggregationBooksValidator },
+  { name: "aggregationBibles", validator: aggregationBiblesValidator },
   { name: "appConfig", validator: appConfigValidator },
   { name: "schemaValidatorRuns", validator: schemaValidatorRunsValidator },
-  { name: "etlRuns", validator: etlRunsValidator },
 ];
 
 export type SchemaValidatorResult = {

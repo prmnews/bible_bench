@@ -47,6 +47,8 @@ type ModelResponseResult = {
   parsed: ParsedResponse | null;
   parseError: string | null;
   extractedText: string | null;
+  systemPrompt?: string;
+  userPrompt?: string;
 };
 
 // ============================================================================
@@ -135,6 +137,20 @@ function extractText(parsed: ParsedResponse | null, targetType: "chapter" | "ver
     .join(" ");
 }
 
+function normalizeEmptyResponse(result: ModelResponseResult): ModelResponseResult {
+  if (result.responseRaw.trim().length === 0) {
+    return {
+      ...result,
+      responseRaw: "[empty response]",
+      parsed: null,
+      parseError: "Empty response from provider.",
+      extractedText: null,
+    };
+  }
+
+  return result;
+}
+
 // ============================================================================
 // PROMPTS
 // ============================================================================
@@ -173,6 +189,16 @@ function buildPrompt(params: ModelResponseParams): string {
     return buildChapterPrompt(params.reference);
   }
   return buildVersePrompt(params.reference);
+}
+
+function getPromptBundle(params: ModelResponseParams): {
+  systemPrompt: string;
+  userPrompt: string;
+} {
+  return {
+    systemPrompt: SYSTEM_PROMPT,
+    userPrompt: buildPrompt(params),
+  };
 }
 
 // ============================================================================
@@ -420,19 +446,32 @@ export async function generateModelResponse(
   params: ModelResponseParams
 ): Promise<ModelResponseResult> {
   const provider = params.model.provider?.toLowerCase() ?? "mock";
+  const { systemPrompt, userPrompt } = getPromptBundle(params);
+  let result: ModelResponseResult;
 
   switch (provider) {
     case "openai":
-      return generateOpenAIResponse(params);
+      result = await generateOpenAIResponse(params);
+      break;
     case "anthropic":
-      return generateAnthropicResponse(params);
+      result = await generateAnthropicResponse(params);
+      break;
     case "google":
     case "gemini":
-      return generateGeminiResponse(params);
+      result = await generateGeminiResponse(params);
+      break;
     case "mock":
     default:
-      return generateMockResponse(params);
+      result = await generateMockResponse(params);
+      break;
   }
+
+  const normalized = normalizeEmptyResponse(result);
+  return {
+    ...normalized,
+    systemPrompt,
+    userPrompt,
+  };
 }
 
 export type {

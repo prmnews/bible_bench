@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 
 import { isAdminAvailable } from "@/lib/admin";
 import { ingestKjvChapters, transformChapters, transformVerses } from "@/lib/etl";
-import { EtlRunModel, TransformProfileModel } from "@/lib/models";
+import { RunItemModel, RunModel, TransformProfileModel } from "@/lib/models";
 import { connectToDatabase } from "@/lib/mongodb";
 
 type EtlStage = "ingest" | "chapters" | "verses";
@@ -20,6 +20,7 @@ type EtlRunPayload = {
   limit?: number;
   skip?: number;
   batchId?: string | null;
+  forceAllVerses?: boolean;
 };
 
 type ValidationResult =
@@ -111,6 +112,11 @@ function validatePayload(payload: unknown): ValidationResult {
   const batchId =
     batchIdValue === undefined || batchIdValue === null ? null : String(batchIdValue);
 
+  const forceAllVerses = payload["forceAllVerses"];
+  if (forceAllVerses !== undefined && typeof forceAllVerses !== "boolean") {
+    return { ok: false, error: "forceAllVerses must be a boolean." };
+  }
+
   if (
     stages.some((stage) => stage === "chapters" || stage === "verses") &&
     transformProfileId === undefined &&
@@ -135,6 +141,7 @@ function validatePayload(payload: unknown): ValidationResult {
       limit: limit as number | undefined,
       skip: skip as number | undefined,
       batchId,
+      forceAllVerses: forceAllVerses as boolean | undefined,
     },
   };
 }
@@ -161,6 +168,24 @@ async function resolveTransformProfileId(
   return profile?.profileId ?? null;
 }
 
+async function ensureRunItems(runId: string, rawChapterIds: number[] | undefined) {
+  if (!rawChapterIds || rawChapterIds.length === 0) {
+    return;
+  }
+
+  const now = new Date();
+  const items = rawChapterIds.map((targetId) => ({
+    runId,
+    targetType: "rawChapter",
+    targetId,
+    status: "pending",
+    attempts: 0,
+    updatedAt: now,
+  }));
+
+  await RunItemModel.insertMany(items);
+}
+
 export const runtime = "nodejs";
 
 export async function POST(request: Request) {
@@ -183,39 +208,76 @@ export async function POST(request: Request) {
   await connectToDatabase();
 
   const runId = validation.data.runId ?? randomUUID();
-  const existing = await EtlRunModel.findOne({ runId }).lean();
+  const existing = await RunModel.findOne({ runId, runType: "ETL" }).lean();
   if (existing) {
-    return NextResponse.json({ ok: true, data: existing.summary, idempotent: true });
+    const metrics = existing.metrics as Record<string, unknown> | undefined;
+    const summary = (metrics?.summary as Record<string, unknown> | undefined) ?? {
+      runId,
+      ok: existing.status === "completed",
+      stages: metrics?.stages ?? {},
+    };
+    return NextResponse.json({ ok: true, data: summary, idempotent: true });
   }
 
   const logs: Array<{ stage: string; level: string; message: string; timestamp: Date }> = [];
   const stageResults: Record<string, unknown> = {};
   const stageDurationsMs: Record<string, number> = {};
   const startedAt = new Date();
+  let overallOk = true;
+  let lastError: string | null = null;
+  let lastErrorAt: Date | null = null;
 
   const addLog = (stage: string, level: string, message: string) => {
     logs.push({ stage, level, message, timestamp: new Date() });
   };
 
-  await EtlRunModel.create({
+  const recordFailure = (message: string) => {
+    overallOk = false;
+    lastError = message;
+    lastErrorAt = new Date();
+  };
+  let rawChapterIds = validation.data.rawChapterIds;
+  const bibleId = validation.data.bibleId;
+  const ingestBibleId = validation.data.bibleId ?? 1001;
+  const source = validation.data.source ?? "ABS";
+  const stages = validation.data.stages;
+  const scope = bibleId !== undefined ? "bible" : "etl";
+  const scopeIds = bibleId !== undefined ? { bibleId } : {};
+  const scopeParams: Record<string, unknown> = {
+    stages,
+    source,
+    filepath: validation.data.filepath,
+    transformProfileId: validation.data.transformProfileId,
+    rawChapterCount: rawChapterIds?.length ?? 0,
+    limit: validation.data.limit,
+    skip: validation.data.skip,
+    batchId: validation.data.batchId,
+    forceAllVerses: validation.data.forceAllVerses,
+  };
+
+  await RunModel.create({
     runId,
+    runType: "ETL",
+    modelId: 0,
+    scope,
+    scopeIds,
+    scopeParams,
     status: "running",
     startedAt,
-    metrics: {},
-    summary: { runId, ok: false, stages: {} },
+    metrics: { total: 1, success: 0, failed: 0 },
     logs: [],
+    errorSummary: null,
     audit: {
       createdAt: startedAt,
       createdBy: "admin",
     },
   });
 
-  let overallOk = true;
-  let rawChapterIds = validation.data.rawChapterIds;
-  const bibleId = validation.data.bibleId;
-  const ingestBibleId = validation.data.bibleId ?? 1001;
-  const source = validation.data.source ?? "ABS";
-  const stages = validation.data.stages;
+  let runItemsCreated = false;
+  if (rawChapterIds && rawChapterIds.length > 0) {
+    await ensureRunItems(runId, rawChapterIds);
+    runItemsCreated = true;
+  }
 
   for (const stage of stages) {
     const stageStart = Date.now();
@@ -237,11 +299,15 @@ export async function POST(request: Request) {
       });
 
       if (!ingestResult.ok) {
-        overallOk = false;
+        recordFailure(ingestResult.error);
         stageResults.ingest = { ok: false, error: ingestResult.error };
         addLog(stage, "error", ingestResult.error);
       } else {
         rawChapterIds = ingestResult.data.rawChapterIds;
+        if (!runItemsCreated && rawChapterIds?.length) {
+          await ensureRunItems(runId, rawChapterIds);
+          runItemsCreated = true;
+        }
         stageResults.ingest = {
           ok: true,
           ingested: ingestResult.data.ingested,
@@ -259,8 +325,8 @@ export async function POST(request: Request) {
       );
 
       if (profileId === null) {
-        overallOk = false;
         const message = "Transform profile not found for chapters stage.";
+        recordFailure(message);
         stageResults.chapters = { ok: false, error: message };
         addLog(stage, "error", message);
         stageDurationsMs[stage] = Date.now() - stageStart;
@@ -276,7 +342,7 @@ export async function POST(request: Request) {
       });
 
       if (!chaptersResult.ok) {
-        overallOk = false;
+        recordFailure(chaptersResult.error);
         stageResults.chapters = { ok: false, error: chaptersResult.error };
         addLog(stage, "error", chaptersResult.error);
       } else {
@@ -296,8 +362,8 @@ export async function POST(request: Request) {
       );
 
       if (profileId === null) {
-        overallOk = false;
         const message = "Transform profile not found for verses stage.";
+        recordFailure(message);
         stageResults.verses = { ok: false, error: message };
         addLog(stage, "error", message);
         stageDurationsMs[stage] = Date.now() - stageStart;
@@ -310,10 +376,11 @@ export async function POST(request: Request) {
         limit: validation.data.limit,
         skip: validation.data.skip,
         batchId: validation.data.batchId,
+        forceAllVerses: validation.data.forceAllVerses,
       });
 
       if (!versesResult.ok) {
-        overallOk = false;
+        recordFailure(versesResult.error);
         stageResults.verses = { ok: false, error: versesResult.error };
         addLog(stage, "error", versesResult.error);
       } else {
@@ -334,6 +401,7 @@ export async function POST(request: Request) {
     runId,
     ok: overallOk,
     stages: stageResults,
+    durationsMs: stageDurationsMs,
   };
   const getStageMetric = (stage: string, key: string) => {
     const result = stageResults[stage];
@@ -344,25 +412,51 @@ export async function POST(request: Request) {
     return isNumber(value) ? value : 0;
   };
   const metrics = {
+    total: 1,
+    success: overallOk ? 1 : 0,
+    failed: overallOk ? 0 : 1,
     durationMs: completedAt.getTime() - startedAt.getTime(),
     ingestCount: getStageMetric("ingest", "ingested"),
     chapterCount: getStageMetric("chapters", "processed"),
     verseCount: getStageMetric("verses", "processed"),
     stageDurationsMs,
+    stages: stageResults,
+    summary,
   };
 
-  await EtlRunModel.updateOne(
-    { runId },
+  const status = overallOk ? "completed" : "failed";
+  const errorSummary = overallOk
+    ? null
+    : {
+        failedCount: 1,
+        lastError: lastError ?? "ETL run failed.",
+        lastErrorAt: lastErrorAt ?? completedAt,
+      };
+
+  await RunModel.updateOne(
+    { runId, runType: "ETL" },
     {
       $set: {
-        status: overallOk ? "completed" : "failed",
+        status,
         completedAt,
-        summary,
         logs,
         metrics,
+        errorSummary,
       },
     }
   );
+
+  if (runItemsCreated) {
+    await RunItemModel.updateMany(
+      { runId, targetType: "rawChapter" },
+      {
+        $set: {
+          status: overallOk ? "success" : "failed",
+          updatedAt: completedAt,
+        },
+      }
+    );
+  }
 
   return NextResponse.json({ ok: overallOk, data: summary }, { status: overallOk ? 200 : 500 });
 }

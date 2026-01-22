@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { isAdminAvailable } from "@/lib/admin";
-import { ChapterResultModel } from "@/lib/models";
+import { LlmVerseResultModel } from "@/lib/models";
 import { connectToDatabase } from "@/lib/mongodb";
 
 export const runtime = "nodejs";
@@ -37,7 +37,7 @@ export async function GET(
     query.runId = runId;
   }
 
-  const results = await ChapterResultModel.find(query, { _id: 0 })
+  const results = await LlmVerseResultModel.find(query, { _id: 0 })
     .sort({ "audit.createdAt": -1 })
     .limit(runId ? 1 : 10)
     .lean();
