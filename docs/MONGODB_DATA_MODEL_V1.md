@@ -26,10 +26,8 @@ This document shows collection shapes and sample documents for MongoDB Atlas. Th
 - aggregationChapters (materialized roll-up)
 - aggregationBooks (materialized roll-up)
 - aggregationBibles (materialized roll-up)
-- canonicalTestVerses
 - appConfig
 - schemaValidatorRuns
-- etlRuns
 
 ## dimLanguages
 ```json
@@ -365,18 +363,6 @@ Materialized bible-level metrics rolled up from aggregationBooks.
   "chapterCount": 1189,
   "verseCount": 31102,
   "matchCount": 24259
-}
-```
-
-## canonicalTestVerses
-```json
-{
-  "_id": "ObjectId",
-  "testId": 501,
-  "verseId": 43003016,
-  "category": "high_profile",
-  "notes": "John 3:16",
-  "addedAt": "2026-01-17T00:00:00Z"
 }
 ```
 

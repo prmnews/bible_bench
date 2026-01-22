@@ -9,6 +9,7 @@ type TransformVersesPayload = {
   limit?: number;
   skip?: number;
   batchId?: string | null;
+  forceAllVerses?: boolean;
 };
 
 type ValidationResult =
@@ -56,6 +57,11 @@ function validatePayload(payload: unknown): ValidationResult {
       ? null
       : String(batchIdValue);
 
+  const forceAllVerses = payload["forceAllVerses"];
+  if (forceAllVerses !== undefined && typeof forceAllVerses !== "boolean") {
+    return { ok: false, error: "forceAllVerses must be a boolean." };
+  }
+
   return {
     ok: true,
     data: {
@@ -64,6 +70,7 @@ function validatePayload(payload: unknown): ValidationResult {
       limit: limit as number | undefined,
       skip: skip as number | undefined,
       batchId,
+      forceAllVerses: forceAllVerses as boolean | undefined,
     },
   };
 }
@@ -93,6 +100,7 @@ export async function POST(request: Request) {
     limit: validation.data.limit,
     skip: validation.data.skip,
     batchId: validation.data.batchId,
+    forceAllVerses: validation.data.forceAllVerses,
   });
 
   if (!result.ok) {

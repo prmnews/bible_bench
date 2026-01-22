@@ -361,46 +361,6 @@ export const schemaValidatorRunsValidator: JsonSchemaValidator = {
   },
 };
 
-export const etlRunsValidator: JsonSchemaValidator = {
-  $jsonSchema: {
-    bsonType: "object",
-    required: ["runId", "status", "startedAt", "summary", "logs", "audit"],
-    properties: {
-      runId: stringSchema,
-      status: stringSchema,
-      startedAt: dateSchema,
-      completedAt: nullableDateSchema,
-      metrics: {
-        bsonType: "object",
-        additionalProperties: true,
-      },
-      stages: {
-        bsonType: "object",
-        additionalProperties: true,
-      },
-      summary: {
-        bsonType: "object",
-        additionalProperties: true,
-      },
-      logs: {
-        bsonType: "array",
-        items: {
-          bsonType: "object",
-          properties: {
-            stage: stringSchema,
-            level: stringSchema,
-            message: stringSchema,
-            timestamp: dateSchema,
-          },
-          additionalProperties: true,
-        },
-      },
-      audit: auditJsonSchema,
-    },
-    additionalProperties: true,
-  },
-};
-
 export const modelsValidator: JsonSchemaValidator = {
   $jsonSchema: {
     bsonType: "object",
@@ -554,6 +514,8 @@ export const llmRawResponsesValidator: JsonSchemaValidator = {
       targetId: numberSchema,
       evaluatedAt: dateSchema,
       responseRaw: stringSchema,
+      systemPrompt: nullableStringSchema,
+      userPrompt: nullableStringSchema,
       parsed: {
         bsonType: ["object", "null"],
         additionalProperties: true,
@@ -609,21 +571,6 @@ export const llmVerseResultsValidator: JsonSchemaValidator = {
       },
       latencyMs: numberSchema,
       audit: auditJsonSchema,
-    },
-    additionalProperties: true,
-  },
-};
-
-export const canonicalTestVersesValidator: JsonSchemaValidator = {
-  $jsonSchema: {
-    bsonType: "object",
-    required: ["testId", "verseId", "category", "addedAt"],
-    properties: {
-      testId: numberSchema,
-      verseId: numberSchema,
-      category: stringSchema,
-      notes: nullableStringSchema,
-      addedAt: dateSchema,
     },
     additionalProperties: true,
   },
@@ -964,22 +911,6 @@ schemaValidatorRunSchema.index({ runId: 1 }, { unique: true });
 
 type SchemaValidatorRun = InferSchemaType<typeof schemaValidatorRunSchema>;
 
-const etlRunSchema = new Schema({
-  runId: { type: String, required: true },
-  status: { type: String, required: true },
-  startedAt: { type: Date, required: true },
-  completedAt: { type: Date, default: null },
-  metrics: { type: Schema.Types.Mixed, default: {} },
-  stages: { type: Schema.Types.Mixed, default: {} },
-  summary: { type: Schema.Types.Mixed, required: true },
-  logs: { type: [Schema.Types.Mixed], required: true, default: [] },
-  audit: { type: auditSchema, required: true },
-});
-
-etlRunSchema.index({ runId: 1 }, { unique: true });
-
-type EtlRun = InferSchemaType<typeof etlRunSchema>;
-
 const modelCapabilitySchema = new Schema(
   {
     supportsJsonSchema: { type: Boolean, default: false },
@@ -1083,6 +1014,8 @@ const llmRawResponseSchema = new Schema({
   targetId: { type: Number, required: true },
   evaluatedAt: { type: Date, required: true },
   responseRaw: { type: String, required: true },
+  systemPrompt: { type: String, default: null },
+  userPrompt: { type: String, default: null },
   parsed: { type: Schema.Types.Mixed, default: null },
   parseError: { type: String, default: null },
   extractedText: { type: String, default: null },
@@ -1186,19 +1119,6 @@ aggregationBibleSchema.index({ runId: 1 });
 
 type AggregationBible = InferSchemaType<typeof aggregationBibleSchema>;
 
-const canonicalTestVerseSchema = new Schema({
-  testId: { type: Number, required: true },
-  verseId: { type: Number, required: true },
-  category: { type: String, required: true },
-  notes: { type: String, default: null },
-  addedAt: { type: Date, required: true },
-});
-
-canonicalTestVerseSchema.index({ testId: 1 }, { unique: true });
-canonicalTestVerseSchema.index({ verseId: 1 });
-
-type CanonicalTestVerse = InferSchemaType<typeof canonicalTestVerseSchema>;
-
 const appConfigSchema = new Schema({
   key: { type: String, required: true },
   value: { type: String, required: true },
@@ -1278,10 +1198,6 @@ export const SchemaValidatorRunModel =
     "schemaValidatorRuns"
   );
 
-export const EtlRunModel =
-  mongoose.models.EtlRun ??
-  mongoose.model<EtlRun>("EtlRun", etlRunSchema, "etlRuns");
-
 export const ModelModel =
   mongoose.models.ModelRegistry ??
   mongoose.model<ModelRegistry>("ModelRegistry", modelSchema, "models");
@@ -1333,14 +1249,6 @@ export const AggregationBibleModel =
     "aggregationBibles"
   );
 
-export const CanonicalTestVerseModel =
-  mongoose.models.CanonicalTestVerse ??
-  mongoose.model<CanonicalTestVerse>(
-    "CanonicalTestVerse",
-    canonicalTestVerseSchema,
-    "canonicalTestVerses"
-  );
-
 export const AppConfigModel =
   mongoose.models.AppConfig ??
   mongoose.model<AppConfig>("AppConfig", appConfigSchema, "appConfig");
@@ -1366,10 +1274,8 @@ const collectionValidators = [
   { name: "aggregationChapters", validator: aggregationChaptersValidator },
   { name: "aggregationBooks", validator: aggregationBooksValidator },
   { name: "aggregationBibles", validator: aggregationBiblesValidator },
-  { name: "canonicalTestVerses", validator: canonicalTestVersesValidator },
   { name: "appConfig", validator: appConfigValidator },
   { name: "schemaValidatorRuns", validator: schemaValidatorRunsValidator },
-  { name: "etlRuns", validator: etlRunsValidator },
 ];
 
 export type SchemaValidatorResult = {

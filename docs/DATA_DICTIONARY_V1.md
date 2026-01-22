@@ -219,13 +219,6 @@ Updated: 2026-01-17
 - verseCount (int)
 - matchCount (int)
 
-## canonicalTestVerses
-- testId (int, PK)
-- verseId (int, FK)
-- category (string)
-- notes (string)
-- addedAt (date)
-
 ## appConfig
 - key (string, PK)
 - value (string)

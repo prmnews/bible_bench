@@ -2,9 +2,12 @@ import { promises as fs } from "fs";
 import path from "path";
 
 import { NextResponse } from "next/server";
-import OpenAI from "openai";
-
 import { isAdminAvailable } from "@/lib/admin";
+import {
+  buildChapterTitleMap,
+  formatChapterTitleKey,
+  loadChapterTitleEntries,
+} from "@/lib/chapter-titles";
 import { parseKjvFilename } from "@/lib/kjv-files";
 import {
   CanonicalBibleModel,
@@ -299,108 +302,29 @@ async function seedTransformProfiles(): Promise<{
   return { created, existing };
 }
 
-/**
- * Generate chapter names using LLM.
- * Batches by book for efficiency and progress tracking.
- */
-async function generateChapterNamesForBook(
-  bookName: string,
-  chapters: Array<{ chapterNumber: number; reference: string }>
-): Promise<Map<number, string>> {
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) {
-    // Return default names if no API key available
-    const result = new Map<number, string>();
-    for (const ch of chapters) {
-      result.set(ch.chapterNumber, `${bookName} ${ch.chapterNumber}`);
-    }
-    return result;
-  }
-
-  const client = new OpenAI({ apiKey });
-  const references = chapters.map((ch) => ch.reference).join(", ");
-
-  const prompt = `For each chapter below from the King James Bible, provide a short descriptive title (2-5 words) that captures the main theme or event.
-
-Chapters: ${references}
-
-Examples of good titles:
-- Genesis 1 = "The Creation"
-- Genesis 3 = "The Fall of Man"
-- Exodus 20 = "The Ten Commandments"
-- Psalm 23 = "The Lord is My Shepherd"
-- John 3 = "Nicodemus and New Birth"
-
-Return as JSON array of objects with "chapterNumber" and "title" fields:
-[
-  { "chapterNumber": 1, "title": "..." },
-  { "chapterNumber": 2, "title": "..." }
-]`;
-
-  try {
-    const response = await client.chat.completions.create({
-      model: "gpt-4o-mini",
-      max_completion_tokens: 4096,
-      response_format: { type: "json_object" },
-      messages: [
-        {
-          role: "system",
-          content:
-            "You are a biblical scholar. Provide concise, descriptive chapter titles. Always respond with valid JSON.",
-        },
-        { role: "user", content: prompt },
-      ],
-    });
-
-    const content = response.choices[0]?.message?.content ?? "{}";
-    const parsed = JSON.parse(content) as
-      | { chapters?: Array<{ chapterNumber: number; title: string }> }
-      | Array<{ chapterNumber: number; title: string }>;
-
-    const chaptersArray = Array.isArray(parsed)
-      ? parsed
-      : (parsed.chapters ?? []);
-
-    const result = new Map<number, string>();
-    for (const item of chaptersArray) {
-      if (
-        typeof item.chapterNumber === "number" &&
-        typeof item.title === "string"
-      ) {
-        result.set(item.chapterNumber, item.title.trim());
-      }
-    }
-
-    // Fill in any missing chapters with default names
-    for (const ch of chapters) {
-      if (!result.has(ch.chapterNumber)) {
-        result.set(ch.chapterNumber, `${bookName} ${ch.chapterNumber}`);
-      }
-    }
-
-    return result;
-  } catch (error) {
-    console.error(`[seedChapters] LLM error for ${bookName}:`, error);
-    // Return default names on error
-    const result = new Map<number, string>();
-    for (const ch of chapters) {
-      result.set(ch.chapterNumber, `${bookName} ${ch.chapterNumber}`);
-    }
-    return result;
-  }
-}
-
 async function seedChapters(): Promise<{
   created: number;
   existing: number;
   skipped: number;
 }> {
+  const { entries, warnings: parseWarnings } = await loadChapterTitleEntries({
+    defaultBibleId: 1001,
+  });
+  const { map: titleMap, warnings: mapWarnings } = buildChapterTitleMap(entries);
+
+  for (const warning of parseWarnings) {
+    console.warn(warning);
+  }
+  for (const warning of mapWarnings) {
+    console.warn(warning);
+  }
+
   // Get all chapters from canonical raw ingest (order-safe)
   const chapters = await CanonicalRawChapterModel.find(
-    { bibleId: 1001 },
-    { rawChapterId: 1, bookId: 1, chapterNumber: 1, reference: 1 }
+    {},
+    { rawChapterId: 1, bibleId: 1, bookId: 1, chapterNumber: 1, reference: 1 }
   )
-    .sort({ bookId: 1, chapterNumber: 1 })
+    .sort({ bibleId: 1, bookId: 1, chapterNumber: 1 })
     .lean();
 
   if (chapters.length === 0) {
@@ -410,42 +334,24 @@ async function seedChapters(): Promise<{
     return { created: 0, existing: 0, skipped: 0 };
   }
 
-  // Group chapters by book
-  const chaptersByBook = new Map<
-    number,
-    Array<{ chapterId: number; chapterNumber: number; reference: string }>
-  >();
-  for (const ch of chapters) {
-    const bookChapters = chaptersByBook.get(ch.bookId) ?? [];
-    bookChapters.push({
-      chapterId: ch.rawChapterId,
-      chapterNumber: ch.chapterNumber,
-      reference: ch.reference,
-    });
-    chaptersByBook.set(ch.bookId, bookChapters);
-  }
-
-  // Get book names
+  const bibleIds = Array.from(new Set(chapters.map((ch) => ch.bibleId)));
   const books = await CanonicalBookModel.find(
-    { bibleId: 1001 },
-    { bookId: 1, bookName: 1 }
+    { bibleId: { $in: bibleIds } },
+    { bibleId: 1, bookId: 1, bookCode: 1, bookName: 1 }
   ).lean();
-  const bookNameMap = new Map<number, string>();
-  for (const book of books) {
-    bookNameMap.set(book.bookId, book.bookName);
-  }
 
-  // Get verse counts for each chapter
-  const verseCounts = new Map<number, number>();
-  for (const ch of chapters) {
-    // Count verses in each chapter from the reference or query verses
-    // For now, we'll query at runtime or set default
-    verseCounts.set(ch.chapterId, 0);
+  const bookMetaMap = new Map<string, { bookCode: string; bookName: string }>();
+  for (const book of books) {
+    bookMetaMap.set(`${book.bibleId}:${book.bookId}`, {
+      bookCode: book.bookCode,
+      bookName: book.bookName,
+    });
   }
 
   // Query verse counts from canonical verses collection
+  const verseCounts = new Map<number, number>();
   const verseCountAgg = await CanonicalVerseModel.aggregate([
-    { $match: { bibleId: 1001 } },
+    { $match: { bibleId: { $in: bibleIds } } },
     {
       $group: {
         _id: "$chapterId",
@@ -460,63 +366,70 @@ async function seedChapters(): Promise<{
     );
   }
 
+  const chapterIds = chapters.map((ch) => ch.rawChapterId);
+  const existingChapters = await DimChapterModel.find(
+    { chapterId: { $in: chapterIds } },
+    { chapterId: 1 }
+  ).lean();
+  const existingSet = new Set(existingChapters.map((ch) => ch.chapterId));
+
   const now = new Date();
   let created = 0;
-  let existing = 0;
+  const existing = existingChapters.length;
   const skipped = 0;
+  let missingTitles = 0;
 
-  // Process each book
-  for (const [bookId, bookChapters] of chaptersByBook) {
-    const bookName = bookNameMap.get(bookId) ?? `Book ${bookId}`;
-    console.log(
-      `[seedChapters] Processing ${bookName} (${bookChapters.length} chapters)...`
-    );
-
-    // Check which chapters already exist
-    const chapterIds = bookChapters.map((ch) => ch.chapterId);
-    const existingChapters = await DimChapterModel.find(
-      { chapterId: { $in: chapterIds } },
-      { chapterId: 1 }
-    ).lean();
-    const existingSet = new Set(existingChapters.map((ch) => ch.chapterId));
-
-    const missingChapters = bookChapters.filter(
-      (ch) => !existingSet.has(ch.chapterId)
-    );
-    existing += existingChapters.length;
-
-    if (missingChapters.length === 0) {
+  for (const ch of chapters) {
+    if (existingSet.has(ch.rawChapterId)) {
       continue;
     }
 
-    // Generate chapter names via LLM
-    const chapterNames = await generateChapterNamesForBook(
-      bookName,
-      missingChapters
-    );
+    const bookKey = `${ch.bibleId}:${ch.bookId}`;
+    const bookMeta = bookMetaMap.get(bookKey);
+    const bookName = bookMeta?.bookName ?? `Book ${ch.bookId}`;
+    const bookCode = bookMeta?.bookCode ?? "";
 
-    // Insert missing chapters
-    for (const ch of missingChapters) {
-      const verseCount = verseCounts.get(ch.chapterId) ?? 0;
-
-      const chapterName =
-        chapterNames.get(ch.chapterNumber) ?? `${bookName} ${ch.chapterNumber}`;
-
-      await DimChapterModel.create({
-        chapterId: ch.chapterId,
-        bibleId: 1001,
-        bookId,
-        chapterNumber: ch.chapterNumber,
-        reference: ch.reference,
-        chapterName,
-        verseCount,
-        audit: {
-          createdAt: now,
-          createdBy: "seed",
-        },
-      });
-      created++;
+    let chapterName = `${bookName} ${ch.chapterNumber}`;
+    if (bookCode) {
+      const titleKey = formatChapterTitleKey(
+        ch.bibleId,
+        bookCode,
+        ch.chapterNumber
+      );
+      const title = titleMap.get(titleKey);
+      if (!title) {
+        missingTitles++;
+        console.warn(`[seedChapters] Missing title for ${titleKey}.`);
+      } else {
+        chapterName = title;
+      }
+    } else {
+      missingTitles++;
+      console.warn(
+        `[seedChapters] Missing book code for bibleId ${ch.bibleId}, bookId ${ch.bookId}.`
+      );
     }
+
+    const verseCount = verseCounts.get(ch.rawChapterId) ?? 0;
+
+    await DimChapterModel.create({
+      chapterId: ch.rawChapterId,
+      bibleId: ch.bibleId,
+      bookId: ch.bookId,
+      chapterNumber: ch.chapterNumber,
+      reference: ch.reference,
+      chapterName,
+      verseCount,
+      audit: {
+        createdAt: now,
+        createdBy: "seed",
+      },
+    });
+    created++;
+  }
+
+  if (missingTitles > 0) {
+    console.warn(`[seedChapters] Missing chapter titles: ${missingTitles}.`);
   }
 
   return { created, existing, skipped };

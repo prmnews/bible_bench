@@ -139,11 +139,6 @@
           "ok": true
         },
         {
-          "name": "canonicalTestVerses",
-          "action": "update",
-          "ok": true
-        },
-        {
           "name": "appConfig",
           "action": "create",
           "ok": false,
@@ -155,11 +150,6 @@
           "ok": false,
           "error": "namespace bible-bench.schemaValidatorRuns already exists, but with different options: { uuid: UUID(\"40a9332f-e274-4e6c-8d39-982c6f1f863e\") }"
         },
-        {
-          "name": "etlRuns",
-          "action": "update",
-          "ok": true
-        }
       ]
     },
     "audit": {
@@ -294,11 +284,6 @@
           "ok": true
         },
         {
-          "name": "canonicalTestVerses",
-          "action": "update",
-          "ok": true
-        },
-        {
           "name": "appConfig",
           "action": "create",
           "ok": false,
@@ -310,11 +295,6 @@
           "ok": false,
           "error": "namespace bible-bench.schemaValidatorRuns already exists, but with different options: { uuid: UUID(\"40a9332f-e274-4e6c-8d39-982c6f1f863e\") }"
         },
-        {
-          "name": "etlRuns",
-          "action": "update",
-          "ok": true
-        }
       ],
       "audit": {
         "createdAt": "2026-01-19T22:44:42.165Z",
@@ -431,11 +411,6 @@
           "ok": true
         },
         {
-          "name": "canonicalTestVerses",
-          "action": "update",
-          "ok": true
-        },
-        {
           "name": "appConfig",
           "action": "update",
           "ok": true
@@ -445,11 +420,6 @@
           "action": "update",
           "ok": true
         },
-        {
-          "name": "etlRuns",
-          "action": "update",
-          "ok": true
-        }
       ],
       "audit": {
         "createdAt": "2026-01-19T22:56:21.135Z",

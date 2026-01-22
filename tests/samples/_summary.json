@@ -152,12 +152,5 @@
     "sampleSize": 0,
     "fieldCount": 0,
     "validationErrorCount": 0
-  },
-  {
-    "collection": "etlRuns",
-    "documentCount": 0,
-    "sampleSize": 0,
-    "fieldCount": 0,
-    "validationErrorCount": 0
   }
 ]

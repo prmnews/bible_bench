@@ -41,6 +41,7 @@ async function getShowLatestOnly() {
 export async function GET() {
   await connectToDatabase();
   const showLatestOnly = await getShowLatestOnly();
+  const runFilter = { runType: { $ne: "ETL" } };
   
   const [
     rawChapterCount,
@@ -56,7 +57,7 @@ export async function GET() {
     CanonicalChapterModel.countDocuments(),
     CanonicalVerseModel.countDocuments(),
     ModelModel.countDocuments({ isActive: true }),
-    RunModel.countDocuments(),
+    RunModel.countDocuments(runFilter),
     ModelModel.find(
       { isActive: true },
       { _id: 0, modelId: 1, displayName: 1, provider: 1, version: 1 }
@@ -64,7 +65,7 @@ export async function GET() {
       .sort({ modelId: 1 })
       .lean(),
     RunModel.findOne(
-      {},
+      runFilter,
       {
         _id: 0,
         runId: 1,
@@ -81,7 +82,7 @@ export async function GET() {
       .sort({ startedAt: -1 })
       .lean(),
     RunModel.find(
-      { "errorSummary.lastError": { $ne: null } },
+      { ...runFilter, "errorSummary.lastError": { $ne: null } },
       {
         _id: 0,
         runId: 1,

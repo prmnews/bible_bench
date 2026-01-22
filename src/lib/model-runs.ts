@@ -42,6 +42,13 @@ type RunErrorSummary = {
   lastErrorAt: Date | null;
 };
 
+type ParsedVerse = {
+  verseNumber: number;
+  text: string;
+  startOffset: number;
+  endOffset: number;
+};
+
 type RunMetrics = {
   total: number;
   success: number;
@@ -84,6 +91,46 @@ function createRunLogger(existingLogs?: RunLogEntry[]) {
   };
 
   return { logs, log };
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function parseChapterVersesFromJson(parsed: unknown): ParsedVerse[] | null {
+  if (!isRecord(parsed)) {
+    return null;
+  }
+
+  const verses = parsed["verses"];
+  if (!Array.isArray(verses)) {
+    return null;
+  }
+
+  const parsedVerses: ParsedVerse[] = [];
+  for (const verse of verses) {
+    if (!isRecord(verse)) {
+      continue;
+    }
+    const verseNumberValue = verse["verseNumber"];
+    const verseTextValue = verse["verseText"];
+    const verseNumber = Number(verseNumberValue);
+    if (!Number.isFinite(verseNumber) || typeof verseTextValue !== "string") {
+      continue;
+    }
+    const text = verseTextValue.trim();
+    if (!text) {
+      continue;
+    }
+    parsedVerses.push({
+      verseNumber,
+      text,
+      startOffset: 0,
+      endOffset: 0,
+    });
+  }
+
+  return parsedVerses.length > 0 ? parsedVerses : null;
 }
 
 async function resolveModelOutputProfile(modelId: number) {
@@ -267,7 +314,14 @@ async function executeRunItems(params: {
         }
 
         const startTime = Date.now();
-        const { responseRaw, parsed, extractedText, parseError } = await generateModelResponse({
+        const {
+          responseRaw,
+          parsed,
+          extractedText,
+          parseError,
+          systemPrompt,
+          userPrompt,
+        } = await generateModelResponse({
           targetType: "chapter",
           targetId,
           reference: chapter.reference,
@@ -286,6 +340,8 @@ async function executeRunItems(params: {
           targetId,
           evaluatedAt: attemptTime,
           responseRaw,
+          systemPrompt,
+          userPrompt,
           parsed,
           parseError,
           extractedText,
@@ -302,7 +358,10 @@ async function executeRunItems(params: {
         }
 
         // Parse the chapter response into individual verses
-        const parseResult = parseModelVersesAuto(extractedText);
+        const parsedVerses = parseChapterVersesFromJson(parsed);
+        const parseResult = parsedVerses
+          ? { verses: parsedVerses, warnings: [], unmatchedText: [] }
+          : parseModelVersesAuto(extractedText);
 
         // Map parsed verses to canonical verses
         const canonicalForMapping: CanonicalVerse[] = canonicalVerses.map((v) => ({
@@ -328,28 +387,34 @@ async function executeRunItems(params: {
             responseProcessed
           );
 
-          await LlmVerseResultModel.create({
-            resultId: createResultId(),
-            runId,
-            modelId,
-            verseId: mapped.verseId,
-            chapterId: chapter.chapterId,
-            bookId: chapter.bookId,
-            bibleId: chapter.bibleId,
-            evaluatedAt: attemptTime,
-            responseRaw: extractedText, // Store raw extracted verse text
-            responseProcessed,
-            hashRaw,
-            hashProcessed,
-            hashMatch,
-            fidelityScore: mapped.matched ? fidelityScore : 0, // 0 if verse was missing
-            diff: mapped.matched ? diff : { missing: true },
-            latencyMs: latencyPerVerse,
-            audit: {
-              createdAt: attemptTime,
-              createdBy: "model_run",
+          await LlmVerseResultModel.updateOne(
+            { runId, modelId, verseId: mapped.verseId },
+            {
+              $set: {
+                resultId: createResultId(),
+                runId,
+                modelId,
+                verseId: mapped.verseId,
+                chapterId: chapter.chapterId,
+                bookId: chapter.bookId,
+                bibleId: chapter.bibleId,
+                evaluatedAt: attemptTime,
+                responseRaw: extractedText, // Store raw extracted verse text
+                responseProcessed,
+                hashRaw,
+                hashProcessed,
+                hashMatch,
+                fidelityScore: mapped.matched ? fidelityScore : 0, // 0 if verse was missing
+                diff: mapped.matched ? diff : { missing: true },
+                latencyMs: latencyPerVerse,
+                audit: {
+                  createdAt: attemptTime,
+                  createdBy: "model_run",
+                },
+              },
             },
-          });
+            { upsert: true }
+          );
         }
       } else {
         const verse = await CanonicalVerseModel.findOne({ verseId: targetId }).lean();
@@ -358,7 +423,14 @@ async function executeRunItems(params: {
         }
 
         const startTime = Date.now();
-        const { responseRaw, parsed, extractedText, parseError } = await generateModelResponse({
+        const {
+          responseRaw,
+          parsed,
+          extractedText,
+          parseError,
+          systemPrompt,
+          userPrompt,
+        } = await generateModelResponse({
           targetType: "verse",
           targetId,
           reference: verse.reference,
@@ -376,6 +448,8 @@ async function executeRunItems(params: {
           targetId,
           evaluatedAt: attemptTime,
           responseRaw,
+          systemPrompt,
+          userPrompt,
           parsed,
           parseError,
           extractedText,

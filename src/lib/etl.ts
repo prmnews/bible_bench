@@ -10,7 +10,11 @@ import {
   CanonicalVerseModel,
   TransformProfileModel,
 } from "@/lib/models";
-import { connectToDatabase } from "@/lib/mongodb";
+import {
+  connectToDatabase,
+  ensureConnectionHealthy,
+  retryMongoOperation,
+} from "@/lib/mongodb";
 import { applyTransformProfile } from "@/lib/transforms";
 
 type Result<T> = { ok: true; data: T } | { ok: false; status: number; error: string };
@@ -223,6 +227,7 @@ export type TransformVersesParams = {
   limit?: number;
   skip?: number;
   batchId?: string | null;
+  forceAllVerses?: boolean;
 };
 
 export type TransformVersesResult = {
@@ -258,11 +263,23 @@ export async function transformVerses(
 ): Promise<Result<TransformVersesResult>> {
   await connectToDatabase();
 
-  const profile = await TransformProfileModel.findOne({
-    profileId: params.transformProfileId,
-    scope: "canonical",
-    isActive: true,
-  }).lean();
+  const profile = await retryMongoOperation(
+    () =>
+      TransformProfileModel.findOne({
+        profileId: params.transformProfileId,
+        scope: "canonical",
+        isActive: true,
+      }).lean(),
+    {
+      maxRetries: 3,
+      onRetry: (attempt, error) => {
+        console.log(
+          `[transformVerses] Retry ${attempt} fetching transform profile:`,
+          error.message
+        );
+      },
+    }
+  );
 
   if (!profile) {
     return { ok: false, status: 404, error: "Transform profile not found." };
@@ -283,13 +300,68 @@ export async function transformVerses(
     query = query.limit(params.limit);
   }
 
-  const rawChapters = await query.lean();
+  const rawChapters = await retryMongoOperation(
+    () => query.lean(),
+    {
+      maxRetries: 3,
+      onRetry: (attempt, error) => {
+        console.log(
+          `[transformVerses] Retry ${attempt} fetching raw chapters:`,
+          error.message
+        );
+      },
+    }
+  );
+
   if (rawChapters.length === 0) {
     return { ok: true, data: { processed: 0, verseIds: [] } };
   }
 
+  const forceAllVerses = params.forceAllVerses ?? false;
+  let existingVerseIds = new Set<number>();
+
+  if (!forceAllVerses) {
+    const bibleIds = Array.from(new Set(rawChapters.map((chapter) => chapter.bibleId)));
+
+    if (bibleIds.length > 0) {
+      const existingVerses = await retryMongoOperation(
+        () =>
+          CanonicalVerseModel.find(
+            {
+              transformProfileId: params.transformProfileId,
+              bibleId: { $in: bibleIds },
+            },
+            { verseId: 1 }
+          ).lean(),
+        {
+          maxRetries: 3,
+          onRetry: (attempt, error) => {
+            console.log(
+              `[transformVerses] Retry ${attempt} fetching existing verses:`,
+              error.message
+            );
+          },
+        }
+      );
+
+      existingVerseIds = new Set(existingVerses.map((verse) => verse.verseId));
+    }
+  }
+
   const now = new Date();
   const verseIds: number[] = [];
+  
+  // Batch size for bulk operations (process in chunks to avoid memory issues)
+  const BATCH_SIZE = 500;
+  let processedCount = 0;
+  let lastHealthCheck = Date.now();
+  const HEALTH_CHECK_INTERVAL_MS = 5 * 60 * 1000; // Check every 5 minutes
+
+  // Collect all verse operations
+  const verseOperations: Array<{
+    verseId: number;
+    update: Record<string, unknown>;
+  }> = [];
 
   for (const rawChapter of rawChapters) {
     const verses = extractAbsVerses(rawChapter.rawPayload);
@@ -300,7 +372,13 @@ export async function transformVerses(
         continue;
       }
 
-      const verseId = rawChapter.bookId * 100000 + rawChapter.chapterNumber * 1000 + verseNumber;
+      const verseId =
+        rawChapter.bookId * 100000 +
+        rawChapter.chapterNumber * 1000 +
+        verseNumber;
+      if (!forceAllVerses && existingVerseIds.has(verseId)) {
+        continue;
+      }
       const textRaw = verse.textRaw;
       const textProcessed = applyTransformProfile(textRaw, profile);
       const hashRaw = sha256(textRaw);
@@ -314,9 +392,9 @@ export async function transformVerses(
 
       verseIds.push(verseId);
 
-      await CanonicalVerseModel.updateOne(
-        { verseId },
-        {
+      verseOperations.push({
+        verseId,
+        update: {
           $set: {
             verseId,
             chapterId: rawChapter.rawChapterId,
@@ -347,12 +425,66 @@ export async function transformVerses(
             },
           },
         },
-        { upsert: true }
-      );
+      });
+
+      // Process in batches
+      if (verseOperations.length >= BATCH_SIZE) {
+        await processVerseBatch(verseOperations, processedCount);
+        processedCount += verseOperations.length;
+        verseOperations.length = 0; // Clear array
+
+        // Periodic connection health check
+        const nowMs = Date.now();
+        if (nowMs - lastHealthCheck >= HEALTH_CHECK_INTERVAL_MS) {
+          await ensureConnectionHealthy();
+          lastHealthCheck = nowMs;
+          console.log(
+            `[transformVerses] Processed ${processedCount} verses, connection health checked`
+          );
+        }
+      }
     }
   }
 
+  // Process remaining verses
+  if (verseOperations.length > 0) {
+    await processVerseBatch(verseOperations, processedCount);
+  }
+
   return { ok: true, data: { processed: verseIds.length, verseIds } };
+}
+
+/**
+ * Process a batch of verse updates using bulk operations with retry logic
+ */
+async function processVerseBatch(
+  operations: Array<{ verseId: number; update: Record<string, unknown> }>,
+  offset: number
+): Promise<void> {
+  await retryMongoOperation(
+    async () => {
+      const bulkOps = operations.map((op) => ({
+        updateOne: {
+          filter: { verseId: op.verseId },
+          update: op.update,
+          upsert: true,
+        },
+      }));
+
+      await CanonicalVerseModel.bulkWrite(bulkOps, { ordered: false });
+    },
+    {
+      maxRetries: 5,
+      initialDelayMs: 2000,
+      maxDelayMs: 30000,
+      onRetry: (attempt, error) => {
+        console.log(
+          `[transformVerses] Retry ${attempt} processing batch (offset ${offset}, size ${operations.length}):`,
+          error.message
+        );
+      },
+    }
+  );
 }
 
 export type { Result };
