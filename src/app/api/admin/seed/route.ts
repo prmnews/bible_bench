@@ -10,6 +10,7 @@ import {
 } from "@/lib/chapter-titles";
 import { parseKjvFilename } from "@/lib/kjv-files";
 import {
+  AppConfigModel,
   CanonicalBibleModel,
   CanonicalBookModel,
   CanonicalRawChapterModel,
@@ -31,6 +32,7 @@ type SeedResult = {
   books: { created: number; existing: number };
   transformProfiles: { created: number; existing: number };
   chapters: { created: number; existing: number; skipped: number };
+  configs: { created: number; existing: number };
 };
 
 async function seedLanguages(): Promise<{ created: number; existing: number }> {
@@ -435,6 +437,35 @@ async function seedChapters(): Promise<{
   return { created, existing, skipped };
 }
 
+async function seedConfigs(): Promise<{ created: number; existing: number }> {
+  const now = new Date();
+  let created = 0;
+  let existing = 0;
+
+  const defaultConfigs = [
+    { key: "SCORE_PASS", value: "100", description: "Score threshold for green/pass (exact match)" },
+    { key: "SCORE_WARNING", value: "95", description: "Score threshold for yellow/warning" },
+    { key: "SCORE_FAIL", value: "94", description: "Score below warning is red/fail" },
+  ];
+
+  for (const config of defaultConfigs) {
+    const existingConfig = await AppConfigModel.findOne({ key: config.key }).lean();
+    if (existingConfig) {
+      existing++;
+    } else {
+      await AppConfigModel.create({
+        key: config.key,
+        value: config.value,
+        modifiedAt: now,
+        modifiedBy: "seed",
+      });
+      created++;
+    }
+  }
+
+  return { created, existing };
+}
+
 export async function POST() {
   if (!isAdminAvailable()) {
     return new Response("Not Found", { status: 404 });
@@ -463,12 +494,17 @@ export async function POST() {
     const chapters = await seedChapters();
     console.log("[seed] Chapters:", chapters);
 
+    console.log("[seed] Starting seedConfigs...");
+    const configs = await seedConfigs();
+    console.log("[seed] Configs:", configs);
+
     const result: SeedResult = {
       languages,
       bibles,
       books,
       transformProfiles,
       chapters,
+      configs,
     };
 
     return NextResponse.json({ ok: true, data: result });

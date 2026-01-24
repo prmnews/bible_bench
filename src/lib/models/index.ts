@@ -474,6 +474,7 @@ export const runsValidator: JsonSchemaValidator = {
         additionalProperties: true,
       },
       status: stringSchema,
+      cancelRequested: boolSchema,
       startedAt: dateSchema,
       completedAt: nullableDateSchema,
       metrics: {
@@ -1036,6 +1037,7 @@ const runSchema = new Schema({
   scopeIds: { type: Schema.Types.Mixed, required: true },
   scopeParams: { type: Schema.Types.Mixed, default: {} },
   status: { type: String, required: true },
+  cancelRequested: { type: Boolean, default: false },
   startedAt: { type: Date, required: true },
   completedAt: { type: Date, default: null },
   metrics: { type: Schema.Types.Mixed, default: {} },
