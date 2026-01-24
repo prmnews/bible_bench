@@ -10,11 +10,30 @@ type ConfigItem = {
 };
 
 // Known config keys with descriptions
-const KNOWN_KEYS: Record<string, { label: string; description: string; type: "boolean" | "string" }> = {
+const KNOWN_KEYS: Record<string, { label: string; description: string; type: "boolean" | "string" | "number"; category?: string }> = {
   SHOW_LATEST_ONLY: {
     label: "Show Latest Run Only",
     description: "When enabled, dashboard only shows results from the latest run per model.",
     type: "boolean",
+    category: "general",
+  },
+  SCORE_PASS: {
+    label: "Score Pass Threshold",
+    description: "Scores at or above this value display as GREEN (pass). Default: 100 (exact match only).",
+    type: "number",
+    category: "thresholds",
+  },
+  SCORE_WARNING: {
+    label: "Score Warning Threshold",
+    description: "Scores at or above this value (but below pass) display as YELLOW (warning). Default: 95.",
+    type: "number",
+    category: "thresholds",
+  },
+  SCORE_FAIL: {
+    label: "Score Fail Threshold",
+    description: "Scores below the warning threshold display as RED (fail). This value documents the boundary. Default: 94.",
+    type: "number",
+    category: "thresholds",
   },
 };
 
@@ -382,16 +401,73 @@ export default function AdminConfigPage() {
           No configuration keys set. Add one above.
         </div>
       ) : (
-        <div className="space-y-3">
-          {configs.map((config) => (
-            <ConfigRow
-              key={config.key}
-              config={config}
-              onUpdate={handleUpdate}
-              onDelete={handleDelete}
-              isSaving={saving === config.key}
-            />
-          ))}
+        <div className="space-y-6">
+          {/* Score Thresholds Section */}
+          {(() => {
+            const thresholdConfigs = configs.filter(
+              (c) => KNOWN_KEYS[c.key]?.category === "thresholds"
+            );
+            if (thresholdConfigs.length === 0) return null;
+            return (
+              <div className="space-y-3">
+                <div className="border-b border-border pb-2">
+                  <h2 className="text-lg font-medium text-foreground">Score Thresholds</h2>
+                  <p className="text-sm text-muted-foreground">
+                    Configure how fidelity scores are visualized in the LLM Explorer.
+                  </p>
+                </div>
+                <div className="ml-4 space-y-2 border-l-2 border-muted pl-4">
+                  <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                    <span className="flex items-center gap-1">
+                      <span className="h-3 w-3 rounded-full bg-green-500"></span>
+                      Green: = 100
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <span className="h-3 w-3 rounded-full bg-yellow-500"></span>
+                      Yellow: 95-99
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <span className="h-3 w-3 rounded-full bg-red-500"></span>
+                      Red: &lt; 95
+                    </span>
+                  </div>
+                </div>
+                {thresholdConfigs.map((config) => (
+                  <ConfigRow
+                    key={config.key}
+                    config={config}
+                    onUpdate={handleUpdate}
+                    onDelete={handleDelete}
+                    isSaving={saving === config.key}
+                  />
+                ))}
+              </div>
+            );
+          })()}
+
+          {/* Other Configs Section */}
+          {(() => {
+            const otherConfigs = configs.filter(
+              (c) => KNOWN_KEYS[c.key]?.category !== "thresholds"
+            );
+            if (otherConfigs.length === 0) return null;
+            return (
+              <div className="space-y-3">
+                <div className="border-b border-border pb-2">
+                  <h2 className="text-lg font-medium text-foreground">General Settings</h2>
+                </div>
+                {otherConfigs.map((config) => (
+                  <ConfigRow
+                    key={config.key}
+                    config={config}
+                    onUpdate={handleUpdate}
+                    onDelete={handleDelete}
+                    isSaving={saving === config.key}
+                  />
+                ))}
+              </div>
+            );
+          })()}
         </div>
       )}
     </section>

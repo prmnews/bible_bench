@@ -1,7 +1,15 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 type StepStatus = "idle" | "running" | "success" | "error";
 
@@ -137,6 +145,13 @@ function ModelRunScopePanel() {
   const [isRunning, setIsRunning] = useState(false);
   const [runResult, setRunResult] = useState<StepResult>({ status: "idle" });
   const [error, setError] = useState<string | null>(null);
+
+  // Progress tracking state
+  const [currentRunIds, setCurrentRunIds] = useState<string[]>([]);
+  const [chapterProgress, setChapterProgress] = useState<Map<number, string>>(new Map());
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [isCancelling, setIsCancelling] = useState(false);
+  const pollingRef = useRef<NodeJS.Timeout | null>(null);
 
   // Load campaigns on mount
   useEffect(() => {
@@ -276,6 +291,121 @@ function ModelRunScopePanel() {
     loadChapters();
   }, [selectedBookIds]);
 
+  // Polling for run progress
+  useEffect(() => {
+    if (!isRunning || currentRunIds.length === 0) {
+      if (pollingRef.current) {
+        clearInterval(pollingRef.current);
+        pollingRef.current = null;
+      }
+      return;
+    }
+
+    const pollProgress = async () => {
+      const newProgress = new Map<number, string>();
+      let allComplete = true;
+
+      for (const runId of currentRunIds) {
+        try {
+          const res = await fetch(`/api/admin/runs/${runId}/items`);
+          const json = await res.json();
+          if (json.ok) {
+            const runStatus = json.data.status;
+
+            // Check if this run is still in progress
+            if (runStatus === "running") {
+              allComplete = false;
+            }
+
+            // Update chapter progress from items
+            for (const item of json.data.items) {
+              const existingStatus = newProgress.get(item.targetId);
+              // If already marked as success/failed, don't overwrite
+              if (!existingStatus || existingStatus === "pending") {
+                newProgress.set(item.targetId, item.status);
+              }
+            }
+          }
+        } catch (err) {
+          console.error("Failed to poll progress:", err);
+        }
+      }
+
+      setChapterProgress(newProgress);
+
+      // If all runs complete, stop polling and update result
+      if (allComplete) {
+        if (pollingRef.current) {
+          clearInterval(pollingRef.current);
+          pollingRef.current = null;
+        }
+        setIsRunning(false);
+
+        // Count successes and failures
+        let successCount = 0;
+        let failedCount = 0;
+        for (const status of newProgress.values()) {
+          if (status === "success") successCount++;
+          if (status === "failed") failedCount++;
+        }
+
+        setRunResult({
+          status: failedCount > 0 ? "error" : "success",
+          message: `Completed: ${successCount} chapters successful, ${failedCount} failed`,
+        });
+      }
+    };
+
+    // Initial poll immediately
+    pollProgress();
+
+    // Then poll every 2 seconds
+    pollingRef.current = setInterval(pollProgress, 2000);
+
+    return () => {
+      if (pollingRef.current) {
+        clearInterval(pollingRef.current);
+        pollingRef.current = null;
+      }
+    };
+  }, [isRunning, currentRunIds]);
+
+  // Cancel run handler
+  const handleCancelRun = async () => {
+    if (currentRunIds.length === 0) return;
+
+    setIsCancelling(true);
+    try {
+      // Cancel all active runs
+      for (const runId of currentRunIds) {
+        await fetch(`/api/admin/runs/${runId}/cancel`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+
+      setShowCancelModal(false);
+      setRunResult({
+        status: "error",
+        message: "Run cancelled by user. Waiting for current chapter to complete...",
+      });
+    } catch (err) {
+      console.error("Failed to cancel run:", err);
+    } finally {
+      setIsCancelling(false);
+    }
+  };
+
+  // Get chapter pill class based on progress status
+  const getChapterPillClass = (chapterId: number) => {
+    const status = chapterProgress.get(chapterId);
+    if (status === "success") return "bg-green-500 text-white";
+    if (status === "failed") return "bg-red-500 text-white";
+    if (status === "running") return "bg-accent animate-pulse text-accent-foreground";
+    if (selectedChapterIds.has(chapterId)) return "bg-accent text-accent-foreground";
+    return "bg-muted text-muted-foreground hover:bg-accent/20 hover:text-accent-foreground";
+  };
+
   // Handlers
   const handleBookToggle = (bookId: number) => {
     const newSet = new Set(selectedBookIds);
@@ -360,9 +490,16 @@ function ModelRunScopePanel() {
       return;
     }
 
+    // Initialize progress tracking - mark selected chapters as pending
+    const initialProgress = new Map<number, string>();
+    for (const chapterId of selectedChapterIds) {
+      initialProgress.set(chapterId, "pending");
+    }
+    setChapterProgress(initialProgress);
+    setCurrentRunIds([]);
     setIsRunning(true);
     setError(null);
-    setRunResult({ status: "running" });
+    setRunResult({ status: "running", message: "Starting runs..." });
 
     try {
       const res = await fetch("/api/admin/models/run", {
@@ -378,24 +515,39 @@ function ModelRunScopePanel() {
 
       const json = await res.json();
       if (json.ok) {
-        setRunResult({
-          status: "success",
-          message: `Completed: ${json.data.summary.success} runs successful, ${json.data.summary.failed} failed`,
-          data: json.data,
-        });
+        // Extract run IDs from results for progress polling
+        const runIds = json.data.results
+          .filter((r: { ok: boolean; runId: string }) => r.ok && r.runId)
+          .map((r: { runId: string }) => r.runId);
+
+        if (runIds.length > 0) {
+          setCurrentRunIds(runIds);
+          setRunResult({
+            status: "running",
+            message: `Running ${runIds.length} run(s)...`,
+          });
+        } else {
+          // All runs completed synchronously (or failed to start)
+          setIsRunning(false);
+          setRunResult({
+            status: json.data.summary.failed > 0 ? "error" : "success",
+            message: `Completed: ${json.data.summary.success} runs successful, ${json.data.summary.failed} failed`,
+            data: json.data,
+          });
+        }
       } else {
+        setIsRunning(false);
         setRunResult({
           status: "error",
           message: json.error ?? "Run failed",
         });
       }
     } catch (err) {
+      setIsRunning(false);
       setRunResult({
         status: "error",
         message: err instanceof Error ? err.message : "Request failed",
       });
-    } finally {
-      setIsRunning(false);
     }
   };
 
@@ -587,11 +739,10 @@ function ModelRunScopePanel() {
                       {bookChapters.map((ch) => (
                         <label
                           key={ch.id}
-                          className={`cursor-pointer rounded px-2 py-1 text-xs ${
-                            selectedChapterIds.has(ch.id)
-                              ? "bg-accent text-accent-foreground"
-                              : "bg-muted text-muted-foreground hover:bg-accent/20 hover:text-accent-foreground"
-                          }`}
+                          className={cn(
+                            "cursor-pointer rounded px-2 py-1 text-xs transition-colors",
+                            getChapterPillClass(ch.id)
+                          )}
                           title={ch.name}
                         >
                           <input
@@ -599,6 +750,7 @@ function ModelRunScopePanel() {
                             checked={selectedChapterIds.has(ch.id)}
                             onChange={() => handleChapterToggle(ch.id)}
                             className="sr-only"
+                            disabled={isRunning}
                           />
                           {ch.number}
                         </label>
@@ -678,7 +830,14 @@ function ModelRunScopePanel() {
                 : "border-blue-500/20 bg-blue-500/10 text-blue-600 dark:text-blue-400"
             }`}
           >
-            {runResult.message ?? (runResult.status === "running" ? "Running..." : "")}
+            <div className="flex items-center justify-between">
+              <span>{runResult.message ?? (runResult.status === "running" ? "Running..." : "")}</span>
+              {runResult.status === "running" && chapterProgress.size > 0 && (
+                <span className="text-xs opacity-75">
+                  {Array.from(chapterProgress.values()).filter(s => s === "success").length} / {chapterProgress.size} complete
+                </span>
+              )}
+            </div>
           </div>
         )}
 
@@ -689,14 +848,53 @@ function ModelRunScopePanel() {
               ? `${selectedChapterIds.size} chapter${selectedChapterIds.size !== 1 ? "s" : ""} x ${selectedModelIds.size} model${selectedModelIds.size !== 1 ? "s" : ""} = ${totalRuns} run${totalRuns !== 1 ? "s" : ""}`
               : "Select campaign, chapters, and models to start"}
           </span>
-          <button
-            onClick={handleStartRun}
-            disabled={isRunning || !selectedCampaignTag || selectedChapterIds.size === 0 || selectedModelIds.size === 0}
-            className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {isRunning ? "Running..." : "Start Model Run"}
-          </button>
+          <div className="flex items-center gap-2">
+            {isRunning && (
+              <button
+                onClick={() => setShowCancelModal(true)}
+                className="rounded-md border border-destructive/50 bg-destructive/10 px-4 py-2 text-sm font-medium text-destructive hover:bg-destructive/20"
+              >
+                Cancel
+              </button>
+            )}
+            <button
+              onClick={handleStartRun}
+              disabled={isRunning || !selectedCampaignTag || selectedChapterIds.size === 0 || selectedModelIds.size === 0}
+              className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {isRunning ? "Running..." : "Start Model Run"}
+            </button>
+          </div>
         </div>
+
+        {/* Cancel Confirmation Modal */}
+        <Dialog open={showCancelModal} onOpenChange={setShowCancelModal}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Cancel Run?</DialogTitle>
+              <DialogDescription>
+                Are you sure you want to cancel this run? The current chapter will complete, 
+                but remaining chapters will not be processed. This action cannot be undone.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <button
+                onClick={() => setShowCancelModal(false)}
+                disabled={isCancelling}
+                className="rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-accent/20"
+              >
+                Keep Running
+              </button>
+              <button
+                onClick={handleCancelRun}
+                disabled={isCancelling}
+                className="rounded-md bg-destructive px-4 py-2 text-sm font-medium text-destructive-foreground hover:bg-destructive/90 disabled:opacity-50"
+              >
+                {isCancelling ? "Cancelling..." : "Yes, Cancel Run"}
+              </button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );

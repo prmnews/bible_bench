@@ -28,6 +28,7 @@ function StatusBadge({ status }: { status: string }) {
     running: "bg-blue-500/10 text-blue-600 dark:text-blue-400",
     completed: "bg-green-500/10 text-green-600 dark:text-green-400",
     failed: "bg-destructive/10 text-destructive",
+    cancelled: "bg-yellow-500/10 text-yellow-600 dark:text-yellow-400",
   };
 
   return (

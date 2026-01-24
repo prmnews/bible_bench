@@ -12,6 +12,7 @@ import {
   Robot,
   PlayCircle,
   FlagBanner,
+  MagnifyingGlass,
 } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -27,6 +28,7 @@ const navItems = [
   { href: "/admin", label: "Dashboard", icon: House },
   { href: "/admin/campaigns", label: "Campaigns", icon: FlagBanner },
   { href: "/admin/etl", label: "ETL", icon: Database },
+  { href: "/admin/explorer", label: "Explorer", icon: MagnifyingGlass },
   { href: "/admin/models", label: "Models", icon: Robot },
   { href: "/admin/runs", label: "Runs", icon: PlayCircle },
   { href: "/admin/config", label: "Config", icon: Gear },

@@ -26,7 +26,7 @@ import {
 type RunType = "MODEL_CHAPTER" | "MODEL_VERSE";
 type RunScope = "bible" | "book" | "chapter" | "verse";
 type RunTargetType = "chapter" | "verse";
-type RunStatus = "running" | "completed" | "failed";
+type RunStatus = "running" | "completed" | "failed" | "cancelled";
 type RunLogLevel = "info" | "warn" | "error";
 
 type RunLogEntry = {
@@ -280,10 +280,17 @@ async function executeRunItems(params: {
 
   let success = 0;
   let failed = 0;
+  let cancelled = false;
   let lastError: string | null = null;
   let lastErrorAt: Date | null = null;
 
   for (const targetId of targetIds) {
+    // Check for cancellation before processing each item
+    const runDoc = await RunModel.findOne({ runId }, { cancelRequested: 1 }).lean();
+    if (runDoc?.cancelRequested) {
+      cancelled = true;
+      break;
+    }
     const attemptTime = new Date();
     await RunItemModel.updateOne(
       { runId, targetType, targetId },
@@ -554,7 +561,7 @@ async function executeRunItems(params: {
     }
   }
 
-  return { success, failed, lastError, lastErrorAt };
+  return { success, failed, cancelled, lastError, lastErrorAt };
 }
 
 function buildMetrics(
@@ -651,14 +658,14 @@ export async function startModelRun(params: StartRunParams): Promise<RunResult> 
 
     await createRunItems(runId, targetType, targetIds);
     log("run_items", "info", `Created ${targetIds.length} run items.`);
-    const { success, failed, lastError, lastErrorAt } = await executeRunItems({
+    const { success, failed, cancelled, lastError, lastErrorAt } = await executeRunItems({
       campaignTag: params.campaignTag,
       runId,
       modelId: params.modelId,
       targetType,
       targetIds,
     });
-    const status: RunStatus = failed > 0 ? "failed" : "completed";
+    const status: RunStatus = cancelled ? "cancelled" : failed > 0 ? "failed" : "completed";
     const durationMs = Date.now() - startedAt.getTime();
     const metrics = buildMetrics(targetType, targetIds.length, success, failed, durationMs);
     const errorSummary: RunErrorSummary | null =
@@ -673,12 +680,15 @@ export async function startModelRun(params: StartRunParams): Promise<RunResult> 
     log(
       "execute",
       failed > 0 ? "error" : "info",
-      `Executed ${targetIds.length} items: ${success} succeeded, ${failed} failed.`
+      `Executed ${success + failed} of ${targetIds.length} items: ${success} succeeded, ${failed} failed.`
     );
+    if (cancelled) {
+      log("execute", "warn", "Run was cancelled by user request.");
+    }
     if (failed > 0 && lastError) {
       log("execute", "error", `Last error: ${lastError}`);
     }
-    log("complete", status === "completed" ? "info" : "error", `Run ${status}.`);
+    log("complete", status === "completed" ? "info" : status === "cancelled" ? "warn" : "error", `Run ${status}.`);
 
     await RunModel.updateOne(
       { runId },
@@ -784,7 +794,7 @@ export async function retryFailedRunItems(runId: string): Promise<RunResult> {
   log("retry", "info", `Retry started for ${targetIds.length} items.`);
   log("retry", "info", `Retrying ${targetIds.length} failed items.`);
   const campaignTag = run.campaignTag as string;
-  const { lastError, lastErrorAt } = await executeRunItems({
+  const { cancelled, lastError, lastErrorAt } = await executeRunItems({
     campaignTag,
     runId,
     modelId: run.modelId as number,
@@ -799,7 +809,7 @@ export async function retryFailedRunItems(runId: string): Promise<RunResult> {
     status: "success",
   });
   const failedCount = total - successCount;
-  const status: RunStatus = failedCount > 0 ? "failed" : "completed";
+  const status: RunStatus = cancelled ? "cancelled" : failedCount > 0 ? "failed" : "completed";
   const durationMs = Date.now() - retryStartedAt.getTime();
   const metrics = buildMetrics(targetType, total, successCount, failedCount, durationMs);
   const errorSummary: RunErrorSummary | null =
@@ -813,9 +823,12 @@ export async function retryFailedRunItems(runId: string): Promise<RunResult> {
 
   log(
     "retry",
-    status === "completed" ? "info" : "error",
-    `Retry completed: ${successCount} succeeded, ${failedCount} failed.`
+    status === "completed" ? "info" : status === "cancelled" ? "warn" : "error",
+    `Retry ${status}: ${successCount} succeeded, ${failedCount} failed.`
   );
+  if (cancelled) {
+    log("retry", "warn", "Retry was cancelled by user request.");
+  }
   if (failedCount > 0 && lastError) {
     log("retry", "error", `Last error: ${lastError}`);
   }
