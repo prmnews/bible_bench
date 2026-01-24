@@ -55,11 +55,11 @@ function StatCard({
   subtitle?: string;
 }) {
   return (
-    <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-4">
-      <div className="text-sm font-medium text-zinc-500">{title}</div>
-      <div className="mt-1 text-2xl font-semibold text-zinc-900">{value}</div>
+    <div className="rounded-lg border border-border bg-muted p-4">
+      <div className="text-sm font-medium text-muted-foreground">{title}</div>
+      <div className="mt-1 text-2xl font-semibold text-foreground">{value}</div>
       {subtitle && (
-        <div className="mt-1 text-xs text-zinc-400">{subtitle}</div>
+        <div className="mt-1 text-xs text-muted-foreground">{subtitle}</div>
       )}
     </div>
   );
@@ -76,15 +76,15 @@ function formatDuration(ms: number | null) {
 
 function StatusBadge({ status }: { status: string }) {
   const styles: Record<string, string> = {
-    running: "bg-blue-100 text-blue-700",
-    completed: "bg-green-100 text-green-700",
-    failed: "bg-red-100 text-red-700",
+    running: "bg-blue-500/10 text-blue-600 dark:text-blue-400",
+    completed: "bg-green-500/10 text-green-600 dark:text-green-400",
+    failed: "bg-destructive/10 text-destructive",
   };
 
   return (
     <span
       className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${
-        styles[status] ?? "bg-zinc-100 text-zinc-600"
+        styles[status] ?? "bg-muted text-muted-foreground"
       }`}
     >
       {status}
@@ -102,26 +102,26 @@ function RunStatusCard({
   isRetrying: boolean;
 }) {
   return (
-    <div className="rounded-lg border border-zinc-200 bg-white p-4">
+    <div className="rounded-lg border border-border bg-card p-4">
       <div className="flex items-start justify-between">
         <div>
-          <h3 className="text-sm font-medium text-zinc-900">Last Run</h3>
+          <h3 className="text-sm font-medium text-foreground">Last Run</h3>
           <div className="mt-2 space-y-1">
             <div className="flex items-center gap-2">
-              <code className="rounded bg-zinc-100 px-1.5 py-0.5 font-mono text-xs">
+              <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">
                 {run.runId.length > 20 ? run.runId.slice(0, 20) + "..." : run.runId}
               </code>
               <StatusBadge status={run.status} />
             </div>
-            <div className="text-sm text-zinc-600">
+            <div className="text-sm text-muted-foreground">
               Type: {run.runType} | Scope: {run.scope}
             </div>
             {run.failedCount > 0 && (
-              <div className="text-sm font-medium text-red-600">
+              <div className="text-sm font-medium text-destructive">
                 Failed Items: {run.failedCount}
               </div>
             )}
-            <div className="text-sm text-zinc-500">
+            <div className="text-sm text-muted-foreground">
               Duration: {formatDuration(run.durationMs)}
             </div>
           </div>
@@ -131,20 +131,20 @@ function RunStatusCard({
             <button
               onClick={onRetry}
               disabled={isRetrying}
-              className="rounded-md bg-red-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-red-700 disabled:opacity-50"
+              className="rounded-md bg-destructive px-3 py-1.5 text-xs font-medium text-destructive-foreground hover:bg-destructive/90 disabled:opacity-50"
             >
               {isRetrying ? "Retrying..." : "Retry Failed"}
             </button>
           )}
           <Link
             href="/admin/runs"
-            className="rounded-md border border-zinc-300 bg-white px-3 py-1.5 text-center text-xs font-medium text-zinc-700 hover:bg-zinc-50"
+            className="rounded-md border border-input bg-background px-3 py-1.5 text-center text-xs font-medium hover:bg-accent/20 hover:text-accent-foreground"
           >
             View Runs
           </Link>
           <Link
             href="/admin/etl"
-            className="rounded-md border border-zinc-300 bg-white px-3 py-1.5 text-center text-xs font-medium text-zinc-700 hover:bg-zinc-50"
+            className="rounded-md border border-input bg-background px-3 py-1.5 text-center text-xs font-medium hover:bg-accent/20 hover:text-accent-foreground"
           >
             Go to ETL
           </Link>
@@ -154,25 +154,50 @@ function RunStatusCard({
   );
 }
 
-function AlertsSection({ alerts }: { alerts: Alert[] }) {
+function AlertsSection({ 
+  alerts, 
+  onDismiss 
+}: { 
+  alerts: Alert[];
+  onDismiss: (runId: string, errorCode: string) => void;
+}) {
   if (alerts.length === 0) {
     return null;
   }
 
   return (
-    <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
-      <h3 className="text-sm font-medium text-amber-800">Alerts</h3>
+    <div className="rounded-lg border border-primary/20 bg-primary/5 p-4">
+      <div className="flex items-center justify-between">
+        <h3 className="text-sm font-medium text-primary">Alerts</h3>
+        <button
+          onClick={() => {
+            alerts.forEach((alert) => onDismiss(alert.runId, alert.errorCode));
+          }}
+          className="text-xs text-muted-foreground hover:text-foreground underline"
+        >
+          Dismiss All
+        </button>
+      </div>
       <ul className="mt-2 space-y-2">
         {alerts.map((alert, idx) => (
-          <li key={`${alert.runId}-${idx}`} className="text-sm">
-            <span className="font-mono text-xs font-medium text-amber-700">
-              {alert.errorCode}
-            </span>
-            <span className="text-amber-800"> - </span>
-            <span className="text-amber-700">{alert.message}</span>
-            <span className="ml-2 text-xs text-amber-600">
-              (run: {alert.runId.slice(0, 8)}...)
-            </span>
+          <li key={`${alert.runId}-${idx}`} className="flex items-start justify-between gap-2 text-sm">
+            <div className="flex-1">
+              <span className="font-mono text-xs font-medium text-primary">
+                {alert.errorCode}
+              </span>
+              <span className="text-foreground"> - </span>
+              <span className="text-foreground">{alert.message}</span>
+              <span className="ml-2 text-xs text-muted-foreground">
+                (run: {alert.runId.slice(0, 8)}...)
+              </span>
+            </div>
+            <button
+              onClick={() => onDismiss(alert.runId, alert.errorCode)}
+              className="shrink-0 text-xs text-muted-foreground hover:text-foreground underline"
+              aria-label={`Dismiss ${alert.errorCode}`}
+            >
+              Dismiss
+            </button>
           </li>
         ))}
       </ul>
@@ -185,25 +210,25 @@ function QuickActions() {
     <div className="flex gap-3">
       <Link
         href="/admin/models"
-        className="rounded-md border border-zinc-300 bg-white px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50"
+        className="rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-accent/20 hover:text-accent-foreground hover:border-accent/50"
       >
         Manage Models
       </Link>
       <Link
         href="/admin/etl"
-        className="rounded-md border border-zinc-300 bg-white px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50"
+        className="rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-accent/20 hover:text-accent-foreground hover:border-accent/50"
       >
         ETL Pipeline
       </Link>
       <Link
         href="/admin/runs"
-        className="rounded-md border border-zinc-300 bg-white px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50"
+        className="rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-accent/20 hover:text-accent-foreground hover:border-accent/50"
       >
         View Runs
       </Link>
       <Link
         href="/admin/config"
-        className="rounded-md border border-zinc-300 bg-white px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50"
+        className="rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-accent/20 hover:text-accent-foreground hover:border-accent/50"
       >
         Config
       </Link>
@@ -214,38 +239,38 @@ function QuickActions() {
 function ModelTable({ models }: { models: ModelSummary[] }) {
   if (models.length === 0) {
     return (
-      <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-6 text-center text-sm text-zinc-500">
+      <div className="rounded-lg border border-border bg-muted p-6 text-center text-sm text-muted-foreground">
         No models registered yet. Add models in the Models page.
       </div>
     );
   }
 
   return (
-    <div className="overflow-hidden rounded-lg border border-zinc-200">
-      <table className="min-w-full divide-y divide-zinc-200">
-        <thead className="bg-zinc-50">
+    <div className="overflow-x-auto rounded-lg border border-border">
+      <table className="min-w-full divide-y divide-border">
+        <thead className="bg-muted">
           <tr>
-            <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">
+            <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
               Model
             </th>
-            <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-zinc-500">
+            <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-muted-foreground">
               Perfect Rate
             </th>
-            <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-zinc-500">
+            <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-muted-foreground">
               Avg Fidelity
             </th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-zinc-200 bg-white">
+        <tbody className="divide-y divide-border bg-card">
           {models.map((model) => (
             <tr key={model.modelId}>
-              <td className="whitespace-nowrap px-4 py-3 text-sm font-medium text-zinc-900">
+              <td className="whitespace-nowrap px-4 py-3 text-sm font-medium text-foreground">
                 {model.displayName}
               </td>
-              <td className="whitespace-nowrap px-4 py-3 text-right text-sm text-zinc-600">
+              <td className="whitespace-nowrap px-4 py-3 text-right text-sm text-muted-foreground">
                 {model.perfectRate.toFixed(1)}%
               </td>
-              <td className="whitespace-nowrap px-4 py-3 text-right text-sm text-zinc-600">
+              <td className="whitespace-nowrap px-4 py-3 text-right text-sm text-muted-foreground">
                 {model.avgFidelity.toFixed(2)}%
               </td>
             </tr>
@@ -261,6 +286,27 @@ export default function AdminDashboardPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isRetrying, setIsRetrying] = useState(false);
+  const [dismissedAlerts, setDismissedAlerts] = useState<Set<string>>(new Set());
+
+  // Load dismissed alerts from localStorage on mount
+  useEffect(() => {
+    const saved = localStorage.getItem("dismissed-alerts");
+    if (saved) {
+      try {
+        setDismissedAlerts(new Set(JSON.parse(saved)));
+      } catch {
+        // Ignore parse errors
+      }
+    }
+  }, []);
+
+  const handleDismissAlert = useCallback((runId: string, errorCode: string) => {
+    const key = `${runId}-${errorCode}`;
+    const newDismissed = new Set(dismissedAlerts);
+    newDismissed.add(key);
+    setDismissedAlerts(newDismissed);
+    localStorage.setItem("dismissed-alerts", JSON.stringify(Array.from(newDismissed)));
+  }, [dismissedAlerts]);
 
   const fetchData = useCallback(async () => {
     try {
@@ -309,8 +355,8 @@ export default function AdminDashboardPage() {
   if (loading) {
     return (
       <section className="space-y-4">
-        <h1 className="text-2xl font-semibold text-zinc-900">Dashboard</h1>
-        <div className="text-sm text-zinc-500">Loading...</div>
+        <h1 className="text-2xl font-semibold text-foreground">Dashboard</h1>
+        <div className="text-sm text-muted-foreground">Loading...</div>
       </section>
     );
   }
@@ -318,13 +364,13 @@ export default function AdminDashboardPage() {
   if (error) {
     return (
       <section className="space-y-4">
-        <h1 className="text-2xl font-semibold text-zinc-900">Dashboard</h1>
-        <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+        <h1 className="text-2xl font-semibold text-foreground">Dashboard</h1>
+        <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive">
           {error}
         </div>
         <button
           onClick={fetchData}
-          className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800"
+          className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
         >
           Retry
         </button>
@@ -343,10 +389,10 @@ export default function AdminDashboardPage() {
   return (
     <section className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-zinc-900">Dashboard</h1>
+        <h1 className="text-2xl font-semibold text-foreground">Dashboard</h1>
         <button
           onClick={fetchData}
-          className="rounded-md border border-zinc-300 bg-white px-3 py-1.5 text-sm font-medium text-zinc-700 hover:bg-zinc-50"
+          className="rounded-md border border-input bg-background px-3 py-1.5 text-sm font-medium hover:bg-accent/20 hover:text-accent-foreground hover:border-accent/50"
         >
           Refresh
         </button>
@@ -365,7 +411,12 @@ export default function AdminDashboardPage() {
       )}
 
       {/* Alerts Section */}
-      <AlertsSection alerts={data?.alerts ?? []} />
+      <AlertsSection 
+        alerts={(data?.alerts ?? []).filter(
+          (alert) => !dismissedAlerts.has(`${alert.runId}-${alert.errorCode}`)
+        )} 
+        onDismiss={handleDismissAlert}
+      />
 
       {/* Stats Grid */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
@@ -398,7 +449,7 @@ export default function AdminDashboardPage() {
 
       {/* Model Performance Table */}
       <div>
-        <h2 className="mb-3 text-lg font-medium text-zinc-900">
+        <h2 className="mb-3 text-lg font-medium text-foreground">
           Model Performance
         </h2>
         <ModelTable models={data?.models ?? []} />

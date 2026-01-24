@@ -1,0 +1,3710 @@
+[{
+  "_id": {
+    "$oid": "697161a7def6595e7137544a"
+  },
+  "runId": "7ad20545-b048-4592-b444-288723a1ab43",
+  "runType": "MODEL_CHAPTER",
+  "modelId": 2,
+  "scope": "chapter",
+  "scopeIds": {
+    "chapterId": 1001
+  },
+  "status": "failed",
+  "startedAt": {
+    "$date": "2026-01-21T23:30:47.667Z"
+  },
+  "completedAt": {
+    "$date": "2026-01-21T23:31:25.309Z"
+  },
+  "metrics": {
+    "total": 1,
+    "success": 0,
+    "failed": 1,
+    "totalChapters": 1,
+    "durationMs": 37642
+  },
+  "logs": [
+    {
+      "stage": "run",
+      "level": "info",
+      "message": "Run 7ad20545-b048-4592-b444-288723a1ab43 started.",
+      "timestamp": {
+        "$date": "2026-01-21T23:30:47.667Z"
+      }
+    },
+    {
+      "stage": "resolve_targets",
+      "level": "info",
+      "message": "Resolved 1 targets.",
+      "timestamp": {
+        "$date": "2026-01-21T23:30:47.733Z"
+      }
+    },
+    {
+      "stage": "run_items",
+      "level": "info",
+      "message": "Created 1 run items.",
+      "timestamp": {
+        "$date": "2026-01-21T23:30:47.787Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Executed 1 items: 0 succeeded, 1 failed.",
+      "timestamp": {
+        "$date": "2026-01-21T23:31:25.309Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Last error: LlmRawResponse validation failed: responseRaw: Path `responseRaw` is required.",
+      "timestamp": {
+        "$date": "2026-01-21T23:31:25.309Z"
+      }
+    },
+    {
+      "stage": "complete",
+      "level": "error",
+      "message": "Run failed.",
+      "timestamp": {
+        "$date": "2026-01-21T23:31:25.309Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Computing aggregates...",
+      "timestamp": {
+        "$date": "2026-01-21T23:31:25.369Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Aggregation complete: 0 chapters, 0 books, 0 bibles.",
+      "timestamp": {
+        "$date": "2026-01-21T23:31:25.713Z"
+      }
+    }
+  ],
+  "errorSummary": {
+    "failedCount": 1,
+    "lastError": "LlmRawResponse validation failed: responseRaw: Path `responseRaw` is required.",
+    "lastErrorAt": {
+      "$date": "2026-01-21T23:31:25.253Z"
+    }
+  },
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-21T23:30:47.667Z"
+    },
+    "createdBy": "admin"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "697232e5c5bba7053ad4eae5"
+  },
+  "runId": "f82c5fa8-f170-49dc-a92e-fe2b03dbb507",
+  "runType": "MODEL_CHAPTER",
+  "modelId": 2,
+  "scope": "chapter",
+  "scopeIds": {
+    "chapterId": 1001
+  },
+  "status": "failed",
+  "startedAt": {
+    "$date": "2026-01-22T14:23:33.751Z"
+  },
+  "completedAt": {
+    "$date": "2026-01-22T14:24:14.709Z"
+  },
+  "metrics": {
+    "total": 1,
+    "success": 0,
+    "failed": 1,
+    "totalChapters": 1,
+    "durationMs": 40957
+  },
+  "logs": [
+    {
+      "stage": "run",
+      "level": "info",
+      "message": "Run f82c5fa8-f170-49dc-a92e-fe2b03dbb507 started.",
+      "timestamp": {
+        "$date": "2026-01-22T14:23:33.751Z"
+      }
+    },
+    {
+      "stage": "resolve_targets",
+      "level": "info",
+      "message": "Resolved 1 targets.",
+      "timestamp": {
+        "$date": "2026-01-22T14:23:33.822Z"
+      }
+    },
+    {
+      "stage": "run_items",
+      "level": "info",
+      "message": "Created 1 run items.",
+      "timestamp": {
+        "$date": "2026-01-22T14:23:33.885Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Executed 1 items: 0 succeeded, 1 failed.",
+      "timestamp": {
+        "$date": "2026-01-22T14:24:14.708Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Last error: Empty response from provider.",
+      "timestamp": {
+        "$date": "2026-01-22T14:24:14.708Z"
+      }
+    },
+    {
+      "stage": "complete",
+      "level": "error",
+      "message": "Run failed.",
+      "timestamp": {
+        "$date": "2026-01-22T14:24:14.709Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Computing aggregates...",
+      "timestamp": {
+        "$date": "2026-01-22T14:24:14.767Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Aggregation complete: 0 chapters, 0 books, 0 bibles.",
+      "timestamp": {
+        "$date": "2026-01-22T14:24:15.110Z"
+      }
+    }
+  ],
+  "errorSummary": {
+    "failedCount": 1,
+    "lastError": "Empty response from provider.",
+    "lastErrorAt": {
+      "$date": "2026-01-22T14:24:14.604Z"
+    }
+  },
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-22T14:23:33.751Z"
+    },
+    "createdBy": "admin"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69724f07c5bba7053ad4eb32"
+  },
+  "runId": "a0881eb7-f282-4fd7-b24c-f2dcacca76d8",
+  "runType": "MODEL_CHAPTER",
+  "modelId": 3,
+  "scope": "chapter",
+  "scopeIds": {
+    "chapterId": 1001
+  },
+  "status": "failed",
+  "startedAt": {
+    "$date": "2026-01-22T16:23:35.026Z"
+  },
+  "completedAt": {
+    "$date": "2026-01-22T16:24:18.441Z"
+  },
+  "metrics": {
+    "total": 1,
+    "success": 0,
+    "failed": 1,
+    "totalChapters": 1,
+    "durationMs": 43414
+  },
+  "logs": [
+    {
+      "stage": "run",
+      "level": "info",
+      "message": "Run a0881eb7-f282-4fd7-b24c-f2dcacca76d8 started.",
+      "timestamp": {
+        "$date": "2026-01-22T16:23:35.026Z"
+      }
+    },
+    {
+      "stage": "resolve_targets",
+      "level": "info",
+      "message": "Resolved 1 targets.",
+      "timestamp": {
+        "$date": "2026-01-22T16:23:35.087Z"
+      }
+    },
+    {
+      "stage": "run_items",
+      "level": "info",
+      "message": "Created 1 run items.",
+      "timestamp": {
+        "$date": "2026-01-22T16:23:35.134Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Executed 1 items: 0 succeeded, 1 failed.",
+      "timestamp": {
+        "$date": "2026-01-22T16:24:18.440Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Last error: LlmVerseResult validation failed: responseRaw: Path `responseRaw` is required., responseProcessed: Path `responseProcessed` is required.",
+      "timestamp": {
+        "$date": "2026-01-22T16:24:18.441Z"
+      }
+    },
+    {
+      "stage": "complete",
+      "level": "error",
+      "message": "Run failed.",
+      "timestamp": {
+        "$date": "2026-01-22T16:24:18.441Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Computing aggregates...",
+      "timestamp": {
+        "$date": "2026-01-22T16:24:18.498Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Aggregation complete: 0 chapters, 0 books, 0 bibles.",
+      "timestamp": {
+        "$date": "2026-01-22T16:24:18.808Z"
+      }
+    }
+  ],
+  "errorSummary": {
+    "failedCount": 1,
+    "lastError": "LlmVerseResult validation failed: responseRaw: Path `responseRaw` is required., responseProcessed: Path `responseProcessed` is required.",
+    "lastErrorAt": {
+      "$date": "2026-01-22T16:24:18.381Z"
+    }
+  },
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-22T16:23:35.026Z"
+    },
+    "createdBy": "admin"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6972a6a70662952455fe879f"
+  },
+  "runId": "9531dc1e-7952-4108-9a08-228b482b5972",
+  "runType": "MODEL_CHAPTER",
+  "modelId": 3,
+  "scope": "chapter",
+  "scopeIds": {
+    "chapterId": 1005
+  },
+  "status": "failed",
+  "startedAt": {
+    "$date": "2026-01-22T22:37:27.128Z"
+  },
+  "completedAt": {
+    "$date": "2026-01-22T22:38:21.640Z"
+  },
+  "metrics": {
+    "total": 1,
+    "success": 0,
+    "failed": 1,
+    "totalChapters": 1,
+    "durationMs": 54511
+  },
+  "logs": [
+    {
+      "stage": "run",
+      "level": "info",
+      "message": "Run 9531dc1e-7952-4108-9a08-228b482b5972 started.",
+      "timestamp": {
+        "$date": "2026-01-22T22:37:27.128Z"
+      }
+    },
+    {
+      "stage": "resolve_targets",
+      "level": "info",
+      "message": "Resolved 1 targets.",
+      "timestamp": {
+        "$date": "2026-01-22T22:37:27.189Z"
+      }
+    },
+    {
+      "stage": "run_items",
+      "level": "info",
+      "message": "Created 1 run items.",
+      "timestamp": {
+        "$date": "2026-01-22T22:37:27.236Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Executed 1 items: 0 succeeded, 1 failed.",
+      "timestamp": {
+        "$date": "2026-01-22T22:38:21.640Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Last error: Empty response from provider.",
+      "timestamp": {
+        "$date": "2026-01-22T22:38:21.640Z"
+      }
+    },
+    {
+      "stage": "complete",
+      "level": "error",
+      "message": "Run failed.",
+      "timestamp": {
+        "$date": "2026-01-22T22:38:21.640Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Computing aggregates...",
+      "timestamp": {
+        "$date": "2026-01-22T22:38:21.761Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Aggregation complete: 0 chapters, 0 books, 0 bibles.",
+      "timestamp": {
+        "$date": "2026-01-22T22:38:22.066Z"
+      }
+    }
+  ],
+  "errorSummary": {
+    "failedCount": 1,
+    "lastError": "Empty response from provider.",
+    "lastErrorAt": {
+      "$date": "2026-01-22T22:38:21.519Z"
+    }
+  },
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-22T22:37:27.128Z"
+    },
+    "createdBy": "admin"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6972a8000662952455fe88b9"
+  },
+  "runId": "3e72b781-48b4-4063-8b5c-e628fb66c5af",
+  "runType": "MODEL_CHAPTER",
+  "modelId": 3,
+  "scope": "chapter",
+  "scopeIds": {
+    "chapterId": 1011
+  },
+  "status": "failed",
+  "startedAt": {
+    "$date": "2026-01-22T22:43:12.968Z"
+  },
+  "completedAt": {
+    "$date": "2026-01-22T22:44:10.821Z"
+  },
+  "metrics": {
+    "total": 1,
+    "success": 0,
+    "failed": 1,
+    "totalChapters": 1,
+    "durationMs": 57853
+  },
+  "logs": [
+    {
+      "stage": "run",
+      "level": "info",
+      "message": "Run 3e72b781-48b4-4063-8b5c-e628fb66c5af started.",
+      "timestamp": {
+        "$date": "2026-01-22T22:43:12.968Z"
+      }
+    },
+    {
+      "stage": "resolve_targets",
+      "level": "info",
+      "message": "Resolved 1 targets.",
+      "timestamp": {
+        "$date": "2026-01-22T22:43:13.046Z"
+      }
+    },
+    {
+      "stage": "run_items",
+      "level": "info",
+      "message": "Created 1 run items.",
+      "timestamp": {
+        "$date": "2026-01-22T22:43:13.093Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Executed 1 items: 0 succeeded, 1 failed.",
+      "timestamp": {
+        "$date": "2026-01-22T22:44:10.821Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Last error: Empty response from provider.",
+      "timestamp": {
+        "$date": "2026-01-22T22:44:10.821Z"
+      }
+    },
+    {
+      "stage": "complete",
+      "level": "error",
+      "message": "Run failed.",
+      "timestamp": {
+        "$date": "2026-01-22T22:44:10.821Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Computing aggregates...",
+      "timestamp": {
+        "$date": "2026-01-22T22:44:10.874Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Aggregation complete: 0 chapters, 0 books, 0 bibles.",
+      "timestamp": {
+        "$date": "2026-01-22T22:44:11.293Z"
+      }
+    }
+  ],
+  "errorSummary": {
+    "failedCount": 1,
+    "lastError": "Empty response from provider.",
+    "lastErrorAt": {
+      "$date": "2026-01-22T22:44:10.770Z"
+    }
+  },
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-22T22:43:12.968Z"
+    },
+    "createdBy": "admin"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6972a8980662952455fe892a"
+  },
+  "runId": "c018b43b-50d6-43e7-a04c-fea8b349a6d3",
+  "runType": "MODEL_CHAPTER",
+  "modelId": 3,
+  "scope": "chapter",
+  "scopeIds": {
+    "chapterId": 1014
+  },
+  "status": "failed",
+  "startedAt": {
+    "$date": "2026-01-22T22:45:44.018Z"
+  },
+  "completedAt": {
+    "$date": "2026-01-22T22:46:46.096Z"
+  },
+  "metrics": {
+    "total": 1,
+    "success": 0,
+    "failed": 1,
+    "totalChapters": 1,
+    "durationMs": 62078
+  },
+  "logs": [
+    {
+      "stage": "run",
+      "level": "info",
+      "message": "Run c018b43b-50d6-43e7-a04c-fea8b349a6d3 started.",
+      "timestamp": {
+        "$date": "2026-01-22T22:45:44.018Z"
+      }
+    },
+    {
+      "stage": "resolve_targets",
+      "level": "info",
+      "message": "Resolved 1 targets.",
+      "timestamp": {
+        "$date": "2026-01-22T22:45:44.075Z"
+      }
+    },
+    {
+      "stage": "run_items",
+      "level": "info",
+      "message": "Created 1 run items.",
+      "timestamp": {
+        "$date": "2026-01-22T22:45:44.121Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Executed 1 items: 0 succeeded, 1 failed.",
+      "timestamp": {
+        "$date": "2026-01-22T22:46:46.096Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Last error: Empty response from provider.",
+      "timestamp": {
+        "$date": "2026-01-22T22:46:46.096Z"
+      }
+    },
+    {
+      "stage": "complete",
+      "level": "error",
+      "message": "Run failed.",
+      "timestamp": {
+        "$date": "2026-01-22T22:46:46.096Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Computing aggregates...",
+      "timestamp": {
+        "$date": "2026-01-22T22:46:46.161Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Aggregation complete: 0 chapters, 0 books, 0 bibles.",
+      "timestamp": {
+        "$date": "2026-01-22T22:46:46.457Z"
+      }
+    }
+  ],
+  "errorSummary": {
+    "failedCount": 1,
+    "lastError": "Empty response from provider.",
+    "lastErrorAt": {
+      "$date": "2026-01-22T22:46:46.046Z"
+    }
+  },
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-22T22:45:44.018Z"
+    },
+    "createdBy": "admin"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6972a9270662952455fe899a"
+  },
+  "runId": "4030703a-0afd-46fc-a14b-45d36e44beec",
+  "runType": "MODEL_CHAPTER",
+  "modelId": 3,
+  "scope": "chapter",
+  "scopeIds": {
+    "chapterId": 1017
+  },
+  "status": "failed",
+  "startedAt": {
+    "$date": "2026-01-22T22:48:07.575Z"
+  },
+  "completedAt": {
+    "$date": "2026-01-22T22:49:06.383Z"
+  },
+  "metrics": {
+    "total": 1,
+    "success": 0,
+    "failed": 1,
+    "totalChapters": 1,
+    "durationMs": 58808
+  },
+  "logs": [
+    {
+      "stage": "run",
+      "level": "info",
+      "message": "Run 4030703a-0afd-46fc-a14b-45d36e44beec started.",
+      "timestamp": {
+        "$date": "2026-01-22T22:48:07.575Z"
+      }
+    },
+    {
+      "stage": "resolve_targets",
+      "level": "info",
+      "message": "Resolved 1 targets.",
+      "timestamp": {
+        "$date": "2026-01-22T22:48:07.633Z"
+      }
+    },
+    {
+      "stage": "run_items",
+      "level": "info",
+      "message": "Created 1 run items.",
+      "timestamp": {
+        "$date": "2026-01-22T22:48:07.683Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Executed 1 items: 0 succeeded, 1 failed.",
+      "timestamp": {
+        "$date": "2026-01-22T22:49:06.383Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Last error: Empty response from provider.",
+      "timestamp": {
+        "$date": "2026-01-22T22:49:06.383Z"
+      }
+    },
+    {
+      "stage": "complete",
+      "level": "error",
+      "message": "Run failed.",
+      "timestamp": {
+        "$date": "2026-01-22T22:49:06.383Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Computing aggregates...",
+      "timestamp": {
+        "$date": "2026-01-22T22:49:06.440Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Aggregation complete: 0 chapters, 0 books, 0 bibles.",
+      "timestamp": {
+        "$date": "2026-01-22T22:49:06.724Z"
+      }
+    }
+  ],
+  "errorSummary": {
+    "failedCount": 1,
+    "lastError": "Empty response from provider.",
+    "lastErrorAt": {
+      "$date": "2026-01-22T22:49:06.332Z"
+    }
+  },
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-22T22:48:07.575Z"
+    },
+    "createdBy": "admin"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6972a9620662952455fe89b1"
+  },
+  "runId": "a848ffed-b33d-47b0-acf4-13fdb239127e",
+  "runType": "MODEL_CHAPTER",
+  "modelId": 3,
+  "scope": "chapter",
+  "scopeIds": {
+    "chapterId": 1018
+  },
+  "status": "failed",
+  "startedAt": {
+    "$date": "2026-01-22T22:49:06.871Z"
+  },
+  "completedAt": {
+    "$date": "2026-01-22T22:50:19.502Z"
+  },
+  "metrics": {
+    "total": 1,
+    "success": 0,
+    "failed": 1,
+    "totalChapters": 1,
+    "durationMs": 72631
+  },
+  "logs": [
+    {
+      "stage": "run",
+      "level": "info",
+      "message": "Run a848ffed-b33d-47b0-acf4-13fdb239127e started.",
+      "timestamp": {
+        "$date": "2026-01-22T22:49:06.871Z"
+      }
+    },
+    {
+      "stage": "resolve_targets",
+      "level": "info",
+      "message": "Resolved 1 targets.",
+      "timestamp": {
+        "$date": "2026-01-22T22:49:06.931Z"
+      }
+    },
+    {
+      "stage": "run_items",
+      "level": "info",
+      "message": "Created 1 run items.",
+      "timestamp": {
+        "$date": "2026-01-22T22:49:06.980Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Executed 1 items: 0 succeeded, 1 failed.",
+      "timestamp": {
+        "$date": "2026-01-22T22:50:19.502Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Last error: Empty response from provider.",
+      "timestamp": {
+        "$date": "2026-01-22T22:50:19.502Z"
+      }
+    },
+    {
+      "stage": "complete",
+      "level": "error",
+      "message": "Run failed.",
+      "timestamp": {
+        "$date": "2026-01-22T22:50:19.502Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Computing aggregates...",
+      "timestamp": {
+        "$date": "2026-01-22T22:50:19.561Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Aggregation complete: 0 chapters, 0 books, 0 bibles.",
+      "timestamp": {
+        "$date": "2026-01-22T22:50:19.840Z"
+      }
+    }
+  ],
+  "errorSummary": {
+    "failedCount": 1,
+    "lastError": "Empty response from provider.",
+    "lastErrorAt": {
+      "$date": "2026-01-22T22:50:19.445Z"
+    }
+  },
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-22T22:49:06.871Z"
+    },
+    "createdBy": "admin"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6972a9ab0662952455fe89c8"
+  },
+  "runId": "cda30ff0-6bc2-49aa-818f-529e248f464b",
+  "runType": "MODEL_CHAPTER",
+  "modelId": 3,
+  "scope": "chapter",
+  "scopeIds": {
+    "chapterId": 1019
+  },
+  "status": "failed",
+  "startedAt": {
+    "$date": "2026-01-22T22:50:19.993Z"
+  },
+  "completedAt": {
+    "$date": "2026-01-22T22:51:24.490Z"
+  },
+  "metrics": {
+    "total": 1,
+    "success": 0,
+    "failed": 1,
+    "totalChapters": 1,
+    "durationMs": 64497
+  },
+  "logs": [
+    {
+      "stage": "run",
+      "level": "info",
+      "message": "Run cda30ff0-6bc2-49aa-818f-529e248f464b started.",
+      "timestamp": {
+        "$date": "2026-01-22T22:50:19.993Z"
+      }
+    },
+    {
+      "stage": "resolve_targets",
+      "level": "info",
+      "message": "Resolved 1 targets.",
+      "timestamp": {
+        "$date": "2026-01-22T22:50:20.051Z"
+      }
+    },
+    {
+      "stage": "run_items",
+      "level": "info",
+      "message": "Created 1 run items.",
+      "timestamp": {
+        "$date": "2026-01-22T22:50:20.098Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Executed 1 items: 0 succeeded, 1 failed.",
+      "timestamp": {
+        "$date": "2026-01-22T22:51:24.490Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Last error: Empty response from provider.",
+      "timestamp": {
+        "$date": "2026-01-22T22:51:24.490Z"
+      }
+    },
+    {
+      "stage": "complete",
+      "level": "error",
+      "message": "Run failed.",
+      "timestamp": {
+        "$date": "2026-01-22T22:51:24.490Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Computing aggregates...",
+      "timestamp": {
+        "$date": "2026-01-22T22:51:24.549Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Aggregation complete: 0 chapters, 0 books, 0 bibles.",
+      "timestamp": {
+        "$date": "2026-01-22T22:51:24.824Z"
+      }
+    }
+  ],
+  "errorSummary": {
+    "failedCount": 1,
+    "lastError": "Empty response from provider.",
+    "lastErrorAt": {
+      "$date": "2026-01-22T22:51:24.440Z"
+    }
+  },
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-22T22:50:19.993Z"
+    },
+    "createdBy": "admin"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6972a9ec0662952455fe89df"
+  },
+  "runId": "222d6d61-5b27-4c0e-9549-36d8991bc8a6",
+  "runType": "MODEL_CHAPTER",
+  "modelId": 3,
+  "scope": "chapter",
+  "scopeIds": {
+    "chapterId": 1020
+  },
+  "status": "failed",
+  "startedAt": {
+    "$date": "2026-01-22T22:51:24.975Z"
+  },
+  "completedAt": {
+    "$date": "2026-01-22T22:52:14.081Z"
+  },
+  "metrics": {
+    "total": 1,
+    "success": 0,
+    "failed": 1,
+    "totalChapters": 1,
+    "durationMs": 49106
+  },
+  "logs": [
+    {
+      "stage": "run",
+      "level": "info",
+      "message": "Run 222d6d61-5b27-4c0e-9549-36d8991bc8a6 started.",
+      "timestamp": {
+        "$date": "2026-01-22T22:51:24.975Z"
+      }
+    },
+    {
+      "stage": "resolve_targets",
+      "level": "info",
+      "message": "Resolved 1 targets.",
+      "timestamp": {
+        "$date": "2026-01-22T22:51:25.035Z"
+      }
+    },
+    {
+      "stage": "run_items",
+      "level": "info",
+      "message": "Created 1 run items.",
+      "timestamp": {
+        "$date": "2026-01-22T22:51:25.084Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Executed 1 items: 0 succeeded, 1 failed.",
+      "timestamp": {
+        "$date": "2026-01-22T22:52:14.081Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Last error: Empty response from provider.",
+      "timestamp": {
+        "$date": "2026-01-22T22:52:14.081Z"
+      }
+    },
+    {
+      "stage": "complete",
+      "level": "error",
+      "message": "Run failed.",
+      "timestamp": {
+        "$date": "2026-01-22T22:52:14.081Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Computing aggregates...",
+      "timestamp": {
+        "$date": "2026-01-22T22:52:14.139Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Aggregation complete: 0 chapters, 0 books, 0 bibles.",
+      "timestamp": {
+        "$date": "2026-01-22T22:52:14.450Z"
+      }
+    }
+  ],
+  "errorSummary": {
+    "failedCount": 1,
+    "lastError": "Empty response from provider.",
+    "lastErrorAt": {
+      "$date": "2026-01-22T22:52:14.032Z"
+    }
+  },
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-22T22:51:24.975Z"
+    },
+    "createdBy": "admin"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6972aa1e0662952455fe89f6"
+  },
+  "runId": "4f80ee43-884c-4476-afa5-a92ba12f5b19",
+  "runType": "MODEL_CHAPTER",
+  "modelId": 3,
+  "scope": "chapter",
+  "scopeIds": {
+    "chapterId": 1021
+  },
+  "status": "failed",
+  "startedAt": {
+    "$date": "2026-01-22T22:52:14.611Z"
+  },
+  "completedAt": {
+    "$date": "2026-01-22T22:53:24.239Z"
+  },
+  "metrics": {
+    "total": 1,
+    "success": 0,
+    "failed": 1,
+    "totalChapters": 1,
+    "durationMs": 69628
+  },
+  "logs": [
+    {
+      "stage": "run",
+      "level": "info",
+      "message": "Run 4f80ee43-884c-4476-afa5-a92ba12f5b19 started.",
+      "timestamp": {
+        "$date": "2026-01-22T22:52:14.611Z"
+      }
+    },
+    {
+      "stage": "resolve_targets",
+      "level": "info",
+      "message": "Resolved 1 targets.",
+      "timestamp": {
+        "$date": "2026-01-22T22:52:14.667Z"
+      }
+    },
+    {
+      "stage": "run_items",
+      "level": "info",
+      "message": "Created 1 run items.",
+      "timestamp": {
+        "$date": "2026-01-22T22:52:14.717Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Executed 1 items: 0 succeeded, 1 failed.",
+      "timestamp": {
+        "$date": "2026-01-22T22:53:24.239Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Last error: Empty response from provider.",
+      "timestamp": {
+        "$date": "2026-01-22T22:53:24.239Z"
+      }
+    },
+    {
+      "stage": "complete",
+      "level": "error",
+      "message": "Run failed.",
+      "timestamp": {
+        "$date": "2026-01-22T22:53:24.239Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Computing aggregates...",
+      "timestamp": {
+        "$date": "2026-01-22T22:53:24.300Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Aggregation complete: 0 chapters, 0 books, 0 bibles.",
+      "timestamp": {
+        "$date": "2026-01-22T22:53:24.602Z"
+      }
+    }
+  ],
+  "errorSummary": {
+    "failedCount": 1,
+    "lastError": "Empty response from provider.",
+    "lastErrorAt": {
+      "$date": "2026-01-22T22:53:24.176Z"
+    }
+  },
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-22T22:52:14.611Z"
+    },
+    "createdBy": "admin"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6972aace0662952455fe8a3f"
+  },
+  "runId": "598b93b4-e557-45e8-a943-d8c12df20f12",
+  "runType": "MODEL_CHAPTER",
+  "modelId": 3,
+  "scope": "chapter",
+  "scopeIds": {
+    "chapterId": 1023
+  },
+  "status": "failed",
+  "startedAt": {
+    "$date": "2026-01-22T22:55:10.480Z"
+  },
+  "completedAt": {
+    "$date": "2026-01-22T22:56:21.179Z"
+  },
+  "metrics": {
+    "total": 1,
+    "success": 0,
+    "failed": 1,
+    "totalChapters": 1,
+    "durationMs": 70699
+  },
+  "logs": [
+    {
+      "stage": "run",
+      "level": "info",
+      "message": "Run 598b93b4-e557-45e8-a943-d8c12df20f12 started.",
+      "timestamp": {
+        "$date": "2026-01-22T22:55:10.480Z"
+      }
+    },
+    {
+      "stage": "resolve_targets",
+      "level": "info",
+      "message": "Resolved 1 targets.",
+      "timestamp": {
+        "$date": "2026-01-22T22:55:10.539Z"
+      }
+    },
+    {
+      "stage": "run_items",
+      "level": "info",
+      "message": "Created 1 run items.",
+      "timestamp": {
+        "$date": "2026-01-22T22:55:10.588Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Executed 1 items: 0 succeeded, 1 failed.",
+      "timestamp": {
+        "$date": "2026-01-22T22:56:21.179Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Last error: Empty response from provider.",
+      "timestamp": {
+        "$date": "2026-01-22T22:56:21.179Z"
+      }
+    },
+    {
+      "stage": "complete",
+      "level": "error",
+      "message": "Run failed.",
+      "timestamp": {
+        "$date": "2026-01-22T22:56:21.179Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Computing aggregates...",
+      "timestamp": {
+        "$date": "2026-01-22T22:56:21.239Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Aggregation complete: 0 chapters, 0 books, 0 bibles.",
+      "timestamp": {
+        "$date": "2026-01-22T22:56:21.559Z"
+      }
+    }
+  ],
+  "errorSummary": {
+    "failedCount": 1,
+    "lastError": "Empty response from provider.",
+    "lastErrorAt": {
+      "$date": "2026-01-22T22:56:21.125Z"
+    }
+  },
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-22T22:55:10.480Z"
+    },
+    "createdBy": "admin"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6972ab150662952455fe8a56"
+  },
+  "runId": "bb27edaa-a291-4262-bb9b-6d9603cab305",
+  "runType": "MODEL_CHAPTER",
+  "modelId": 3,
+  "scope": "chapter",
+  "scopeIds": {
+    "chapterId": 1024
+  },
+  "status": "failed",
+  "startedAt": {
+    "$date": "2026-01-22T22:56:21.707Z"
+  },
+  "completedAt": {
+    "$date": "2026-01-22T22:57:18.220Z"
+  },
+  "metrics": {
+    "total": 1,
+    "success": 0,
+    "failed": 1,
+    "totalChapters": 1,
+    "durationMs": 56513
+  },
+  "logs": [
+    {
+      "stage": "run",
+      "level": "info",
+      "message": "Run bb27edaa-a291-4262-bb9b-6d9603cab305 started.",
+      "timestamp": {
+        "$date": "2026-01-22T22:56:21.707Z"
+      }
+    },
+    {
+      "stage": "resolve_targets",
+      "level": "info",
+      "message": "Resolved 1 targets.",
+      "timestamp": {
+        "$date": "2026-01-22T22:56:21.765Z"
+      }
+    },
+    {
+      "stage": "run_items",
+      "level": "info",
+      "message": "Created 1 run items.",
+      "timestamp": {
+        "$date": "2026-01-22T22:56:21.816Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Executed 1 items: 0 succeeded, 1 failed.",
+      "timestamp": {
+        "$date": "2026-01-22T22:57:18.220Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Last error: Empty response from provider.",
+      "timestamp": {
+        "$date": "2026-01-22T22:57:18.220Z"
+      }
+    },
+    {
+      "stage": "complete",
+      "level": "error",
+      "message": "Run failed.",
+      "timestamp": {
+        "$date": "2026-01-22T22:57:18.220Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Computing aggregates...",
+      "timestamp": {
+        "$date": "2026-01-22T22:57:18.276Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Aggregation complete: 0 chapters, 0 books, 0 bibles.",
+      "timestamp": {
+        "$date": "2026-01-22T22:57:18.617Z"
+      }
+    }
+  ],
+  "errorSummary": {
+    "failedCount": 1,
+    "lastError": "Empty response from provider.",
+    "lastErrorAt": {
+      "$date": "2026-01-22T22:57:18.169Z"
+    }
+  },
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-22T22:56:21.707Z"
+    },
+    "createdBy": "admin"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6972ab4e0662952455fe8a6d"
+  },
+  "runId": "577bd691-e59e-4662-9ac4-3e0f3385e440",
+  "runType": "MODEL_CHAPTER",
+  "modelId": 3,
+  "scope": "chapter",
+  "scopeIds": {
+    "chapterId": 1025
+  },
+  "status": "failed",
+  "startedAt": {
+    "$date": "2026-01-22T22:57:18.766Z"
+  },
+  "completedAt": {
+    "$date": "2026-01-22T22:58:15.153Z"
+  },
+  "metrics": {
+    "total": 1,
+    "success": 0,
+    "failed": 1,
+    "totalChapters": 1,
+    "durationMs": 56387
+  },
+  "logs": [
+    {
+      "stage": "run",
+      "level": "info",
+      "message": "Run 577bd691-e59e-4662-9ac4-3e0f3385e440 started.",
+      "timestamp": {
+        "$date": "2026-01-22T22:57:18.766Z"
+      }
+    },
+    {
+      "stage": "resolve_targets",
+      "level": "info",
+      "message": "Resolved 1 targets.",
+      "timestamp": {
+        "$date": "2026-01-22T22:57:18.824Z"
+      }
+    },
+    {
+      "stage": "run_items",
+      "level": "info",
+      "message": "Created 1 run items.",
+      "timestamp": {
+        "$date": "2026-01-22T22:57:18.873Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Executed 1 items: 0 succeeded, 1 failed.",
+      "timestamp": {
+        "$date": "2026-01-22T22:58:15.153Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Last error: Empty response from provider.",
+      "timestamp": {
+        "$date": "2026-01-22T22:58:15.153Z"
+      }
+    },
+    {
+      "stage": "complete",
+      "level": "error",
+      "message": "Run failed.",
+      "timestamp": {
+        "$date": "2026-01-22T22:58:15.153Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Computing aggregates...",
+      "timestamp": {
+        "$date": "2026-01-22T22:58:15.212Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Aggregation complete: 0 chapters, 0 books, 0 bibles.",
+      "timestamp": {
+        "$date": "2026-01-22T22:58:15.499Z"
+      }
+    }
+  ],
+  "errorSummary": {
+    "failedCount": 1,
+    "lastError": "Empty response from provider.",
+    "lastErrorAt": {
+      "$date": "2026-01-22T22:58:15.096Z"
+    }
+  },
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-22T22:57:18.766Z"
+    },
+    "createdBy": "admin"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6972ab870662952455fe8a84"
+  },
+  "runId": "3d46055c-a428-4057-a053-fb3d7165f4ed",
+  "runType": "MODEL_CHAPTER",
+  "modelId": 3,
+  "scope": "chapter",
+  "scopeIds": {
+    "chapterId": 1026
+  },
+  "status": "failed",
+  "startedAt": {
+    "$date": "2026-01-22T22:58:15.678Z"
+  },
+  "completedAt": {
+    "$date": "2026-01-22T22:59:10.302Z"
+  },
+  "metrics": {
+    "total": 1,
+    "success": 0,
+    "failed": 1,
+    "totalChapters": 1,
+    "durationMs": 54623
+  },
+  "logs": [
+    {
+      "stage": "run",
+      "level": "info",
+      "message": "Run 3d46055c-a428-4057-a053-fb3d7165f4ed started.",
+      "timestamp": {
+        "$date": "2026-01-22T22:58:15.678Z"
+      }
+    },
+    {
+      "stage": "resolve_targets",
+      "level": "info",
+      "message": "Resolved 1 targets.",
+      "timestamp": {
+        "$date": "2026-01-22T22:58:15.734Z"
+      }
+    },
+    {
+      "stage": "run_items",
+      "level": "info",
+      "message": "Created 1 run items.",
+      "timestamp": {
+        "$date": "2026-01-22T22:58:15.785Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Executed 1 items: 0 succeeded, 1 failed.",
+      "timestamp": {
+        "$date": "2026-01-22T22:59:10.302Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Last error: Empty response from provider.",
+      "timestamp": {
+        "$date": "2026-01-22T22:59:10.302Z"
+      }
+    },
+    {
+      "stage": "complete",
+      "level": "error",
+      "message": "Run failed.",
+      "timestamp": {
+        "$date": "2026-01-22T22:59:10.302Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Computing aggregates...",
+      "timestamp": {
+        "$date": "2026-01-22T22:59:10.360Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Aggregation complete: 0 chapters, 0 books, 0 bibles.",
+      "timestamp": {
+        "$date": "2026-01-22T22:59:10.645Z"
+      }
+    }
+  ],
+  "errorSummary": {
+    "failedCount": 1,
+    "lastError": "Empty response from provider.",
+    "lastErrorAt": {
+      "$date": "2026-01-22T22:59:10.252Z"
+    }
+  },
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-22T22:58:15.678Z"
+    },
+    "createdBy": "admin"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6972abbe0662952455fe8a9b"
+  },
+  "runId": "681bb844-8acf-4f1d-a4ff-e234f6969086",
+  "runType": "MODEL_CHAPTER",
+  "modelId": 3,
+  "scope": "chapter",
+  "scopeIds": {
+    "chapterId": 1027
+  },
+  "status": "failed",
+  "startedAt": {
+    "$date": "2026-01-22T22:59:10.801Z"
+  },
+  "completedAt": {
+    "$date": "2026-01-22T23:00:08.478Z"
+  },
+  "metrics": {
+    "total": 1,
+    "success": 0,
+    "failed": 1,
+    "totalChapters": 1,
+    "durationMs": 57677
+  },
+  "logs": [
+    {
+      "stage": "run",
+      "level": "info",
+      "message": "Run 681bb844-8acf-4f1d-a4ff-e234f6969086 started.",
+      "timestamp": {
+        "$date": "2026-01-22T22:59:10.801Z"
+      }
+    },
+    {
+      "stage": "resolve_targets",
+      "level": "info",
+      "message": "Resolved 1 targets.",
+      "timestamp": {
+        "$date": "2026-01-22T22:59:10.857Z"
+      }
+    },
+    {
+      "stage": "run_items",
+      "level": "info",
+      "message": "Created 1 run items.",
+      "timestamp": {
+        "$date": "2026-01-22T22:59:10.911Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Executed 1 items: 0 succeeded, 1 failed.",
+      "timestamp": {
+        "$date": "2026-01-22T23:00:08.478Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Last error: Empty response from provider.",
+      "timestamp": {
+        "$date": "2026-01-22T23:00:08.478Z"
+      }
+    },
+    {
+      "stage": "complete",
+      "level": "error",
+      "message": "Run failed.",
+      "timestamp": {
+        "$date": "2026-01-22T23:00:08.478Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Computing aggregates...",
+      "timestamp": {
+        "$date": "2026-01-22T23:00:08.537Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Aggregation complete: 0 chapters, 0 books, 0 bibles.",
+      "timestamp": {
+        "$date": "2026-01-22T23:00:08.848Z"
+      }
+    }
+  ],
+  "errorSummary": {
+    "failedCount": 1,
+    "lastError": "Empty response from provider.",
+    "lastErrorAt": {
+      "$date": "2026-01-22T23:00:08.425Z"
+    }
+  },
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-22T22:59:10.801Z"
+    },
+    "createdBy": "admin"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6972abf90662952455fe8ab2"
+  },
+  "runId": "61946b3a-3e18-497b-96a0-3b4e29c0d4a3",
+  "runType": "MODEL_CHAPTER",
+  "modelId": 3,
+  "scope": "chapter",
+  "scopeIds": {
+    "chapterId": 1028
+  },
+  "status": "failed",
+  "startedAt": {
+    "$date": "2026-01-22T23:00:09.011Z"
+  },
+  "completedAt": {
+    "$date": "2026-01-22T23:01:11.789Z"
+  },
+  "metrics": {
+    "total": 1,
+    "success": 0,
+    "failed": 1,
+    "totalChapters": 1,
+    "durationMs": 62778
+  },
+  "logs": [
+    {
+      "stage": "run",
+      "level": "info",
+      "message": "Run 61946b3a-3e18-497b-96a0-3b4e29c0d4a3 started.",
+      "timestamp": {
+        "$date": "2026-01-22T23:00:09.011Z"
+      }
+    },
+    {
+      "stage": "resolve_targets",
+      "level": "info",
+      "message": "Resolved 1 targets.",
+      "timestamp": {
+        "$date": "2026-01-22T23:00:09.070Z"
+      }
+    },
+    {
+      "stage": "run_items",
+      "level": "info",
+      "message": "Created 1 run items.",
+      "timestamp": {
+        "$date": "2026-01-22T23:00:09.128Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Executed 1 items: 0 succeeded, 1 failed.",
+      "timestamp": {
+        "$date": "2026-01-22T23:01:11.789Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Last error: Empty response from provider.",
+      "timestamp": {
+        "$date": "2026-01-22T23:01:11.789Z"
+      }
+    },
+    {
+      "stage": "complete",
+      "level": "error",
+      "message": "Run failed.",
+      "timestamp": {
+        "$date": "2026-01-22T23:01:11.789Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Computing aggregates...",
+      "timestamp": {
+        "$date": "2026-01-22T23:01:11.848Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Aggregation complete: 0 chapters, 0 books, 0 bibles.",
+      "timestamp": {
+        "$date": "2026-01-22T23:01:12.152Z"
+      }
+    }
+  ],
+  "errorSummary": {
+    "failedCount": 1,
+    "lastError": "Empty response from provider.",
+    "lastErrorAt": {
+      "$date": "2026-01-22T23:01:11.743Z"
+    }
+  },
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-22T23:00:09.011Z"
+    },
+    "createdBy": "admin"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6972ac380662952455fe8ac9"
+  },
+  "runId": "9e9bcb70-5b01-432c-9222-e90dfdd1b435",
+  "runType": "MODEL_CHAPTER",
+  "modelId": 3,
+  "scope": "chapter",
+  "scopeIds": {
+    "chapterId": 1029
+  },
+  "status": "failed",
+  "startedAt": {
+    "$date": "2026-01-22T23:01:12.297Z"
+  },
+  "completedAt": {
+    "$date": "2026-01-22T23:02:13.361Z"
+  },
+  "metrics": {
+    "total": 1,
+    "success": 0,
+    "failed": 1,
+    "totalChapters": 1,
+    "durationMs": 61064
+  },
+  "logs": [
+    {
+      "stage": "run",
+      "level": "info",
+      "message": "Run 9e9bcb70-5b01-432c-9222-e90dfdd1b435 started.",
+      "timestamp": {
+        "$date": "2026-01-22T23:01:12.298Z"
+      }
+    },
+    {
+      "stage": "resolve_targets",
+      "level": "info",
+      "message": "Resolved 1 targets.",
+      "timestamp": {
+        "$date": "2026-01-22T23:01:12.356Z"
+      }
+    },
+    {
+      "stage": "run_items",
+      "level": "info",
+      "message": "Created 1 run items.",
+      "timestamp": {
+        "$date": "2026-01-22T23:01:12.407Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Executed 1 items: 0 succeeded, 1 failed.",
+      "timestamp": {
+        "$date": "2026-01-22T23:02:13.361Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Last error: Empty response from provider.",
+      "timestamp": {
+        "$date": "2026-01-22T23:02:13.361Z"
+      }
+    },
+    {
+      "stage": "complete",
+      "level": "error",
+      "message": "Run failed.",
+      "timestamp": {
+        "$date": "2026-01-22T23:02:13.361Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Computing aggregates...",
+      "timestamp": {
+        "$date": "2026-01-22T23:02:13.418Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Aggregation complete: 0 chapters, 0 books, 0 bibles.",
+      "timestamp": {
+        "$date": "2026-01-22T23:02:13.693Z"
+      }
+    }
+  ],
+  "errorSummary": {
+    "failedCount": 1,
+    "lastError": "Empty response from provider.",
+    "lastErrorAt": {
+      "$date": "2026-01-22T23:02:13.311Z"
+    }
+  },
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-22T23:01:12.297Z"
+    },
+    "createdBy": "admin"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6972ac750662952455fe8ae0"
+  },
+  "runId": "41011d47-8247-491a-9903-560c3cc96399",
+  "runType": "MODEL_CHAPTER",
+  "modelId": 3,
+  "scope": "chapter",
+  "scopeIds": {
+    "chapterId": 1030
+  },
+  "status": "failed",
+  "startedAt": {
+    "$date": "2026-01-22T23:02:13.840Z"
+  },
+  "completedAt": {
+    "$date": "2026-01-22T23:03:17.443Z"
+  },
+  "metrics": {
+    "total": 1,
+    "success": 0,
+    "failed": 1,
+    "totalChapters": 1,
+    "durationMs": 63602
+  },
+  "logs": [
+    {
+      "stage": "run",
+      "level": "info",
+      "message": "Run 41011d47-8247-491a-9903-560c3cc96399 started.",
+      "timestamp": {
+        "$date": "2026-01-22T23:02:13.840Z"
+      }
+    },
+    {
+      "stage": "resolve_targets",
+      "level": "info",
+      "message": "Resolved 1 targets.",
+      "timestamp": {
+        "$date": "2026-01-22T23:02:13.897Z"
+      }
+    },
+    {
+      "stage": "run_items",
+      "level": "info",
+      "message": "Created 1 run items.",
+      "timestamp": {
+        "$date": "2026-01-22T23:02:13.950Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Executed 1 items: 0 succeeded, 1 failed.",
+      "timestamp": {
+        "$date": "2026-01-22T23:03:17.442Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Last error: Empty response from provider.",
+      "timestamp": {
+        "$date": "2026-01-22T23:03:17.442Z"
+      }
+    },
+    {
+      "stage": "complete",
+      "level": "error",
+      "message": "Run failed.",
+      "timestamp": {
+        "$date": "2026-01-22T23:03:17.443Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Computing aggregates...",
+      "timestamp": {
+        "$date": "2026-01-22T23:03:17.501Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Aggregation complete: 0 chapters, 0 books, 0 bibles.",
+      "timestamp": {
+        "$date": "2026-01-22T23:03:17.790Z"
+      }
+    }
+  ],
+  "errorSummary": {
+    "failedCount": 1,
+    "lastError": "Empty response from provider.",
+    "lastErrorAt": {
+      "$date": "2026-01-22T23:03:17.396Z"
+    }
+  },
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-22T23:02:13.840Z"
+    },
+    "createdBy": "admin"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6972acb50662952455fe8af7"
+  },
+  "runId": "895577b2-29cb-4dd3-b8eb-029b8f028d5b",
+  "runType": "MODEL_CHAPTER",
+  "modelId": 3,
+  "scope": "chapter",
+  "scopeIds": {
+    "chapterId": 1031
+  },
+  "status": "failed",
+  "startedAt": {
+    "$date": "2026-01-22T23:03:17.942Z"
+  },
+  "completedAt": {
+    "$date": "2026-01-22T23:04:29.829Z"
+  },
+  "metrics": {
+    "total": 1,
+    "success": 0,
+    "failed": 1,
+    "totalChapters": 1,
+    "durationMs": 71887
+  },
+  "logs": [
+    {
+      "stage": "run",
+      "level": "info",
+      "message": "Run 895577b2-29cb-4dd3-b8eb-029b8f028d5b started.",
+      "timestamp": {
+        "$date": "2026-01-22T23:03:17.942Z"
+      }
+    },
+    {
+      "stage": "resolve_targets",
+      "level": "info",
+      "message": "Resolved 1 targets.",
+      "timestamp": {
+        "$date": "2026-01-22T23:03:18.002Z"
+      }
+    },
+    {
+      "stage": "run_items",
+      "level": "info",
+      "message": "Created 1 run items.",
+      "timestamp": {
+        "$date": "2026-01-22T23:03:18.062Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Executed 1 items: 0 succeeded, 1 failed.",
+      "timestamp": {
+        "$date": "2026-01-22T23:04:29.829Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Last error: Empty response from provider.",
+      "timestamp": {
+        "$date": "2026-01-22T23:04:29.829Z"
+      }
+    },
+    {
+      "stage": "complete",
+      "level": "error",
+      "message": "Run failed.",
+      "timestamp": {
+        "$date": "2026-01-22T23:04:29.829Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Computing aggregates...",
+      "timestamp": {
+        "$date": "2026-01-22T23:04:29.889Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Aggregation complete: 0 chapters, 0 books, 0 bibles.",
+      "timestamp": {
+        "$date": "2026-01-22T23:04:30.192Z"
+      }
+    }
+  ],
+  "errorSummary": {
+    "failedCount": 1,
+    "lastError": "Empty response from provider.",
+    "lastErrorAt": {
+      "$date": "2026-01-22T23:04:29.779Z"
+    }
+  },
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-22T23:03:17.942Z"
+    },
+    "createdBy": "admin"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6972acfe0662952455fe8b0e"
+  },
+  "runId": "1567704f-9472-4e54-9949-1fc256ecff1a",
+  "runType": "MODEL_CHAPTER",
+  "modelId": 3,
+  "scope": "chapter",
+  "scopeIds": {
+    "chapterId": 1032
+  },
+  "status": "failed",
+  "startedAt": {
+    "$date": "2026-01-22T23:04:30.343Z"
+  },
+  "completedAt": {
+    "$date": "2026-01-22T23:05:27.818Z"
+  },
+  "metrics": {
+    "total": 1,
+    "success": 0,
+    "failed": 1,
+    "totalChapters": 1,
+    "durationMs": 57475
+  },
+  "logs": [
+    {
+      "stage": "run",
+      "level": "info",
+      "message": "Run 1567704f-9472-4e54-9949-1fc256ecff1a started.",
+      "timestamp": {
+        "$date": "2026-01-22T23:04:30.343Z"
+      }
+    },
+    {
+      "stage": "resolve_targets",
+      "level": "info",
+      "message": "Resolved 1 targets.",
+      "timestamp": {
+        "$date": "2026-01-22T23:04:30.403Z"
+      }
+    },
+    {
+      "stage": "run_items",
+      "level": "info",
+      "message": "Created 1 run items.",
+      "timestamp": {
+        "$date": "2026-01-22T23:04:30.457Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Executed 1 items: 0 succeeded, 1 failed.",
+      "timestamp": {
+        "$date": "2026-01-22T23:05:27.818Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Last error: Empty response from provider.",
+      "timestamp": {
+        "$date": "2026-01-22T23:05:27.818Z"
+      }
+    },
+    {
+      "stage": "complete",
+      "level": "error",
+      "message": "Run failed.",
+      "timestamp": {
+        "$date": "2026-01-22T23:05:27.818Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Computing aggregates...",
+      "timestamp": {
+        "$date": "2026-01-22T23:05:27.877Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Aggregation complete: 0 chapters, 0 books, 0 bibles.",
+      "timestamp": {
+        "$date": "2026-01-22T23:05:28.154Z"
+      }
+    }
+  ],
+  "errorSummary": {
+    "failedCount": 1,
+    "lastError": "Empty response from provider.",
+    "lastErrorAt": {
+      "$date": "2026-01-22T23:05:27.769Z"
+    }
+  },
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-22T23:04:30.343Z"
+    },
+    "createdBy": "admin"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6972ad6f0662952455fe8b53"
+  },
+  "runId": "2bbd08e0-5f1f-4a57-97fd-ad47889cd8b7",
+  "runType": "MODEL_CHAPTER",
+  "modelId": 3,
+  "scope": "chapter",
+  "scopeIds": {
+    "chapterId": 1034
+  },
+  "status": "failed",
+  "startedAt": {
+    "$date": "2026-01-22T23:06:23.532Z"
+  },
+  "completedAt": {
+    "$date": "2026-01-22T23:07:15.318Z"
+  },
+  "metrics": {
+    "total": 1,
+    "success": 0,
+    "failed": 1,
+    "totalChapters": 1,
+    "durationMs": 51786
+  },
+  "logs": [
+    {
+      "stage": "run",
+      "level": "info",
+      "message": "Run 2bbd08e0-5f1f-4a57-97fd-ad47889cd8b7 started.",
+      "timestamp": {
+        "$date": "2026-01-22T23:06:23.532Z"
+      }
+    },
+    {
+      "stage": "resolve_targets",
+      "level": "info",
+      "message": "Resolved 1 targets.",
+      "timestamp": {
+        "$date": "2026-01-22T23:06:23.588Z"
+      }
+    },
+    {
+      "stage": "run_items",
+      "level": "info",
+      "message": "Created 1 run items.",
+      "timestamp": {
+        "$date": "2026-01-22T23:06:23.636Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Executed 1 items: 0 succeeded, 1 failed.",
+      "timestamp": {
+        "$date": "2026-01-22T23:07:15.318Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Last error: Empty response from provider.",
+      "timestamp": {
+        "$date": "2026-01-22T23:07:15.318Z"
+      }
+    },
+    {
+      "stage": "complete",
+      "level": "error",
+      "message": "Run failed.",
+      "timestamp": {
+        "$date": "2026-01-22T23:07:15.318Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Computing aggregates...",
+      "timestamp": {
+        "$date": "2026-01-22T23:07:15.376Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Aggregation complete: 0 chapters, 0 books, 0 bibles.",
+      "timestamp": {
+        "$date": "2026-01-22T23:07:15.662Z"
+      }
+    }
+  ],
+  "errorSummary": {
+    "failedCount": 1,
+    "lastError": "Empty response from provider.",
+    "lastErrorAt": {
+      "$date": "2026-01-22T23:07:15.267Z"
+    }
+  },
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-22T23:06:23.532Z"
+    },
+    "createdBy": "admin"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6972ada30662952455fe8b6a"
+  },
+  "runId": "9d497057-49c5-469c-9b7e-caf134c83851",
+  "runType": "MODEL_CHAPTER",
+  "modelId": 3,
+  "scope": "chapter",
+  "scopeIds": {
+    "chapterId": 1035
+  },
+  "status": "failed",
+  "startedAt": {
+    "$date": "2026-01-22T23:07:15.811Z"
+  },
+  "completedAt": {
+    "$date": "2026-01-22T23:08:30.374Z"
+  },
+  "metrics": {
+    "total": 1,
+    "success": 0,
+    "failed": 1,
+    "totalChapters": 1,
+    "durationMs": 74563
+  },
+  "logs": [
+    {
+      "stage": "run",
+      "level": "info",
+      "message": "Run 9d497057-49c5-469c-9b7e-caf134c83851 started.",
+      "timestamp": {
+        "$date": "2026-01-22T23:07:15.811Z"
+      }
+    },
+    {
+      "stage": "resolve_targets",
+      "level": "info",
+      "message": "Resolved 1 targets.",
+      "timestamp": {
+        "$date": "2026-01-22T23:07:15.870Z"
+      }
+    },
+    {
+      "stage": "run_items",
+      "level": "info",
+      "message": "Created 1 run items.",
+      "timestamp": {
+        "$date": "2026-01-22T23:07:15.921Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Executed 1 items: 0 succeeded, 1 failed.",
+      "timestamp": {
+        "$date": "2026-01-22T23:08:30.374Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Last error: Empty response from provider.",
+      "timestamp": {
+        "$date": "2026-01-22T23:08:30.374Z"
+      }
+    },
+    {
+      "stage": "complete",
+      "level": "error",
+      "message": "Run failed.",
+      "timestamp": {
+        "$date": "2026-01-22T23:08:30.374Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Computing aggregates...",
+      "timestamp": {
+        "$date": "2026-01-22T23:08:30.434Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Aggregation complete: 0 chapters, 0 books, 0 bibles.",
+      "timestamp": {
+        "$date": "2026-01-22T23:08:30.729Z"
+      }
+    }
+  ],
+  "errorSummary": {
+    "failedCount": 1,
+    "lastError": "Empty response from provider.",
+    "lastErrorAt": {
+      "$date": "2026-01-22T23:08:30.325Z"
+    }
+  },
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-22T23:07:15.811Z"
+    },
+    "createdBy": "admin"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6972ae200662952455fe8bc6"
+  },
+  "runId": "e57c9bd8-1aa0-4f7a-97ca-74a0d9f69b19",
+  "runType": "MODEL_CHAPTER",
+  "modelId": 3,
+  "scope": "chapter",
+  "scopeIds": {
+    "chapterId": 1037
+  },
+  "status": "failed",
+  "startedAt": {
+    "$date": "2026-01-22T23:09:20.700Z"
+  },
+  "completedAt": {
+    "$date": "2026-01-22T23:10:08.595Z"
+  },
+  "metrics": {
+    "total": 1,
+    "success": 0,
+    "failed": 1,
+    "totalChapters": 1,
+    "durationMs": 47895
+  },
+  "logs": [
+    {
+      "stage": "run",
+      "level": "info",
+      "message": "Run e57c9bd8-1aa0-4f7a-97ca-74a0d9f69b19 started.",
+      "timestamp": {
+        "$date": "2026-01-22T23:09:20.700Z"
+      }
+    },
+    {
+      "stage": "resolve_targets",
+      "level": "info",
+      "message": "Resolved 1 targets.",
+      "timestamp": {
+        "$date": "2026-01-22T23:09:20.757Z"
+      }
+    },
+    {
+      "stage": "run_items",
+      "level": "info",
+      "message": "Created 1 run items.",
+      "timestamp": {
+        "$date": "2026-01-22T23:09:20.816Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Executed 1 items: 0 succeeded, 1 failed.",
+      "timestamp": {
+        "$date": "2026-01-22T23:10:08.595Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Last error: Empty response from provider.",
+      "timestamp": {
+        "$date": "2026-01-22T23:10:08.595Z"
+      }
+    },
+    {
+      "stage": "complete",
+      "level": "error",
+      "message": "Run failed.",
+      "timestamp": {
+        "$date": "2026-01-22T23:10:08.595Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Computing aggregates...",
+      "timestamp": {
+        "$date": "2026-01-22T23:10:08.652Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Aggregation complete: 0 chapters, 0 books, 0 bibles.",
+      "timestamp": {
+        "$date": "2026-01-22T23:10:08.952Z"
+      }
+    }
+  ],
+  "errorSummary": {
+    "failedCount": 1,
+    "lastError": "Empty response from provider.",
+    "lastErrorAt": {
+      "$date": "2026-01-22T23:10:08.520Z"
+    }
+  },
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-22T23:09:20.700Z"
+    },
+    "createdBy": "admin"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6972ae510662952455fe8bdd"
+  },
+  "runId": "34ea3583-7d6f-43d6-9120-8ad21a4dd331",
+  "runType": "MODEL_CHAPTER",
+  "modelId": 3,
+  "scope": "chapter",
+  "scopeIds": {
+    "chapterId": 1038
+  },
+  "status": "failed",
+  "startedAt": {
+    "$date": "2026-01-22T23:10:09.134Z"
+  },
+  "completedAt": {
+    "$date": "2026-01-22T23:11:21.525Z"
+  },
+  "metrics": {
+    "total": 1,
+    "success": 0,
+    "failed": 1,
+    "totalChapters": 1,
+    "durationMs": 72391
+  },
+  "logs": [
+    {
+      "stage": "run",
+      "level": "info",
+      "message": "Run 34ea3583-7d6f-43d6-9120-8ad21a4dd331 started.",
+      "timestamp": {
+        "$date": "2026-01-22T23:10:09.134Z"
+      }
+    },
+    {
+      "stage": "resolve_targets",
+      "level": "info",
+      "message": "Resolved 1 targets.",
+      "timestamp": {
+        "$date": "2026-01-22T23:10:09.265Z"
+      }
+    },
+    {
+      "stage": "run_items",
+      "level": "info",
+      "message": "Created 1 run items.",
+      "timestamp": {
+        "$date": "2026-01-22T23:10:09.427Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Executed 1 items: 0 succeeded, 1 failed.",
+      "timestamp": {
+        "$date": "2026-01-22T23:11:21.525Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Last error: Empty response from provider.",
+      "timestamp": {
+        "$date": "2026-01-22T23:11:21.525Z"
+      }
+    },
+    {
+      "stage": "complete",
+      "level": "error",
+      "message": "Run failed.",
+      "timestamp": {
+        "$date": "2026-01-22T23:11:21.525Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Computing aggregates...",
+      "timestamp": {
+        "$date": "2026-01-22T23:11:21.586Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Aggregation complete: 0 chapters, 0 books, 0 bibles.",
+      "timestamp": {
+        "$date": "2026-01-22T23:11:21.870Z"
+      }
+    }
+  ],
+  "errorSummary": {
+    "failedCount": 1,
+    "lastError": "Empty response from provider.",
+    "lastErrorAt": {
+      "$date": "2026-01-22T23:11:21.476Z"
+    }
+  },
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-22T23:10:09.134Z"
+    },
+    "createdBy": "admin"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6972ae9a0662952455fe8bf4"
+  },
+  "runId": "1dfc397f-c302-4706-add4-514d1fd2dec8",
+  "runType": "MODEL_CHAPTER",
+  "modelId": 3,
+  "scope": "chapter",
+  "scopeIds": {
+    "chapterId": 1039
+  },
+  "status": "failed",
+  "startedAt": {
+    "$date": "2026-01-22T23:11:22.019Z"
+  },
+  "completedAt": {
+    "$date": "2026-01-22T23:12:24.138Z"
+  },
+  "metrics": {
+    "total": 1,
+    "success": 0,
+    "failed": 1,
+    "totalChapters": 1,
+    "durationMs": 62119
+  },
+  "logs": [
+    {
+      "stage": "run",
+      "level": "info",
+      "message": "Run 1dfc397f-c302-4706-add4-514d1fd2dec8 started.",
+      "timestamp": {
+        "$date": "2026-01-22T23:11:22.019Z"
+      }
+    },
+    {
+      "stage": "resolve_targets",
+      "level": "info",
+      "message": "Resolved 1 targets.",
+      "timestamp": {
+        "$date": "2026-01-22T23:11:22.076Z"
+      }
+    },
+    {
+      "stage": "run_items",
+      "level": "info",
+      "message": "Created 1 run items.",
+      "timestamp": {
+        "$date": "2026-01-22T23:11:22.126Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Executed 1 items: 0 succeeded, 1 failed.",
+      "timestamp": {
+        "$date": "2026-01-22T23:12:24.138Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Last error: Empty response from provider.",
+      "timestamp": {
+        "$date": "2026-01-22T23:12:24.138Z"
+      }
+    },
+    {
+      "stage": "complete",
+      "level": "error",
+      "message": "Run failed.",
+      "timestamp": {
+        "$date": "2026-01-22T23:12:24.138Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Computing aggregates...",
+      "timestamp": {
+        "$date": "2026-01-22T23:12:24.197Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Aggregation complete: 0 chapters, 0 books, 0 bibles.",
+      "timestamp": {
+        "$date": "2026-01-22T23:12:24.490Z"
+      }
+    }
+  ],
+  "errorSummary": {
+    "failedCount": 1,
+    "lastError": "Empty response from provider.",
+    "lastErrorAt": {
+      "$date": "2026-01-22T23:12:24.090Z"
+    }
+  },
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-22T23:11:22.019Z"
+    },
+    "createdBy": "admin"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6972aed80662952455fe8c0b"
+  },
+  "runId": "182ab6d4-d9e5-4acf-ac16-2c8bcf1e4b80",
+  "runType": "MODEL_CHAPTER",
+  "modelId": 3,
+  "scope": "chapter",
+  "scopeIds": {
+    "chapterId": 1040
+  },
+  "status": "failed",
+  "startedAt": {
+    "$date": "2026-01-22T23:12:24.639Z"
+  },
+  "completedAt": {
+    "$date": "2026-01-22T23:13:54.177Z"
+  },
+  "metrics": {
+    "total": 1,
+    "success": 0,
+    "failed": 1,
+    "totalChapters": 1,
+    "durationMs": 89538
+  },
+  "logs": [
+    {
+      "stage": "run",
+      "level": "info",
+      "message": "Run 182ab6d4-d9e5-4acf-ac16-2c8bcf1e4b80 started.",
+      "timestamp": {
+        "$date": "2026-01-22T23:12:24.639Z"
+      }
+    },
+    {
+      "stage": "resolve_targets",
+      "level": "info",
+      "message": "Resolved 1 targets.",
+      "timestamp": {
+        "$date": "2026-01-22T23:12:24.697Z"
+      }
+    },
+    {
+      "stage": "run_items",
+      "level": "info",
+      "message": "Created 1 run items.",
+      "timestamp": {
+        "$date": "2026-01-22T23:12:24.745Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Executed 1 items: 0 succeeded, 1 failed.",
+      "timestamp": {
+        "$date": "2026-01-22T23:13:54.177Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Last error: Empty response from provider.",
+      "timestamp": {
+        "$date": "2026-01-22T23:13:54.177Z"
+      }
+    },
+    {
+      "stage": "complete",
+      "level": "error",
+      "message": "Run failed.",
+      "timestamp": {
+        "$date": "2026-01-22T23:13:54.177Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Computing aggregates...",
+      "timestamp": {
+        "$date": "2026-01-22T23:13:54.235Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Aggregation complete: 0 chapters, 0 books, 0 bibles.",
+      "timestamp": {
+        "$date": "2026-01-22T23:13:54.533Z"
+      }
+    }
+  ],
+  "errorSummary": {
+    "failedCount": 1,
+    "lastError": "Empty response from provider.",
+    "lastErrorAt": {
+      "$date": "2026-01-22T23:13:54.119Z"
+    }
+  },
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-22T23:12:24.639Z"
+    },
+    "createdBy": "admin"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6972af320662952455fe8c22"
+  },
+  "runId": "cb95eb2d-a9ab-4ec0-b192-a65a5160d7b8",
+  "runType": "MODEL_CHAPTER",
+  "modelId": 3,
+  "scope": "chapter",
+  "scopeIds": {
+    "chapterId": 1041
+  },
+  "status": "failed",
+  "startedAt": {
+    "$date": "2026-01-22T23:13:54.684Z"
+  },
+  "completedAt": {
+    "$date": "2026-01-22T23:14:44.543Z"
+  },
+  "metrics": {
+    "total": 1,
+    "success": 0,
+    "failed": 1,
+    "totalChapters": 1,
+    "durationMs": 49859
+  },
+  "logs": [
+    {
+      "stage": "run",
+      "level": "info",
+      "message": "Run cb95eb2d-a9ab-4ec0-b192-a65a5160d7b8 started.",
+      "timestamp": {
+        "$date": "2026-01-22T23:13:54.684Z"
+      }
+    },
+    {
+      "stage": "resolve_targets",
+      "level": "info",
+      "message": "Resolved 1 targets.",
+      "timestamp": {
+        "$date": "2026-01-22T23:13:54.743Z"
+      }
+    },
+    {
+      "stage": "run_items",
+      "level": "info",
+      "message": "Created 1 run items.",
+      "timestamp": {
+        "$date": "2026-01-22T23:13:54.791Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Executed 1 items: 0 succeeded, 1 failed.",
+      "timestamp": {
+        "$date": "2026-01-22T23:14:44.543Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Last error: Empty response from provider.",
+      "timestamp": {
+        "$date": "2026-01-22T23:14:44.543Z"
+      }
+    },
+    {
+      "stage": "complete",
+      "level": "error",
+      "message": "Run failed.",
+      "timestamp": {
+        "$date": "2026-01-22T23:14:44.543Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Computing aggregates...",
+      "timestamp": {
+        "$date": "2026-01-22T23:14:44.600Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Aggregation complete: 0 chapters, 0 books, 0 bibles.",
+      "timestamp": {
+        "$date": "2026-01-22T23:14:44.881Z"
+      }
+    }
+  ],
+  "errorSummary": {
+    "failedCount": 1,
+    "lastError": "Empty response from provider.",
+    "lastErrorAt": {
+      "$date": "2026-01-22T23:14:44.494Z"
+    }
+  },
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-22T23:13:54.684Z"
+    },
+    "createdBy": "admin"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6972af650662952455fe8c39"
+  },
+  "runId": "2c2ef665-cb14-4b8a-80fa-2f2bde0554d2",
+  "runType": "MODEL_CHAPTER",
+  "modelId": 3,
+  "scope": "chapter",
+  "scopeIds": {
+    "chapterId": 1042
+  },
+  "status": "failed",
+  "startedAt": {
+    "$date": "2026-01-22T23:14:45.027Z"
+  },
+  "completedAt": {
+    "$date": "2026-01-22T23:47:45.863Z"
+  },
+  "metrics": {
+    "total": 1,
+    "success": 0,
+    "failed": 1,
+    "totalChapters": 1,
+    "durationMs": 1980836
+  },
+  "logs": [
+    {
+      "stage": "run",
+      "level": "info",
+      "message": "Run 2c2ef665-cb14-4b8a-80fa-2f2bde0554d2 started.",
+      "timestamp": {
+        "$date": "2026-01-22T23:14:45.027Z"
+      }
+    },
+    {
+      "stage": "resolve_targets",
+      "level": "info",
+      "message": "Resolved 1 targets.",
+      "timestamp": {
+        "$date": "2026-01-22T23:14:45.084Z"
+      }
+    },
+    {
+      "stage": "run_items",
+      "level": "info",
+      "message": "Created 1 run items.",
+      "timestamp": {
+        "$date": "2026-01-22T23:14:45.133Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Executed 1 items: 0 succeeded, 1 failed.",
+      "timestamp": {
+        "$date": "2026-01-22T23:47:45.863Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Last error: Empty response from provider.",
+      "timestamp": {
+        "$date": "2026-01-22T23:47:45.863Z"
+      }
+    },
+    {
+      "stage": "complete",
+      "level": "error",
+      "message": "Run failed.",
+      "timestamp": {
+        "$date": "2026-01-22T23:47:45.863Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Computing aggregates...",
+      "timestamp": {
+        "$date": "2026-01-22T23:47:45.925Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Aggregation complete: 0 chapters, 0 books, 0 bibles.",
+      "timestamp": {
+        "$date": "2026-01-22T23:47:46.230Z"
+      }
+    }
+  ],
+  "errorSummary": {
+    "failedCount": 1,
+    "lastError": "Empty response from provider.",
+    "lastErrorAt": {
+      "$date": "2026-01-22T23:47:45.812Z"
+    }
+  },
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-22T23:14:45.027Z"
+    },
+    "createdBy": "admin"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6972b75e0662952455fe8cb6"
+  },
+  "runId": "64a1c803-e35e-4a40-b4ee-733ec01d8f06",
+  "runType": "MODEL_CHAPTER",
+  "modelId": 3,
+  "scope": "chapter",
+  "scopeIds": {
+    "chapterId": 1044
+  },
+  "status": "failed",
+  "startedAt": {
+    "$date": "2026-01-22T23:48:46.283Z"
+  },
+  "completedAt": {
+    "$date": "2026-01-22T23:49:43.635Z"
+  },
+  "metrics": {
+    "total": 1,
+    "success": 0,
+    "failed": 1,
+    "totalChapters": 1,
+    "durationMs": 57352
+  },
+  "logs": [
+    {
+      "stage": "run",
+      "level": "info",
+      "message": "Run 64a1c803-e35e-4a40-b4ee-733ec01d8f06 started.",
+      "timestamp": {
+        "$date": "2026-01-22T23:48:46.283Z"
+      }
+    },
+    {
+      "stage": "resolve_targets",
+      "level": "info",
+      "message": "Resolved 1 targets.",
+      "timestamp": {
+        "$date": "2026-01-22T23:48:46.340Z"
+      }
+    },
+    {
+      "stage": "run_items",
+      "level": "info",
+      "message": "Created 1 run items.",
+      "timestamp": {
+        "$date": "2026-01-22T23:48:46.389Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Executed 1 items: 0 succeeded, 1 failed.",
+      "timestamp": {
+        "$date": "2026-01-22T23:49:43.635Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Last error: Empty response from provider.",
+      "timestamp": {
+        "$date": "2026-01-22T23:49:43.635Z"
+      }
+    },
+    {
+      "stage": "complete",
+      "level": "error",
+      "message": "Run failed.",
+      "timestamp": {
+        "$date": "2026-01-22T23:49:43.635Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Computing aggregates...",
+      "timestamp": {
+        "$date": "2026-01-22T23:49:43.709Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Aggregation complete: 0 chapters, 0 books, 0 bibles.",
+      "timestamp": {
+        "$date": "2026-01-22T23:49:44.231Z"
+      }
+    }
+  ],
+  "errorSummary": {
+    "failedCount": 1,
+    "lastError": "Empty response from provider.",
+    "lastErrorAt": {
+      "$date": "2026-01-22T23:49:43.585Z"
+    }
+  },
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-22T23:48:46.283Z"
+    },
+    "createdBy": "admin"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6972b7980662952455fe8ccd"
+  },
+  "runId": "b1d57667-b065-4482-b0d3-e2240c47cf4f",
+  "runType": "MODEL_CHAPTER",
+  "modelId": 3,
+  "scope": "chapter",
+  "scopeIds": {
+    "chapterId": 1045
+  },
+  "status": "failed",
+  "startedAt": {
+    "$date": "2026-01-22T23:49:44.380Z"
+  },
+  "completedAt": {
+    "$date": "2026-01-22T23:50:38.661Z"
+  },
+  "metrics": {
+    "total": 1,
+    "success": 0,
+    "failed": 1,
+    "totalChapters": 1,
+    "durationMs": 54281
+  },
+  "logs": [
+    {
+      "stage": "run",
+      "level": "info",
+      "message": "Run b1d57667-b065-4482-b0d3-e2240c47cf4f started.",
+      "timestamp": {
+        "$date": "2026-01-22T23:49:44.380Z"
+      }
+    },
+    {
+      "stage": "resolve_targets",
+      "level": "info",
+      "message": "Resolved 1 targets.",
+      "timestamp": {
+        "$date": "2026-01-22T23:49:44.435Z"
+      }
+    },
+    {
+      "stage": "run_items",
+      "level": "info",
+      "message": "Created 1 run items.",
+      "timestamp": {
+        "$date": "2026-01-22T23:49:44.483Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Executed 1 items: 0 succeeded, 1 failed.",
+      "timestamp": {
+        "$date": "2026-01-22T23:50:38.661Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Last error: Empty response from provider.",
+      "timestamp": {
+        "$date": "2026-01-22T23:50:38.661Z"
+      }
+    },
+    {
+      "stage": "complete",
+      "level": "error",
+      "message": "Run failed.",
+      "timestamp": {
+        "$date": "2026-01-22T23:50:38.661Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Computing aggregates...",
+      "timestamp": {
+        "$date": "2026-01-22T23:50:38.719Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Aggregation complete: 0 chapters, 0 books, 0 bibles.",
+      "timestamp": {
+        "$date": "2026-01-22T23:50:39.015Z"
+      }
+    }
+  ],
+  "errorSummary": {
+    "failedCount": 1,
+    "lastError": "Empty response from provider.",
+    "lastErrorAt": {
+      "$date": "2026-01-22T23:50:38.614Z"
+    }
+  },
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-22T23:49:44.380Z"
+    },
+    "createdBy": "admin"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6972b7cf0662952455fe8ce4"
+  },
+  "runId": "095560fb-36db-40ca-8ece-4f0aa5b41bc9",
+  "runType": "MODEL_CHAPTER",
+  "modelId": 3,
+  "scope": "chapter",
+  "scopeIds": {
+    "chapterId": 1046
+  },
+  "status": "failed",
+  "startedAt": {
+    "$date": "2026-01-22T23:50:39.164Z"
+  },
+  "completedAt": {
+    "$date": "2026-01-22T23:51:30.719Z"
+  },
+  "metrics": {
+    "total": 1,
+    "success": 0,
+    "failed": 1,
+    "totalChapters": 1,
+    "durationMs": 51555
+  },
+  "logs": [
+    {
+      "stage": "run",
+      "level": "info",
+      "message": "Run 095560fb-36db-40ca-8ece-4f0aa5b41bc9 started.",
+      "timestamp": {
+        "$date": "2026-01-22T23:50:39.164Z"
+      }
+    },
+    {
+      "stage": "resolve_targets",
+      "level": "info",
+      "message": "Resolved 1 targets.",
+      "timestamp": {
+        "$date": "2026-01-22T23:50:39.219Z"
+      }
+    },
+    {
+      "stage": "run_items",
+      "level": "info",
+      "message": "Created 1 run items.",
+      "timestamp": {
+        "$date": "2026-01-22T23:50:39.274Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Executed 1 items: 0 succeeded, 1 failed.",
+      "timestamp": {
+        "$date": "2026-01-22T23:51:30.719Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Last error: Empty response from provider.",
+      "timestamp": {
+        "$date": "2026-01-22T23:51:30.719Z"
+      }
+    },
+    {
+      "stage": "complete",
+      "level": "error",
+      "message": "Run failed.",
+      "timestamp": {
+        "$date": "2026-01-22T23:51:30.719Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Computing aggregates...",
+      "timestamp": {
+        "$date": "2026-01-22T23:51:30.774Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Aggregation complete: 0 chapters, 0 books, 0 bibles.",
+      "timestamp": {
+        "$date": "2026-01-22T23:51:31.064Z"
+      }
+    }
+  ],
+  "errorSummary": {
+    "failedCount": 1,
+    "lastError": "Empty response from provider.",
+    "lastErrorAt": {
+      "$date": "2026-01-22T23:51:30.658Z"
+    }
+  },
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-22T23:50:39.164Z"
+    },
+    "createdBy": "admin"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6972b8030662952455fe8cfb"
+  },
+  "runId": "bf31da58-ecc7-4f5c-961a-3511ee1522cd",
+  "runType": "MODEL_CHAPTER",
+  "modelId": 3,
+  "scope": "chapter",
+  "scopeIds": {
+    "chapterId": 1047
+  },
+  "status": "failed",
+  "startedAt": {
+    "$date": "2026-01-22T23:51:31.224Z"
+  },
+  "completedAt": {
+    "$date": "2026-01-22T23:52:32.586Z"
+  },
+  "metrics": {
+    "total": 1,
+    "success": 0,
+    "failed": 1,
+    "totalChapters": 1,
+    "durationMs": 61362
+  },
+  "logs": [
+    {
+      "stage": "run",
+      "level": "info",
+      "message": "Run bf31da58-ecc7-4f5c-961a-3511ee1522cd started.",
+      "timestamp": {
+        "$date": "2026-01-22T23:51:31.224Z"
+      }
+    },
+    {
+      "stage": "resolve_targets",
+      "level": "info",
+      "message": "Resolved 1 targets.",
+      "timestamp": {
+        "$date": "2026-01-22T23:51:31.282Z"
+      }
+    },
+    {
+      "stage": "run_items",
+      "level": "info",
+      "message": "Created 1 run items.",
+      "timestamp": {
+        "$date": "2026-01-22T23:51:31.335Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Executed 1 items: 0 succeeded, 1 failed.",
+      "timestamp": {
+        "$date": "2026-01-22T23:52:32.586Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Last error: Empty response from provider.",
+      "timestamp": {
+        "$date": "2026-01-22T23:52:32.586Z"
+      }
+    },
+    {
+      "stage": "complete",
+      "level": "error",
+      "message": "Run failed.",
+      "timestamp": {
+        "$date": "2026-01-22T23:52:32.586Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Computing aggregates...",
+      "timestamp": {
+        "$date": "2026-01-22T23:52:32.638Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Aggregation complete: 0 chapters, 0 books, 0 bibles.",
+      "timestamp": {
+        "$date": "2026-01-22T23:52:32.932Z"
+      }
+    }
+  ],
+  "errorSummary": {
+    "failedCount": 1,
+    "lastError": "Empty response from provider.",
+    "lastErrorAt": {
+      "$date": "2026-01-22T23:52:32.533Z"
+    }
+  },
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-22T23:51:31.224Z"
+    },
+    "createdBy": "admin"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6972b8750662952455fe8d42"
+  },
+  "runId": "d351c486-e7cb-41b1-a4e0-2e880c84bab5",
+  "runType": "MODEL_CHAPTER",
+  "modelId": 3,
+  "scope": "chapter",
+  "scopeIds": {
+    "chapterId": 1049
+  },
+  "status": "failed",
+  "startedAt": {
+    "$date": "2026-01-22T23:53:25.399Z"
+  },
+  "completedAt": {
+    "$date": "2026-01-22T23:54:21.291Z"
+  },
+  "metrics": {
+    "total": 1,
+    "success": 0,
+    "failed": 1,
+    "totalChapters": 1,
+    "durationMs": 55892
+  },
+  "logs": [
+    {
+      "stage": "run",
+      "level": "info",
+      "message": "Run d351c486-e7cb-41b1-a4e0-2e880c84bab5 started.",
+      "timestamp": {
+        "$date": "2026-01-22T23:53:25.399Z"
+      }
+    },
+    {
+      "stage": "resolve_targets",
+      "level": "info",
+      "message": "Resolved 1 targets.",
+      "timestamp": {
+        "$date": "2026-01-22T23:53:25.456Z"
+      }
+    },
+    {
+      "stage": "run_items",
+      "level": "info",
+      "message": "Created 1 run items.",
+      "timestamp": {
+        "$date": "2026-01-22T23:53:25.502Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Executed 1 items: 0 succeeded, 1 failed.",
+      "timestamp": {
+        "$date": "2026-01-22T23:54:21.291Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Last error: Empty response from provider.",
+      "timestamp": {
+        "$date": "2026-01-22T23:54:21.291Z"
+      }
+    },
+    {
+      "stage": "complete",
+      "level": "error",
+      "message": "Run failed.",
+      "timestamp": {
+        "$date": "2026-01-22T23:54:21.291Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Computing aggregates...",
+      "timestamp": {
+        "$date": "2026-01-22T23:54:21.349Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Aggregation complete: 0 chapters, 0 books, 0 bibles.",
+      "timestamp": {
+        "$date": "2026-01-22T23:54:21.638Z"
+      }
+    }
+  ],
+  "errorSummary": {
+    "failedCount": 1,
+    "lastError": "Empty response from provider.",
+    "lastErrorAt": {
+      "$date": "2026-01-22T23:54:21.242Z"
+    }
+  },
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-22T23:53:25.399Z"
+    },
+    "createdBy": "admin"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6972b8ad0662952455fe8d59"
+  },
+  "runId": "83cdfd01-8871-4c27-bf4c-083004f63d9a",
+  "runType": "MODEL_CHAPTER",
+  "modelId": 3,
+  "scope": "chapter",
+  "scopeIds": {
+    "chapterId": 1050
+  },
+  "status": "failed",
+  "startedAt": {
+    "$date": "2026-01-22T23:54:21.786Z"
+  },
+  "completedAt": {
+    "$date": "2026-01-22T23:55:24.771Z"
+  },
+  "metrics": {
+    "total": 1,
+    "success": 0,
+    "failed": 1,
+    "totalChapters": 1,
+    "durationMs": 62985
+  },
+  "logs": [
+    {
+      "stage": "run",
+      "level": "info",
+      "message": "Run 83cdfd01-8871-4c27-bf4c-083004f63d9a started.",
+      "timestamp": {
+        "$date": "2026-01-22T23:54:21.786Z"
+      }
+    },
+    {
+      "stage": "resolve_targets",
+      "level": "info",
+      "message": "Resolved 1 targets.",
+      "timestamp": {
+        "$date": "2026-01-22T23:54:21.839Z"
+      }
+    },
+    {
+      "stage": "run_items",
+      "level": "info",
+      "message": "Created 1 run items.",
+      "timestamp": {
+        "$date": "2026-01-22T23:54:21.887Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Executed 1 items: 0 succeeded, 1 failed.",
+      "timestamp": {
+        "$date": "2026-01-22T23:55:24.771Z"
+      }
+    },
+    {
+      "stage": "execute",
+      "level": "error",
+      "message": "Last error: Empty response from provider.",
+      "timestamp": {
+        "$date": "2026-01-22T23:55:24.771Z"
+      }
+    },
+    {
+      "stage": "complete",
+      "level": "error",
+      "message": "Run failed.",
+      "timestamp": {
+        "$date": "2026-01-22T23:55:24.771Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Computing aggregates...",
+      "timestamp": {
+        "$date": "2026-01-22T23:55:24.835Z"
+      }
+    },
+    {
+      "stage": "aggregation",
+      "level": "info",
+      "message": "Aggregation complete: 0 chapters, 0 books, 0 bibles.",
+      "timestamp": {
+        "$date": "2026-01-22T23:55:25.125Z"
+      }
+    }
+  ],
+  "errorSummary": {
+    "failedCount": 1,
+    "lastError": "Empty response from provider.",
+    "lastErrorAt": {
+      "$date": "2026-01-22T23:55:24.724Z"
+    }
+  },
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-22T23:54:21.786Z"
+    },
+    "createdBy": "admin"
+  },
+  "__v": 0
+}]

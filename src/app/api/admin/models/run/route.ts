@@ -26,6 +26,7 @@ export const runtime = "nodejs";
  */
 
 type RunPayload = {
+  campaignTag: string;
   modelIds: number[];
   scope: "book" | "chapter";
   scopeIds: {
@@ -47,6 +48,12 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 function validatePayload(payload: unknown): ValidationResult {
   if (!isRecord(payload)) {
     return { ok: false, error: "Body must be a JSON object." };
+  }
+
+  // Validate campaignTag
+  const campaignTag = payload["campaignTag"];
+  if (typeof campaignTag !== "string" || campaignTag.trim().length === 0) {
+    return { ok: false, error: "campaignTag must be a non-empty string." };
   }
 
   // Validate modelIds
@@ -110,6 +117,7 @@ function validatePayload(payload: unknown): ValidationResult {
   return {
     ok: true,
     data: {
+      campaignTag: campaignTag.trim(),
       modelIds: validModelIds as number[],
       scope: scope as "book" | "chapter",
       scopeIds: {
@@ -178,6 +186,7 @@ export async function POST(request: Request) {
       for (const chapterId of chapterIds) {
         try {
           const result = await startModelRun({
+            campaignTag: validation.data.campaignTag,
             modelId,
             runType: "MODEL_CHAPTER",
             scope: "chapter",
@@ -219,6 +228,7 @@ export async function POST(request: Request) {
     for (const modelId of validation.data.modelIds) {
       try {
         const result = await startModelRun({
+          campaignTag: validation.data.campaignTag,
           modelId,
           runType: "MODEL_CHAPTER",
           scope: "book",

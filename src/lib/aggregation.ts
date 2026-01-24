@@ -2,17 +2,17 @@
  * Aggregation Module
  *
  * Computes and stores materialized aggregates at chapter, book, and bible levels
- * from verse-level results. This is called after run completion to pre-compute
- * dashboard metrics for fast reads.
+ * from verse-level results. Uses bulk aggregation with $out for atomic replacement.
+ *
+ * Dimension grains (includes campaignTag for trend analysis):
+ * - aggregationChapters: (campaignTag, modelId, bibleId, bookId, chapterId)
+ * - aggregationBooks: (campaignTag, modelId, bibleId, bookId)
+ * - aggregationBibles: (campaignTag, modelId, bibleId)
  */
 
-import {
-  AggregationBibleModel,
-  AggregationBookModel,
-  AggregationChapterModel,
-  LlmVerseResultModel,
-  RunModel,
-} from "@/lib/models";
+import mongoose from "mongoose";
+
+import { LlmVerseResultModel } from "@/lib/models";
 import { connectToDatabase } from "@/lib/mongodb";
 
 type AggregationResult = {
@@ -23,224 +23,214 @@ type AggregationResult = {
 };
 
 /**
- * Compute and store chapter-level aggregates for a run.
- * Groups llmVerseResults by chapterId and computes metrics.
+ * Compute chapter-level aggregates from all llmVerseResults.
+ * Uses $out to atomically replace the aggregationChapters collection.
  */
-export async function computeChapterAggregates(runId: string): Promise<number> {
-  await connectToDatabase();
-
-  // Get run to extract modelId and evaluatedAt
-  const run = await RunModel.findOne({ runId }).lean();
-  if (!run) {
-    throw new Error(`Run not found: ${runId}`);
+async function computeChapterAggregatesBulk(): Promise<number> {
+  const db = mongoose.connection.db;
+  if (!db) {
+    throw new Error("Database connection not initialized");
   }
 
-  const modelId = run.modelId as number;
-  const evaluatedAt = (run.completedAt as Date) ?? (run.startedAt as Date);
-
-  // Aggregate verse results by chapter
-  const chapterAggregations = await LlmVerseResultModel.aggregate([
-    { $match: { runId } },
+  // Pipeline: group by dimension grain, compute metrics, output to collection
+  const pipeline = [
     {
       $group: {
         _id: {
-          chapterId: "$chapterId",
-          bookId: "$bookId",
+          campaignTag: "$campaignTag",
+          modelId: "$modelId",
           bibleId: "$bibleId",
+          bookId: "$bookId",
+          chapterId: "$chapterId",
         },
         avgFidelity: { $avg: "$fidelityScore" },
         verseCount: { $sum: 1 },
         matchCount: { $sum: { $cond: ["$hashMatch", 1, 0] } },
+        evaluatedAt: { $max: "$evaluatedAt" },
       },
     },
-  ]);
-
-  // Store chapter aggregates
-  for (const agg of chapterAggregations) {
-    const perfectRate =
-      agg.verseCount > 0 ? Number((agg.matchCount / agg.verseCount).toFixed(4)) : 0;
-
-    await AggregationChapterModel.updateOne(
-      {
-        chapterId: agg._id.chapterId,
-        modelId,
-        runId,
-      },
-      {
-        $set: {
-          chapterId: agg._id.chapterId,
-          modelId,
-          bibleId: agg._id.bibleId,
-          bookId: agg._id.bookId,
-          runId,
-          evaluatedAt,
-          avgFidelity: Number(agg.avgFidelity.toFixed(2)),
-          perfectRate,
-          verseCount: agg.verseCount,
-          matchCount: agg.matchCount,
+    {
+      $project: {
+        _id: 0,
+        campaignTag: "$_id.campaignTag",
+        modelId: "$_id.modelId",
+        bibleId: "$_id.bibleId",
+        bookId: "$_id.bookId",
+        chapterId: "$_id.chapterId",
+        avgFidelity: { $round: ["$avgFidelity", 2] },
+        perfectRate: {
+          $round: [{ $divide: ["$matchCount", "$verseCount"] }, 4],
         },
+        verseCount: 1,
+        matchCount: 1,
+        evaluatedAt: 1,
       },
-      { upsert: true }
-    );
-  }
+    },
+    {
+      $out: "aggregationChapters",
+    },
+  ];
 
-  return chapterAggregations.length;
+  await LlmVerseResultModel.aggregate(pipeline);
+
+  // Count documents in the output collection
+  const count = await db.collection("aggregationChapters").countDocuments();
+  return count;
 }
 
 /**
- * Compute and store book-level aggregates for a run.
- * Aggregates from chapter aggregates.
+ * Compute book-level aggregates from aggregationChapters.
+ * Uses $out to atomically replace the aggregationBooks collection.
  */
-export async function computeBookAggregates(runId: string): Promise<number> {
-  await connectToDatabase();
-
-  // Get run to extract modelId and evaluatedAt
-  const run = await RunModel.findOne({ runId }).lean();
-  if (!run) {
-    throw new Error(`Run not found: ${runId}`);
+async function computeBookAggregatesBulk(): Promise<number> {
+  const db = mongoose.connection.db;
+  if (!db) {
+    throw new Error("Database connection not initialized");
   }
 
-  const modelId = run.modelId as number;
-  const evaluatedAt = (run.completedAt as Date) ?? (run.startedAt as Date);
-
-  // Aggregate from chapter aggregates
-  const bookAggregations = await AggregationChapterModel.aggregate([
-    { $match: { runId } },
+  // Pipeline: group chapters by book, compute metrics, output to collection
+  const pipeline = [
     {
       $group: {
         _id: {
-          bookId: "$bookId",
+          campaignTag: "$campaignTag",
+          modelId: "$modelId",
           bibleId: "$bibleId",
+          bookId: "$bookId",
         },
         avgFidelity: { $avg: "$avgFidelity" },
         chapterCount: { $sum: 1 },
         verseCount: { $sum: "$verseCount" },
         matchCount: { $sum: "$matchCount" },
+        evaluatedAt: { $max: "$evaluatedAt" },
       },
     },
-  ]);
-
-  // Store book aggregates
-  for (const agg of bookAggregations) {
-    const perfectRate =
-      agg.verseCount > 0 ? Number((agg.matchCount / agg.verseCount).toFixed(4)) : 0;
-
-    await AggregationBookModel.updateOne(
-      {
-        bookId: agg._id.bookId,
-        modelId,
-        runId,
-      },
-      {
-        $set: {
-          bookId: agg._id.bookId,
-          modelId,
-          bibleId: agg._id.bibleId,
-          runId,
-          evaluatedAt,
-          avgFidelity: Number(agg.avgFidelity.toFixed(2)),
-          perfectRate,
-          chapterCount: agg.chapterCount,
-          verseCount: agg.verseCount,
-          matchCount: agg.matchCount,
+    {
+      $project: {
+        _id: 0,
+        campaignTag: "$_id.campaignTag",
+        modelId: "$_id.modelId",
+        bibleId: "$_id.bibleId",
+        bookId: "$_id.bookId",
+        avgFidelity: { $round: ["$avgFidelity", 2] },
+        perfectRate: {
+          $round: [{ $divide: ["$matchCount", "$verseCount"] }, 4],
         },
+        chapterCount: 1,
+        verseCount: 1,
+        matchCount: 1,
+        evaluatedAt: 1,
       },
-      { upsert: true }
-    );
-  }
+    },
+    {
+      $out: "aggregationBooks",
+    },
+  ];
 
-  return bookAggregations.length;
+  // Read from fresh aggregationChapters
+  await db.collection("aggregationChapters").aggregate(pipeline).toArray();
+
+  // Count documents in the output collection
+  const count = await db.collection("aggregationBooks").countDocuments();
+  return count;
 }
 
 /**
- * Compute and store bible-level aggregates for a run.
- * Aggregates from book aggregates.
+ * Compute bible-level aggregates from aggregationBooks.
+ * Uses $out to atomically replace the aggregationBibles collection.
  */
-export async function computeBibleAggregates(runId: string): Promise<number> {
-  await connectToDatabase();
-
-  // Get run to extract modelId and evaluatedAt
-  const run = await RunModel.findOne({ runId }).lean();
-  if (!run) {
-    throw new Error(`Run not found: ${runId}`);
+async function computeBibleAggregatesBulk(): Promise<number> {
+  const db = mongoose.connection.db;
+  if (!db) {
+    throw new Error("Database connection not initialized");
   }
 
-  const modelId = run.modelId as number;
-  const evaluatedAt = (run.completedAt as Date) ?? (run.startedAt as Date);
-
-  // Aggregate from book aggregates
-  const bibleAggregations = await AggregationBookModel.aggregate([
-    { $match: { runId } },
+  // Pipeline: group books by bible, compute metrics, output to collection
+  const pipeline = [
     {
       $group: {
-        _id: "$bibleId",
+        _id: {
+          campaignTag: "$campaignTag",
+          modelId: "$modelId",
+          bibleId: "$bibleId",
+        },
         avgFidelity: { $avg: "$avgFidelity" },
         bookCount: { $sum: 1 },
         chapterCount: { $sum: "$chapterCount" },
         verseCount: { $sum: "$verseCount" },
         matchCount: { $sum: "$matchCount" },
+        evaluatedAt: { $max: "$evaluatedAt" },
       },
     },
-  ]);
-
-  // Store bible aggregates
-  for (const agg of bibleAggregations) {
-    const perfectRate =
-      agg.verseCount > 0 ? Number((agg.matchCount / agg.verseCount).toFixed(4)) : 0;
-
-    await AggregationBibleModel.updateOne(
-      {
-        bibleId: agg._id,
-        modelId,
-        runId,
-      },
-      {
-        $set: {
-          bibleId: agg._id,
-          modelId,
-          runId,
-          evaluatedAt,
-          avgFidelity: Number(agg.avgFidelity.toFixed(2)),
-          perfectRate,
-          bookCount: agg.bookCount,
-          chapterCount: agg.chapterCount,
-          verseCount: agg.verseCount,
-          matchCount: agg.matchCount,
+    {
+      $project: {
+        _id: 0,
+        campaignTag: "$_id.campaignTag",
+        modelId: "$_id.modelId",
+        bibleId: "$_id.bibleId",
+        avgFidelity: { $round: ["$avgFidelity", 2] },
+        perfectRate: {
+          $round: [{ $divide: ["$matchCount", "$verseCount"] }, 4],
         },
+        bookCount: 1,
+        chapterCount: 1,
+        verseCount: 1,
+        matchCount: 1,
+        evaluatedAt: 1,
       },
-      { upsert: true }
-    );
-  }
+    },
+    {
+      $out: "aggregationBibles",
+    },
+  ];
 
-  return bibleAggregations.length;
+  // Read from fresh aggregationBooks
+  await db.collection("aggregationBooks").aggregate(pipeline).toArray();
+
+  // Count documents in the output collection
+  const count = await db.collection("aggregationBibles").countDocuments();
+  return count;
 }
 
 /**
- * Compute all aggregates for a run (chapter → book → bible).
- * Call this after run completion.
+ * Recompute all aggregates from llmVerseResults using bulk $out operations.
+ * This is idempotent and self-healing - completely replaces all aggregation collections.
+ *
+ * Order of operations:
+ * 1. Chapters (from llmVerseResults)
+ * 2. Books (from aggregationChapters)
+ * 3. Bibles (from aggregationBooks)
  */
-export async function computeAllAggregates(runId: string): Promise<AggregationResult> {
+export async function recomputeAllAggregatesBulk(): Promise<AggregationResult> {
+  await connectToDatabase();
+
   const errors: string[] = [];
   let chaptersProcessed = 0;
   let booksProcessed = 0;
   let biblesProcessed = 0;
 
+  // Step 1: Chapters (source: llmVerseResults)
   try {
-    chaptersProcessed = await computeChapterAggregates(runId);
+    chaptersProcessed = await computeChapterAggregatesBulk();
   } catch (error) {
-    errors.push(`Chapter aggregation failed: ${error instanceof Error ? error.message : "Unknown error"}`);
+    const message = error instanceof Error ? error.message : "Unknown error";
+    errors.push(`Chapter aggregation failed: ${message}`);
   }
 
+  // Step 2: Books (source: aggregationChapters)
   try {
-    booksProcessed = await computeBookAggregates(runId);
+    booksProcessed = await computeBookAggregatesBulk();
   } catch (error) {
-    errors.push(`Book aggregation failed: ${error instanceof Error ? error.message : "Unknown error"}`);
+    const message = error instanceof Error ? error.message : "Unknown error";
+    errors.push(`Book aggregation failed: ${message}`);
   }
 
+  // Step 3: Bibles (source: aggregationBooks)
   try {
-    biblesProcessed = await computeBibleAggregates(runId);
+    biblesProcessed = await computeBibleAggregatesBulk();
   } catch (error) {
-    errors.push(`Bible aggregation failed: ${error instanceof Error ? error.message : "Unknown error"}`);
+    const message = error instanceof Error ? error.message : "Unknown error";
+    errors.push(`Bible aggregation failed: ${message}`);
   }
 
   return {

@@ -135,6 +135,36 @@ export const dimChaptersValidator: JsonSchemaValidator = {
   },
 };
 
+export const dimCampaignsValidator: JsonSchemaValidator = {
+  $jsonSchema: {
+    bsonType: "object",
+    required: [
+      "campaignId",
+      "campaignTag",
+      "campaignName",
+      "isActive",
+      "isApproved",
+      "isVisible",
+      "audit",
+    ],
+    properties: {
+      campaignId: numberSchema,
+      campaignTag: stringSchema,
+      campaignName: stringSchema,
+      campaignDescription: nullableStringSchema,
+      campaignStartDate: nullableDateSchema,
+      campaignEndDate: nullableDateSchema,
+      campaignPurposeStatement: nullableStringSchema,
+      campaignManager: nullableStringSchema,
+      isActive: boolSchema,
+      isApproved: boolSchema,
+      isVisible: boolSchema,
+      audit: auditJsonSchema,
+    },
+    additionalProperties: true,
+  },
+};
+
 export const canonicalLanguagesValidator: JsonSchemaValidator = {
   $jsonSchema: {
     bsonType: "object",
@@ -419,6 +449,7 @@ export const runsValidator: JsonSchemaValidator = {
     bsonType: "object",
     required: [
       "runId",
+      "campaignTag",
       "runType",
       "modelId",
       "scope",
@@ -430,6 +461,7 @@ export const runsValidator: JsonSchemaValidator = {
     ],
     properties: {
       runId: stringSchema,
+      campaignTag: stringSchema,
       runType: stringSchema,
       modelId: numberSchema,
       scope: stringSchema,
@@ -534,6 +566,7 @@ export const llmVerseResultsValidator: JsonSchemaValidator = {
     bsonType: "object",
     required: [
       "resultId",
+      "campaignTag",
       "runId",
       "modelId",
       "verseId",
@@ -552,6 +585,7 @@ export const llmVerseResultsValidator: JsonSchemaValidator = {
     ],
     properties: {
       resultId: numberSchema,
+      campaignTag: stringSchema,
       runId: stringSchema,
       modelId: numberSchema,
       verseId: numberSchema,
@@ -595,10 +629,11 @@ export const aggregationChaptersValidator: JsonSchemaValidator = {
   $jsonSchema: {
     bsonType: "object",
     required: [
+      "campaignTag",
       "chapterId",
       "modelId",
       "bibleId",
-      "runId",
+      "bookId",
       "evaluatedAt",
       "avgFidelity",
       "perfectRate",
@@ -606,11 +641,11 @@ export const aggregationChaptersValidator: JsonSchemaValidator = {
       "matchCount",
     ],
     properties: {
+      campaignTag: stringSchema,
       chapterId: numberSchema,
       modelId: numberSchema,
       bibleId: numberSchema,
       bookId: numberSchema,
-      runId: stringSchema,
       evaluatedAt: dateSchema,
       avgFidelity: numberSchema,
       perfectRate: numberSchema,
@@ -625,21 +660,22 @@ export const aggregationBooksValidator: JsonSchemaValidator = {
   $jsonSchema: {
     bsonType: "object",
     required: [
+      "campaignTag",
       "bookId",
       "modelId",
       "bibleId",
-      "runId",
       "evaluatedAt",
       "avgFidelity",
       "perfectRate",
       "chapterCount",
       "verseCount",
+      "matchCount",
     ],
     properties: {
+      campaignTag: stringSchema,
       bookId: numberSchema,
       modelId: numberSchema,
       bibleId: numberSchema,
-      runId: stringSchema,
       evaluatedAt: dateSchema,
       avgFidelity: numberSchema,
       perfectRate: numberSchema,
@@ -655,20 +691,21 @@ export const aggregationBiblesValidator: JsonSchemaValidator = {
   $jsonSchema: {
     bsonType: "object",
     required: [
+      "campaignTag",
       "bibleId",
       "modelId",
-      "runId",
       "evaluatedAt",
       "avgFidelity",
       "perfectRate",
       "bookCount",
       "chapterCount",
       "verseCount",
+      "matchCount",
     ],
     properties: {
+      campaignTag: stringSchema,
       bibleId: numberSchema,
       modelId: numberSchema,
-      runId: stringSchema,
       evaluatedAt: dateSchema,
       avgFidelity: numberSchema,
       perfectRate: numberSchema,
@@ -758,6 +795,27 @@ dimChapterSchema.index({ bibleId: 1, bookId: 1 });
 dimChapterSchema.index({ bookId: 1, chapterNumber: 1 });
 
 type DimChapter = InferSchemaType<typeof dimChapterSchema>;
+
+const dimCampaignSchema = new Schema({
+  campaignId: { type: Number, required: true },
+  campaignTag: { type: String, required: true },
+  campaignName: { type: String, required: true },
+  campaignDescription: { type: String, default: null },
+  campaignStartDate: { type: Date, default: null },
+  campaignEndDate: { type: Date, default: null },
+  campaignPurposeStatement: { type: String, default: null },
+  campaignManager: { type: String, default: null },
+  isActive: { type: Boolean, required: true, default: true },
+  isApproved: { type: Boolean, required: true, default: false },
+  isVisible: { type: Boolean, required: true, default: true },
+  audit: { type: auditSchema, required: true },
+});
+
+dimCampaignSchema.index({ campaignId: 1 }, { unique: true });
+dimCampaignSchema.index({ campaignTag: 1 }, { unique: true });
+dimCampaignSchema.index({ isActive: 1, isVisible: 1 });
+
+type DimCampaign = InferSchemaType<typeof dimCampaignSchema>;
 
 const canonicalLanguageSchema = new Schema({
   languageId: { type: Number, required: true },
@@ -971,6 +1029,7 @@ const runErrorSummarySchema = new Schema(
 
 const runSchema = new Schema({
   runId: { type: String, required: true },
+  campaignTag: { type: String, required: true },
   runType: { type: String, required: true },
   modelId: { type: Number, required: true },
   scope: { type: String, required: true },
@@ -986,6 +1045,7 @@ const runSchema = new Schema({
 });
 
 runSchema.index({ runId: 1 }, { unique: true });
+runSchema.index({ campaignTag: 1, modelId: 1, startedAt: -1 });
 runSchema.index({ modelId: 1, startedAt: -1 });
 runSchema.index({ status: 1 });
 
@@ -1031,6 +1091,7 @@ type LlmRawResponse = InferSchemaType<typeof llmRawResponseSchema>;
 
 const llmVerseResultSchema = new Schema({
   resultId: { type: Number, required: true },
+  campaignTag: { type: String, required: true },
   runId: { type: String, required: true },
   modelId: { type: Number, required: true },
   verseId: { type: Number, required: true },
@@ -1051,6 +1112,7 @@ const llmVerseResultSchema = new Schema({
 });
 
 llmVerseResultSchema.index({ resultId: 1 }, { unique: true });
+llmVerseResultSchema.index({ campaignTag: 1, modelId: 1, verseId: 1 }, { unique: true });
 llmVerseResultSchema.index({ runId: 1, modelId: 1, verseId: 1 });
 llmVerseResultSchema.index({ verseId: 1 });
 // Model-centric indexes for dashboard queries
@@ -1062,11 +1124,11 @@ type LlmVerseResult = InferSchemaType<typeof llmVerseResultSchema>;
 
 // Aggregate schemas for materialized roll-ups
 const aggregationChapterSchema = new Schema({
+  campaignTag: { type: String, required: true },
   chapterId: { type: Number, required: true },
   modelId: { type: Number, required: true },
   bibleId: { type: Number, required: true },
   bookId: { type: Number, required: true },
-  runId: { type: String, required: true },
   evaluatedAt: { type: Date, required: true },
   avgFidelity: { type: Number, required: true },
   perfectRate: { type: Number, required: true },
@@ -1074,18 +1136,17 @@ const aggregationChapterSchema = new Schema({
   matchCount: { type: Number, required: true },
 });
 
-aggregationChapterSchema.index({ chapterId: 1, modelId: 1, runId: 1 }, { unique: true });
-aggregationChapterSchema.index({ modelId: 1, bibleId: 1, evaluatedAt: -1 });
-aggregationChapterSchema.index({ modelId: 1, bookId: 1 });
-aggregationChapterSchema.index({ runId: 1 });
+aggregationChapterSchema.index({ campaignTag: 1, modelId: 1, chapterId: 1 }, { unique: true });
+aggregationChapterSchema.index({ campaignTag: 1, modelId: 1, bibleId: 1, evaluatedAt: -1 });
+aggregationChapterSchema.index({ campaignTag: 1, modelId: 1, bookId: 1 });
 
 type AggregationChapter = InferSchemaType<typeof aggregationChapterSchema>;
 
 const aggregationBookSchema = new Schema({
+  campaignTag: { type: String, required: true },
   bookId: { type: Number, required: true },
   modelId: { type: Number, required: true },
   bibleId: { type: Number, required: true },
-  runId: { type: String, required: true },
   evaluatedAt: { type: Date, required: true },
   avgFidelity: { type: Number, required: true },
   perfectRate: { type: Number, required: true },
@@ -1094,16 +1155,15 @@ const aggregationBookSchema = new Schema({
   matchCount: { type: Number, required: true },
 });
 
-aggregationBookSchema.index({ bookId: 1, modelId: 1, runId: 1 }, { unique: true });
-aggregationBookSchema.index({ modelId: 1, bibleId: 1, evaluatedAt: -1 });
-aggregationBookSchema.index({ runId: 1 });
+aggregationBookSchema.index({ campaignTag: 1, modelId: 1, bookId: 1 }, { unique: true });
+aggregationBookSchema.index({ campaignTag: 1, modelId: 1, bibleId: 1, evaluatedAt: -1 });
 
 type AggregationBook = InferSchemaType<typeof aggregationBookSchema>;
 
 const aggregationBibleSchema = new Schema({
+  campaignTag: { type: String, required: true },
   bibleId: { type: Number, required: true },
   modelId: { type: Number, required: true },
-  runId: { type: String, required: true },
   evaluatedAt: { type: Date, required: true },
   avgFidelity: { type: Number, required: true },
   perfectRate: { type: Number, required: true },
@@ -1113,9 +1173,8 @@ const aggregationBibleSchema = new Schema({
   matchCount: { type: Number, required: true },
 });
 
-aggregationBibleSchema.index({ bibleId: 1, modelId: 1, runId: 1 }, { unique: true });
-aggregationBibleSchema.index({ modelId: 1, bibleId: 1, evaluatedAt: -1 });
-aggregationBibleSchema.index({ runId: 1 });
+aggregationBibleSchema.index({ campaignTag: 1, modelId: 1, bibleId: 1 }, { unique: true });
+aggregationBibleSchema.index({ campaignTag: 1, modelId: 1, evaluatedAt: -1 });
 
 type AggregationBible = InferSchemaType<typeof aggregationBibleSchema>;
 
@@ -1145,6 +1204,10 @@ export const DimBookModel =
 export const DimChapterModel =
   mongoose.models.DimChapter ??
   mongoose.model<DimChapter>("DimChapter", dimChapterSchema, "dimChapters");
+
+export const DimCampaignModel =
+  mongoose.models.DimCampaign ??
+  mongoose.model<DimCampaign>("DimCampaign", dimCampaignSchema, "dimCampaigns");
 
 export const CanonicalLanguageModel =
   mongoose.models.CanonicalLanguage ??
@@ -1258,6 +1321,7 @@ const collectionValidators = [
   { name: "dimBibles", validator: dimBiblesValidator },
   { name: "dimBooks", validator: dimBooksValidator },
   { name: "dimChapters", validator: dimChaptersValidator },
+  { name: "dimCampaigns", validator: dimCampaignsValidator },
   { name: "canonicalLanguages", validator: canonicalLanguagesValidator },
   { name: "canonicalBibles", validator: canonicalBiblesValidator },
   { name: "canonicalBooks", validator: canonicalBooksValidator },

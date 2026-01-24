@@ -4,6 +4,7 @@ import { isAdminAvailable } from "@/lib/admin";
 import { startModelRun } from "@/lib/model-runs";
 
 type RunBiblePayload = {
+  campaignTag: string;
   runId?: string;
   bibleId?: number;
   limit?: number;
@@ -23,12 +24,13 @@ function isNumber(value: unknown): value is number {
 }
 
 function validatePayload(payload: unknown): ValidationResult {
-  if (payload === undefined || payload === null) {
-    return { ok: true, data: { bibleId: 1001 } };
-  }
-
   if (!isRecord(payload)) {
     return { ok: false, error: "Body must be a JSON object." };
+  }
+
+  const campaignTag = payload["campaignTag"];
+  if (typeof campaignTag !== "string" || campaignTag.trim().length === 0) {
+    return { ok: false, error: "campaignTag must be a non-empty string." };
   }
 
   const runId = payload["runId"];
@@ -54,6 +56,7 @@ function validatePayload(payload: unknown): ValidationResult {
   return {
     ok: true,
     data: {
+      campaignTag: campaignTag.trim(),
       runId: typeof runId === "string" ? runId.trim() : undefined,
       bibleId: (bibleId as number | undefined) ?? 1001,
       limit: limit as number | undefined,
@@ -96,6 +99,7 @@ export async function POST(
   }
 
   const result = await startModelRun({
+    campaignTag: validation.data.campaignTag,
     runId: validation.data.runId,
     modelId,
     runType: "MODEL_CHAPTER",

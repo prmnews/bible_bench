@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
 
 type StepStatus = "idle" | "running" | "success" | "error";
 
@@ -29,13 +30,24 @@ type Model = {
   provider: string;
   isActive: boolean;
 };
+type Campaign = {
+  campaignId: number;
+  campaignTag: string;
+  campaignName: string;
+  campaignDescription: string | null;
+  campaignPurposeStatement: string | null;
+  campaignManager: string | null;
+  isActive: boolean;
+  isApproved: boolean;
+  isVisible: boolean;
+};
 
 function StatusBadge({ status }: { status: StepStatus }) {
   const styles: Record<StepStatus, string> = {
-    idle: "bg-zinc-100 text-zinc-600",
-    running: "bg-blue-100 text-blue-700",
-    success: "bg-green-100 text-green-700",
-    error: "bg-red-100 text-red-700",
+    idle: "bg-muted text-muted-foreground",
+    running: "bg-blue-500/10 text-blue-600 dark:text-blue-400",
+    success: "bg-green-500/10 text-green-600 dark:text-green-400",
+    error: "bg-destructive/10 text-destructive",
   };
 
   const labels: Record<StepStatus, string> = {
@@ -70,18 +82,18 @@ function EtlStep({
   disabled?: boolean;
 }) {
   return (
-    <div className="rounded-lg border border-zinc-200 bg-white p-4">
+    <div className="rounded-lg border border-border bg-card p-4">
       <div className="flex items-start justify-between">
         <div className="flex-1">
           <div className="flex items-center gap-2">
-            <h3 className="font-medium text-zinc-900">{title}</h3>
+            <h3 className="font-medium text-foreground">{title}</h3>
             <StatusBadge status={result.status} />
           </div>
-          <p className="mt-1 text-sm text-zinc-500">{description}</p>
+          <p className="mt-1 text-sm text-muted-foreground">{description}</p>
           {result.message && (
             <p
               className={`mt-2 text-sm ${
-                result.status === "error" ? "text-red-600" : "text-zinc-600"
+                result.status === "error" ? "text-destructive" : "text-muted-foreground"
               }`}
             >
               {result.message}
@@ -91,7 +103,7 @@ function EtlStep({
         <button
           onClick={onRun}
           disabled={disabled || result.status === "running"}
-          className="ml-4 shrink-0 rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
+          className="ml-4 shrink-0 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {result.status === "running" ? "Running..." : buttonLabel}
         </button>
@@ -106,6 +118,7 @@ function EtlStep({
 
 function ModelRunScopePanel() {
   // Dimension data
+  const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [languages, setLanguages] = useState<Language[]>([]);
   const [bibles, setBibles] = useState<Bible[]>([]);
   const [books, setBooks] = useState<Book[]>([]);
@@ -113,6 +126,7 @@ function ModelRunScopePanel() {
   const [models, setModels] = useState<Model[]>([]);
 
   // Selected values
+  const [selectedCampaignTag, setSelectedCampaignTag] = useState<string | null>(null);
   const [selectedLanguageId, setSelectedLanguageId] = useState<number | null>(null);
   const [selectedBibleId, setSelectedBibleId] = useState<number | null>(null);
   const [selectedBookIds, setSelectedBookIds] = useState<Set<number>>(new Set());
@@ -123,6 +137,26 @@ function ModelRunScopePanel() {
   const [isRunning, setIsRunning] = useState(false);
   const [runResult, setRunResult] = useState<StepResult>({ status: "idle" });
   const [error, setError] = useState<string | null>(null);
+
+  // Load campaigns on mount
+  useEffect(() => {
+    async function loadCampaigns() {
+      try {
+        const res = await fetch("/api/admin/campaigns?isActive=true");
+        const json = await res.json();
+        if (json.ok) {
+          setCampaigns(json.data);
+          // Auto-select first active campaign
+          if (json.data.length > 0) {
+            setSelectedCampaignTag(json.data[0].campaignTag);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load campaigns:", err);
+      }
+    }
+    loadCampaigns();
+  }, []);
 
   // Load languages on mount
   useEffect(() => {
@@ -317,6 +351,10 @@ function ModelRunScopePanel() {
   };
 
   const handleStartRun = async () => {
+    if (!selectedCampaignTag) {
+      setError("Please select a campaign.");
+      return;
+    }
     if (selectedChapterIds.size === 0 || selectedModelIds.size === 0) {
       setError("Please select at least one chapter and one model.");
       return;
@@ -331,6 +369,7 @@ function ModelRunScopePanel() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          campaignTag: selectedCampaignTag,
           modelIds: Array.from(selectedModelIds),
           scope: "chapter",
           scopeIds: { chapterIds: Array.from(selectedChapterIds) },
@@ -371,19 +410,58 @@ function ModelRunScopePanel() {
   const totalRuns = selectedChapterIds.size * selectedModelIds.size;
 
   return (
-    <div className="rounded-lg border border-zinc-200 bg-white">
-      <div className="border-b border-zinc-200 px-4 py-3">
-        <h2 className="text-lg font-semibold text-zinc-900">Model Run Scope</h2>
-        <p className="mt-1 text-sm text-zinc-500">
+    <div className="rounded-lg border border-border bg-card">
+      <div className="border-b border-border px-4 py-3">
+        <h2 className="text-lg font-semibold text-foreground">Model Run Scope</h2>
+        <p className="mt-1 text-sm text-muted-foreground">
           Select chapters and models to run evaluation
         </p>
       </div>
 
       <div className="space-y-4 p-4">
+        {/* Campaign Selector */}
+        <div>
+          <label className="block text-sm font-medium text-foreground">
+            Campaign
+          </label>
+          <select
+            value={selectedCampaignTag ?? ""}
+            onChange={(e) =>
+              setSelectedCampaignTag(e.target.value || null)
+            }
+            className="mt-1 block w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+          >
+            <option value="">Select campaign...</option>
+            {campaigns.map((campaign) => (
+              <option key={campaign.campaignId} value={campaign.campaignTag}>
+                {campaign.campaignTag} - {campaign.campaignName}
+              </option>
+            ))}
+          </select>
+          {selectedCampaignTag && campaigns.length > 0 && (
+            <div className="mt-2 rounded border border-border bg-muted/50 px-3 py-2 text-xs text-muted-foreground">
+              {(() => {
+                const c = campaigns.find((x) => x.campaignTag === selectedCampaignTag);
+                if (!c) return null;
+                return (
+                  <>
+                    {c.campaignPurposeStatement && (
+                      <div><strong>Purpose:</strong> {c.campaignPurposeStatement}</div>
+                    )}
+                    {c.campaignManager && (
+                      <div><strong>Manager:</strong> {c.campaignManager}</div>
+                    )}
+                  </>
+                );
+              })()}
+            </div>
+          )}
+        </div>
+
         {/* Language & Bible Selectors */}
         <div className="flex gap-4">
           <div className="flex-1">
-            <label className="block text-sm font-medium text-zinc-700">
+            <label className="block text-sm font-medium text-foreground">
               Language
             </label>
             <select
@@ -391,7 +469,7 @@ function ModelRunScopePanel() {
               onChange={(e) =>
                 setSelectedLanguageId(e.target.value ? Number(e.target.value) : null)
               }
-              className="mt-1 block w-full rounded-md border border-zinc-300 px-3 py-2 text-sm"
+              className="mt-1 block w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
             >
               <option value="">Select language...</option>
               {languages.map((lang) => (
@@ -402,7 +480,7 @@ function ModelRunScopePanel() {
             </select>
           </div>
           <div className="flex-1">
-            <label className="block text-sm font-medium text-zinc-700">
+            <label className="block text-sm font-medium text-foreground">
               Bible
             </label>
             <select
@@ -411,7 +489,7 @@ function ModelRunScopePanel() {
                 setSelectedBibleId(e.target.value ? Number(e.target.value) : null)
               }
               disabled={!selectedLanguageId}
-              className="mt-1 block w-full rounded-md border border-zinc-300 px-3 py-2 text-sm disabled:opacity-50"
+              className="mt-1 block w-full rounded-md border border-input bg-background px-3 py-2 text-sm disabled:opacity-50"
             >
               <option value="">Select bible...</option>
               {bibles.map((bible) => (
@@ -427,35 +505,40 @@ function ModelRunScopePanel() {
         {selectedBibleId && books.length > 0 && (
           <div>
             <div className="flex items-center justify-between">
-              <label className="text-sm font-medium text-zinc-700">
+              <label className="text-sm font-medium text-foreground">
                 Books ({selectedBookIds.size} selected)
               </label>
               <div className="flex gap-2">
                 <button
                   onClick={handleSelectAllBooks}
-                  className="text-xs text-blue-600 hover:underline"
+                  className="text-xs text-primary hover:underline"
                 >
                   Select all
                 </button>
                 <button
                   onClick={handleClearBooks}
-                  className="text-xs text-zinc-500 hover:underline"
+                  className="text-xs text-muted-foreground hover:underline"
                 >
                   Clear
                 </button>
               </div>
             </div>
-            <div className="mt-2 grid max-h-40 grid-cols-4 gap-1 overflow-y-auto rounded border border-zinc-200 bg-zinc-50 p-2">
+            <div className="mt-2 grid max-h-40 grid-cols-4 gap-1 overflow-y-auto rounded border border-border bg-muted p-2">
               {books.map((book) => (
                 <label
                   key={book.id}
-                  className="flex cursor-pointer items-center gap-1.5 rounded px-2 py-1 text-sm hover:bg-zinc-100"
+                  className={cn(
+                    "flex cursor-pointer items-center gap-1.5 rounded px-2 py-1 text-sm",
+                    selectedBookIds.has(book.id)
+                      ? "bg-accent text-accent-foreground"
+                      : "hover:bg-accent/20 hover:text-accent-foreground"
+                  )}
                 >
                   <input
                     type="checkbox"
                     checked={selectedBookIds.has(book.id)}
                     onChange={() => handleBookToggle(book.id)}
-                    className="h-3.5 w-3.5 rounded border-zinc-300"
+                    className="h-3.5 w-3.5 rounded border-input"
                   />
                   <span className="truncate">{book.name}</span>
                 </label>
@@ -467,34 +550,34 @@ function ModelRunScopePanel() {
         {/* Chapters Selection */}
         {selectedBookIds.size > 0 && chapters.length > 0 && (
           <div>
-            <label className="text-sm font-medium text-zinc-700">
+            <label className="text-sm font-medium text-foreground">
               Chapters ({selectedChapterIds.size} selected)
             </label>
-            <div className="mt-2 max-h-60 space-y-2 overflow-y-auto rounded border border-zinc-200 bg-zinc-50 p-2">
+            <div className="mt-2 max-h-60 space-y-2 overflow-y-auto rounded border border-border bg-muted p-2">
               {Array.from(chaptersByBook.entries()).map(([bookId, bookChapters]) => {
                 const book = books.find((b) => b.id === bookId);
                 const selectedInBook = bookChapters.filter((ch) =>
                   selectedChapterIds.has(ch.id)
                 ).length;
                 return (
-                  <div key={bookId} className="rounded bg-white p-2 shadow-sm">
+                  <div key={bookId} className="rounded bg-card p-2 shadow-sm">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-zinc-800">
+                      <span className="text-sm font-medium text-foreground">
                         {book?.name ?? `Book ${bookId}`}
-                        <span className="ml-2 text-xs text-zinc-500">
+                        <span className="ml-2 text-xs text-muted-foreground">
                           ({selectedInBook}/{bookChapters.length})
                         </span>
                       </span>
                       <div className="flex gap-2">
                         <button
                           onClick={() => handleSelectAllChaptersForBook(bookId)}
-                          className="text-xs text-blue-600 hover:underline"
+                          className="text-xs text-primary hover:underline"
                         >
                           All
                         </button>
                         <button
                           onClick={() => handleClearChaptersForBook(bookId)}
-                          className="text-xs text-zinc-500 hover:underline"
+                          className="text-xs text-muted-foreground hover:underline"
                         >
                           None
                         </button>
@@ -506,8 +589,8 @@ function ModelRunScopePanel() {
                           key={ch.id}
                           className={`cursor-pointer rounded px-2 py-1 text-xs ${
                             selectedChapterIds.has(ch.id)
-                              ? "bg-blue-100 text-blue-800"
-                              : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200"
+                              ? "bg-accent text-accent-foreground"
+                              : "bg-muted text-muted-foreground hover:bg-accent/20 hover:text-accent-foreground"
                           }`}
                           title={ch.name}
                         >
@@ -531,19 +614,19 @@ function ModelRunScopePanel() {
         {/* Models Selection */}
         <div>
           <div className="flex items-center justify-between">
-            <label className="text-sm font-medium text-zinc-700">
+            <label className="text-sm font-medium text-foreground">
               Models ({selectedModelIds.size} selected)
             </label>
             <div className="flex gap-2">
               <button
                 onClick={handleSelectAllModels}
-                className="text-xs text-blue-600 hover:underline"
+                className="text-xs text-primary hover:underline"
               >
                 Select all
               </button>
               <button
                 onClick={handleClearModels}
-                className="text-xs text-zinc-500 hover:underline"
+                className="text-xs text-muted-foreground hover:underline"
               >
                 Clear
               </button>
@@ -551,7 +634,7 @@ function ModelRunScopePanel() {
           </div>
           <div className="mt-2 flex flex-wrap gap-2">
             {models.length === 0 ? (
-              <p className="text-sm text-zinc-500">
+              <p className="text-sm text-muted-foreground">
                 No active models found. Add models in the Models page.
               </p>
             ) : (
@@ -560,8 +643,8 @@ function ModelRunScopePanel() {
                   key={model.modelId}
                   className={`cursor-pointer rounded-full px-3 py-1.5 text-sm ${
                     selectedModelIds.has(model.modelId)
-                      ? "bg-blue-600 text-white"
-                      : "bg-zinc-100 text-zinc-700 hover:bg-zinc-200"
+                      ? "bg-accent text-accent-foreground"
+                      : "bg-muted text-muted-foreground hover:bg-accent/20 hover:text-accent-foreground"
                   }`}
                 >
                   <input
@@ -579,7 +662,7 @@ function ModelRunScopePanel() {
 
         {/* Error display */}
         {error && (
-          <div className="rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+          <div className="rounded border border-destructive/50 bg-destructive/10 px-3 py-2 text-sm text-destructive">
             {error}
           </div>
         )}
@@ -589,10 +672,10 @@ function ModelRunScopePanel() {
           <div
             className={`rounded border px-3 py-2 text-sm ${
               runResult.status === "success"
-                ? "border-green-200 bg-green-50 text-green-700"
+                ? "border-green-500/20 bg-green-500/10 text-green-600 dark:text-green-400"
                 : runResult.status === "error"
-                ? "border-red-200 bg-red-50 text-red-700"
-                : "border-blue-200 bg-blue-50 text-blue-700"
+                ? "border-destructive/50 bg-destructive/10 text-destructive"
+                : "border-blue-500/20 bg-blue-500/10 text-blue-600 dark:text-blue-400"
             }`}
           >
             {runResult.message ?? (runResult.status === "running" ? "Running..." : "")}
@@ -600,16 +683,16 @@ function ModelRunScopePanel() {
         )}
 
         {/* Run button */}
-        <div className="flex items-center justify-between border-t border-zinc-200 pt-4">
-          <span className="text-sm text-zinc-600">
-            {totalRuns > 0
+        <div className="flex items-center justify-between border-t border-border pt-4">
+          <span className="text-sm text-muted-foreground">
+            {totalRuns > 0 && selectedCampaignTag
               ? `${selectedChapterIds.size} chapter${selectedChapterIds.size !== 1 ? "s" : ""} x ${selectedModelIds.size} model${selectedModelIds.size !== 1 ? "s" : ""} = ${totalRuns} run${totalRuns !== 1 ? "s" : ""}`
-              : "Select chapters and models to start"}
+              : "Select campaign, chapters, and models to start"}
           </span>
           <button
             onClick={handleStartRun}
-            disabled={isRunning || selectedChapterIds.size === 0 || selectedModelIds.size === 0}
-            className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+            disabled={isRunning || !selectedCampaignTag || selectedChapterIds.size === 0 || selectedModelIds.size === 0}
+            className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isRunning ? "Running..." : "Start Model Run"}
           </button>
@@ -631,6 +714,9 @@ export default function AdminEtlPage() {
     status: "idle",
   });
   const [versesResult, setVersesResult] = useState<StepResult>({
+    status: "idle",
+  });
+  const [aggregationsResult, setAggregationsResult] = useState<StepResult>({
     status: "idle",
   });
 
@@ -702,12 +788,17 @@ export default function AdminEtlPage() {
     );
   }, [runStep]);
 
+  const runAggregations = useCallback(() => {
+    runStep("/api/admin/aggregations", {}, setAggregationsResult);
+  }, [runStep]);
+
   const runAll = useCallback(async () => {
     setSchemaResult({ status: "running" });
     setSeedResult({ status: "idle" });
     setIngestResult({ status: "idle" });
     setChaptersResult({ status: "idle" });
     setVersesResult({ status: "idle" });
+    setAggregationsResult({ status: "idle" });
 
     // Step 1: Schema
     try {
@@ -827,6 +918,31 @@ export default function AdminEtlPage() {
         status: "error",
         message: err instanceof Error ? err.message : "Failed",
       });
+      return;
+    }
+
+    // Step 6: Update Aggregations
+    setAggregationsResult({ status: "running" });
+    try {
+      const aggRes = await fetch("/api/admin/aggregations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({}),
+      });
+      const aggJson = await aggRes.json();
+      if (!aggJson.ok) {
+        setAggregationsResult({ status: "error", message: aggJson.error });
+        return;
+      }
+      setAggregationsResult({
+        status: "success",
+        message: `Chapters: ${aggJson.data.chaptersProcessed}, Books: ${aggJson.data.booksProcessed}, Bibles: ${aggJson.data.biblesProcessed}`,
+      });
+    } catch (err) {
+      setAggregationsResult({
+        status: "error",
+        message: err instanceof Error ? err.message : "Failed",
+      });
     }
   }, []);
 
@@ -836,6 +952,7 @@ export default function AdminEtlPage() {
     ingestResult,
     chaptersResult,
     versesResult,
+    aggregationsResult,
   ].some((r) => r.status === "running");
 
   return (
@@ -847,15 +964,15 @@ export default function AdminEtlPage() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-semibold text-zinc-900">ETL Pipeline</h1>
-            <p className="mt-1 text-sm text-zinc-500">
+            <h1 className="text-2xl font-semibold text-foreground">ETL Pipeline</h1>
+            <p className="mt-1 text-sm text-muted-foreground">
               Initialize the database and run the ETL pipeline.
             </p>
           </div>
           <button
             onClick={runAll}
             disabled={isAnyRunning}
-            className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isAnyRunning ? "Running..." : "Run All Steps"}
           </button>
@@ -904,6 +1021,15 @@ export default function AdminEtlPage() {
           buttonLabel="Transform"
           result={versesResult}
           onRun={runVerses}
+          disabled={isAnyRunning}
+        />
+
+        <EtlStep
+          title="6. Update Aggregations"
+          description="Recompute aggregation collections (chapters, books, bibles) from verse results."
+          buttonLabel="Update"
+          result={aggregationsResult}
+          onRun={runAggregations}
           disabled={isAnyRunning}
         />
         </div>

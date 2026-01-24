@@ -1,0 +1,33 @@
+{
+  "$schema": "https://ui.shadcn.com/schema.json",
+  "style": "lyra",
+  "rsc": true,
+  "tsx": true,
+  "tailwind": {
+    "config": "",
+    "css": "src/app/globals.css",
+    "baseColor": "zinc",
+    "cssVariables": true,
+    "prefix": ""
+  },
+  "aliases": {
+    "components": "@/components",
+    "utils": "@/lib/utils",
+    "ui": "@/components/ui",
+    "lib": "@/lib",
+    "hooks": "@/hooks"
+  },
+  "iconLibrary": "phosphor",
+  "iconLibraryConfig": {
+    "phosphor": {
+      "weight": "regular"
+    }
+  },
+  "radius": 0,
+  "theme": {
+    "baseColor": "zinc",
+    "theme": "amber",
+    "menuAccent": "subtle",
+    "menuColor": "default"
+  }
+}
