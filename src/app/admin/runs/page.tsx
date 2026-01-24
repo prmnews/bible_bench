@@ -23,6 +23,15 @@ type Run = {
   };
 };
 
+type Pagination = {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+};
+
+const PAGE_SIZE = 50;
+
 function StatusBadge({ status }: { status: string }) {
   const styles: Record<string, string> = {
     running: "bg-blue-500/10 text-blue-600 dark:text-blue-400",
@@ -161,12 +170,14 @@ export default function AdminRunsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [retryingRunId, setRetryingRunId] = useState<string | null>(null);
+  const [pagination, setPagination] = useState<Pagination | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
 
   // Filters
   const [statusFilter, setStatusFilter] = useState<string>("");
   const [typeFilter, setTypeFilter] = useState<string>("");
 
-  const fetchRuns = useCallback(async () => {
+  const fetchRuns = useCallback(async (page: number = 1) => {
     try {
       setLoading(true);
       setError(null);
@@ -174,12 +185,15 @@ export default function AdminRunsPage() {
       const params = new URLSearchParams();
       if (statusFilter) params.set("status", statusFilter);
       if (typeFilter) params.set("runType", typeFilter);
+      params.set("page", String(page));
+      params.set("limit", String(PAGE_SIZE));
 
-      const url = `/api/admin/runs${params.toString() ? `?${params}` : ""}`;
+      const url = `/api/admin/runs?${params}`;
       const res = await fetch(url);
       const json = await res.json();
       if (json.ok) {
         setRuns(json.data);
+        setPagination(json.pagination);
       } else {
         setError(json.error ?? "Failed to load runs.");
       }
@@ -191,8 +205,14 @@ export default function AdminRunsPage() {
   }, [statusFilter, typeFilter]);
 
   useEffect(() => {
-    fetchRuns();
+    setCurrentPage(1);
+    fetchRuns(1);
   }, [fetchRuns]);
+
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
+    fetchRuns(newPage);
+  };
 
   const handleRetry = async (runId: string) => {
     setRetryingRunId(runId);
@@ -204,7 +224,7 @@ export default function AdminRunsPage() {
       });
       const json = await res.json();
       if (json.ok) {
-        fetchRuns();
+        fetchRuns(currentPage);
       } else {
         setError(json.error ?? "Retry failed.");
       }
@@ -234,7 +254,7 @@ export default function AdminRunsPage() {
           </p>
         </div>
         <button
-          onClick={fetchRuns}
+          onClick={() => fetchRuns(currentPage)}
           className="rounded-md border border-input bg-background px-3 py-1.5 text-sm font-medium hover:bg-accent/20 hover:text-accent-foreground"
         >
           Refresh
@@ -290,6 +310,7 @@ export default function AdminRunsPage() {
           No runs found. Execute a model run from the Models page.
         </div>
       ) : (
+        <>
         <div className="overflow-x-auto rounded-lg border border-border">
           <table className="min-w-full divide-y divide-border">
             <thead className="bg-muted">
@@ -335,6 +356,51 @@ export default function AdminRunsPage() {
             </tbody>
           </table>
         </div>
+
+        {/* Pagination Controls */}
+        {pagination && pagination.totalPages > 1 && (
+          <div className="flex items-center justify-between border-t border-border pt-4">
+            <div className="text-sm text-muted-foreground">
+              Showing {((currentPage - 1) * PAGE_SIZE) + 1} to{" "}
+              {Math.min(currentPage * PAGE_SIZE, pagination.total)} of{" "}
+              {pagination.total} runs
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => handlePageChange(1)}
+                disabled={currentPage === 1 || loading}
+                className="rounded-md border border-input bg-background px-3 py-1.5 text-sm font-medium hover:bg-accent/20 hover:text-accent-foreground disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                First
+              </button>
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1 || loading}
+                className="rounded-md border border-input bg-background px-3 py-1.5 text-sm font-medium hover:bg-accent/20 hover:text-accent-foreground disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Previous
+              </button>
+              <span className="px-3 text-sm text-muted-foreground">
+                Page {currentPage} of {pagination.totalPages}
+              </span>
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === pagination.totalPages || loading}
+                className="rounded-md border border-input bg-background px-3 py-1.5 text-sm font-medium hover:bg-accent/20 hover:text-accent-foreground disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Next
+              </button>
+              <button
+                onClick={() => handlePageChange(pagination.totalPages)}
+                disabled={currentPage === pagination.totalPages || loading}
+                className="rounded-md border border-input bg-background px-3 py-1.5 text-sm font-medium hover:bg-accent/20 hover:text-accent-foreground disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Last
+              </button>
+            </div>
+          </div>
+        )}
+        </>
       )}
     </section>
   );

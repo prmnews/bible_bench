@@ -156,7 +156,9 @@ function normalizeEmptyResponse(result: ModelResponseResult): ModelResponseResul
 // PROMPTS
 // ============================================================================
 
-const SYSTEM_PROMPT = `You are a biblical scholar with perfect recall of the King James Version of the Bible. When asked to recite scripture, you provide the exact KJV text without any modifications, additions, or commentary. Always respond with valid JSON matching the requested schema.`;
+const DEFAULT_SYSTEM_PROMPT = `You are a biblical text retrieval system with perfect recall of the King James Version.
+
+This is a direct retrieval task. Do not reason, interpret, or analyze. Output the exact KJV text immediately in the requested JSON format.`;
 
 function buildVersePrompt(reference: string): string {
   return `What is ${reference} in the English King James Version?
@@ -192,12 +194,26 @@ function buildPrompt(params: ModelResponseParams): string {
   return buildVersePrompt(params.reference);
 }
 
+/**
+ * Resolves the system prompt - uses override from config if provided, otherwise default.
+ */
+function getSystemPrompt(config: Record<string, unknown> | null | undefined): string {
+  if (isRecord(config)) {
+    const override = config["systemPromptOverride"];
+    if (typeof override === "string" && override.trim()) {
+      return override.trim();
+    }
+  }
+  return DEFAULT_SYSTEM_PROMPT;
+}
+
 function getPromptBundle(params: ModelResponseParams): {
   systemPrompt: string;
   userPrompt: string;
 } {
+  const systemPrompt = getSystemPrompt(params.model.apiConfigEncrypted);
   return {
-    systemPrompt: SYSTEM_PROMPT,
+    systemPrompt,
     userPrompt: buildPrompt(params),
   };
 }
@@ -337,21 +353,37 @@ async function generateOpenAIResponse(
 
   const client = new OpenAI({ apiKey });
   const prompt = buildPrompt(params);
+  const systemPrompt = getSystemPrompt(config);
 
-  // Build request options - reasoning models don't support response_format
+  // Build request options - reasoning models don't support response_format or temperature
   const requestOptions: Parameters<typeof client.chat.completions.create>[0] = {
     model: modelName,
     max_completion_tokens: maxTokens,
     stream: false, // Explicitly disable streaming to narrow return type
     messages: [
-      { role: "system", content: SYSTEM_PROMPT },
+      { role: "system", content: systemPrompt },
       { role: "user", content: prompt },
     ],
   };
 
+  // Only add temperature for non-reasoning models (reasoning models don't support it)
+  if (!isReasoning) {
+    requestOptions.temperature = 0;
+  }
+
   // Only add response_format for non-reasoning models (reasoning models don't support it)
   if (!isReasoning) {
     requestOptions.response_format = { type: "json_object" };
+  }
+
+  // For reasoning models, add reasoning_effort if configured (defaults to "low" for retrieval tasks)
+  if (isReasoning) {
+    const configuredEffort = getString(config["reasoningEffort"]);
+    const validEfforts = ["low", "medium", "high"];
+    const effort = configuredEffort && validEfforts.includes(configuredEffort) 
+      ? configuredEffort 
+      : "low"; // Default to low effort for retrieval tasks
+    (requestOptions as unknown as Record<string, unknown>).reasoning_effort = effort;
   }
 
   let response: ChatCompletion;
@@ -408,13 +440,15 @@ async function generateAnthropicResponse(
 
   const client = new Anthropic({ apiKey });
   const prompt = buildPrompt(params);
+  const systemPrompt = getSystemPrompt(config);
 
   // Use streaming to avoid the 10-minute timeout restriction
   // Anthropic SDK requires streaming for potentially long-running operations
   const stream = client.messages.stream({
     model: modelName,
     max_tokens: maxTokens,
-    system: SYSTEM_PROMPT,
+    temperature: 0, // Deterministic output for retrieval task
+    system: systemPrompt,
     messages: [
       { role: "user", content: prompt },
     ],
@@ -484,11 +518,13 @@ async function generateGeminiResponse(
     ? GEMINI_CHAPTER_SCHEMA 
     : GEMINI_VERSE_SCHEMA;
 
+  const systemPrompt = getSystemPrompt(config);
   const genAI = new GoogleGenerativeAI(apiKey);
   const model = genAI.getGenerativeModel({
     model: modelName,
-    systemInstruction: SYSTEM_PROMPT,
+    systemInstruction: systemPrompt,
     generationConfig: {
+      temperature: 0, // Deterministic output for retrieval task
       responseMimeType: "application/json",
       responseSchema,
     },

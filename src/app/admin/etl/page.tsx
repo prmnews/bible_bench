@@ -147,8 +147,11 @@ function ModelRunScopePanel() {
   const [error, setError] = useState<string | null>(null);
 
   // Progress tracking state
+  // Maps runId -> modelId for tracking which model each run belongs to
+  const [runModelMap, setRunModelMap] = useState<Map<string, number>>(new Map());
   const [currentRunIds, setCurrentRunIds] = useState<string[]>([]);
-  const [chapterProgress, setChapterProgress] = useState<Map<number, string>>(new Map());
+  // Changed: Now tracks per-model progress: Map<modelId, Map<chapterId, status>>
+  const [modelChapterProgress, setModelChapterProgress] = useState<Map<number, Map<number, string>>>(new Map());
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [isCancelling, setIsCancelling] = useState(false);
   const pollingRef = useRef<NodeJS.Timeout | null>(null);
@@ -302,10 +305,14 @@ function ModelRunScopePanel() {
     }
 
     const pollProgress = async () => {
-      const newProgress = new Map<number, string>();
+      // Build per-model progress map
+      const newModelProgress = new Map<number, Map<number, string>>();
       let allComplete = true;
 
       for (const runId of currentRunIds) {
+        const modelId = runModelMap.get(runId);
+        if (!modelId) continue;
+
         try {
           const res = await fetch(`/api/admin/runs/${runId}/items`);
           const json = await res.json();
@@ -317,12 +324,19 @@ function ModelRunScopePanel() {
               allComplete = false;
             }
 
-            // Update chapter progress from items
+            // Get or create the chapter map for this model
+            let modelChapters = newModelProgress.get(modelId);
+            if (!modelChapters) {
+              modelChapters = new Map<number, string>();
+              newModelProgress.set(modelId, modelChapters);
+            }
+
+            // Update chapter progress from items for this specific model
             for (const item of json.data.items) {
-              const existingStatus = newProgress.get(item.targetId);
+              const existingStatus = modelChapters.get(item.targetId);
               // If already marked as success/failed, don't overwrite
               if (!existingStatus || existingStatus === "pending") {
-                newProgress.set(item.targetId, item.status);
+                modelChapters.set(item.targetId, item.status);
               }
             }
           }
@@ -331,7 +345,7 @@ function ModelRunScopePanel() {
         }
       }
 
-      setChapterProgress(newProgress);
+      setModelChapterProgress(newModelProgress);
 
       // If all runs complete, stop polling and update result
       if (allComplete) {
@@ -341,12 +355,14 @@ function ModelRunScopePanel() {
         }
         setIsRunning(false);
 
-        // Count successes and failures
+        // Count successes and failures across all models
         let successCount = 0;
         let failedCount = 0;
-        for (const status of newProgress.values()) {
-          if (status === "success") successCount++;
-          if (status === "failed") failedCount++;
+        for (const modelChapters of newModelProgress.values()) {
+          for (const status of modelChapters.values()) {
+            if (status === "success") successCount++;
+            if (status === "failed") failedCount++;
+          }
         }
 
         setRunResult({
@@ -368,7 +384,7 @@ function ModelRunScopePanel() {
         pollingRef.current = null;
       }
     };
-  }, [isRunning, currentRunIds]);
+  }, [isRunning, currentRunIds, runModelMap]);
 
   // Cancel run handler
   const handleCancelRun = async () => {
@@ -396,12 +412,19 @@ function ModelRunScopePanel() {
     }
   };
 
-  // Get chapter pill class based on progress status
-  const getChapterPillClass = (chapterId: number) => {
-    const status = chapterProgress.get(chapterId);
+  // Get chapter pill class based on progress status for a specific model
+  const getChapterPillClassForModel = (chapterId: number, modelId: number) => {
+    const modelChapters = modelChapterProgress.get(modelId);
+    const status = modelChapters?.get(chapterId);
     if (status === "success") return "bg-green-500 text-white";
     if (status === "failed") return "bg-red-500 text-white";
-    if (status === "running") return "bg-accent animate-pulse text-accent-foreground";
+    if (status === "running") return "bg-yellow-500 animate-pulse text-white";
+    if (status === "pending") return "bg-yellow-500/60 text-white";
+    return "bg-muted text-muted-foreground";
+  };
+
+  // Get chapter pill class for selection UI (when not running)
+  const getChapterPillClass = (chapterId: number) => {
     if (selectedChapterIds.has(chapterId)) return "bg-accent text-accent-foreground";
     return "bg-muted text-muted-foreground hover:bg-accent/20 hover:text-accent-foreground";
   };
@@ -490,12 +513,17 @@ function ModelRunScopePanel() {
       return;
     }
 
-    // Initialize progress tracking - mark selected chapters as pending
-    const initialProgress = new Map<number, string>();
-    for (const chapterId of selectedChapterIds) {
-      initialProgress.set(chapterId, "pending");
+    // Initialize per-model progress tracking - mark selected chapters as pending for each model
+    const initialModelProgress = new Map<number, Map<number, string>>();
+    for (const modelId of selectedModelIds) {
+      const chapterMap = new Map<number, string>();
+      for (const chapterId of selectedChapterIds) {
+        chapterMap.set(chapterId, "pending");
+      }
+      initialModelProgress.set(modelId, chapterMap);
     }
-    setChapterProgress(initialProgress);
+    setModelChapterProgress(initialModelProgress);
+    setRunModelMap(new Map());
     setCurrentRunIds([]);
     setIsRunning(true);
     setError(null);
@@ -515,16 +543,23 @@ function ModelRunScopePanel() {
 
       const json = await res.json();
       if (json.ok) {
-        // Extract run IDs from results for progress polling
-        const runIds = json.data.results
-          .filter((r: { ok: boolean; runId: string }) => r.ok && r.runId)
-          .map((r: { runId: string }) => r.runId);
+        // Extract run IDs and build runId -> modelId mapping
+        const runIds: string[] = [];
+        const newRunModelMap = new Map<string, number>();
+
+        for (const result of json.data.results) {
+          if (result.ok && result.runId) {
+            runIds.push(result.runId);
+            newRunModelMap.set(result.runId, result.modelId);
+          }
+        }
 
         if (runIds.length > 0) {
+          setRunModelMap(newRunModelMap);
           setCurrentRunIds(runIds);
           setRunResult({
             status: "running",
-            message: `Running ${runIds.length} run(s)...`,
+            message: `Running ${runIds.length} run(s) across ${selectedModelIds.size} model(s)...`,
           });
         } else {
           // All runs completed synchronously (or failed to start)
@@ -812,6 +847,79 @@ function ModelRunScopePanel() {
           </div>
         </div>
 
+        {/* Per-Model Progress Visualization */}
+        {(isRunning || runResult.status === "success" || runResult.status === "error") && modelChapterProgress.size > 0 && (
+          <div className="rounded-lg border border-border bg-muted/30 p-4">
+            <h3 className="mb-3 text-sm font-medium text-foreground">Progress by Model</h3>
+            <div className="space-y-3">
+              {Array.from(selectedModelIds).map((modelId) => {
+                const model = models.find((m) => m.modelId === modelId);
+                const modelChapters = modelChapterProgress.get(modelId);
+                const chaptersForModel = chapters.filter((ch) => selectedChapterIds.has(ch.id));
+                
+                // Count statuses for this model
+                const successCount = modelChapters 
+                  ? Array.from(modelChapters.values()).filter(s => s === "success").length 
+                  : 0;
+                const failedCount = modelChapters 
+                  ? Array.from(modelChapters.values()).filter(s => s === "failed").length 
+                  : 0;
+                const runningCount = modelChapters 
+                  ? Array.from(modelChapters.values()).filter(s => s === "running").length 
+                  : 0;
+                const totalChapters = selectedChapterIds.size;
+                
+                return (
+                  <div key={modelId} className="rounded bg-card p-3 shadow-sm">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium text-foreground">
+                          {model?.displayName ?? `Model ${modelId}`}
+                        </span>
+                        <span className="text-xs text-muted-foreground">
+                          ({model?.provider})
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-3 text-xs">
+                        {runningCount > 0 && (
+                          <span className="flex items-center gap-1 text-yellow-600 dark:text-yellow-400">
+                            <span className="h-2 w-2 rounded-full bg-yellow-500 animate-pulse" />
+                            {runningCount} running
+                          </span>
+                        )}
+                        <span className="text-green-600 dark:text-green-400">
+                          {successCount}/{totalChapters} complete
+                        </span>
+                        {failedCount > 0 && (
+                          <span className="text-red-600 dark:text-red-400">
+                            {failedCount} failed
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap gap-1">
+                      {chaptersForModel
+                        .sort((a, b) => a.number - b.number)
+                        .map((ch) => (
+                          <span
+                            key={ch.id}
+                            className={cn(
+                              "inline-flex items-center justify-center min-w-[28px] rounded px-1.5 py-0.5 text-xs font-medium transition-colors",
+                              getChapterPillClassForModel(ch.id, modelId)
+                            )}
+                            title={ch.name}
+                          >
+                            {ch.number}
+                          </span>
+                        ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
         {/* Error display */}
         {error && (
           <div className="rounded border border-destructive/50 bg-destructive/10 px-3 py-2 text-sm text-destructive">
@@ -832,9 +940,19 @@ function ModelRunScopePanel() {
           >
             <div className="flex items-center justify-between">
               <span>{runResult.message ?? (runResult.status === "running" ? "Running..." : "")}</span>
-              {runResult.status === "running" && chapterProgress.size > 0 && (
+              {runResult.status === "running" && modelChapterProgress.size > 0 && (
                 <span className="text-xs opacity-75">
-                  {Array.from(chapterProgress.values()).filter(s => s === "success").length} / {chapterProgress.size} complete
+                  {(() => {
+                    let total = 0;
+                    let complete = 0;
+                    for (const modelChapters of modelChapterProgress.values()) {
+                      for (const status of modelChapters.values()) {
+                        total++;
+                        if (status === "success" || status === "failed") complete++;
+                      }
+                    }
+                    return `${complete} / ${total} complete`;
+                  })()}
                 </span>
               )}
             </div>

@@ -6,6 +6,9 @@ import { connectToDatabase } from "@/lib/mongodb";
 
 export const runtime = "nodejs";
 
+const DEFAULT_PAGE_SIZE = 50;
+const MAX_PAGE_SIZE = 100;
+
 export async function GET(request: Request) {
   if (!isAdminAvailable()) {
     return new Response("Not Found", { status: 404 });
@@ -15,6 +18,14 @@ export async function GET(request: Request) {
   const runType = searchParams.get("runType");
   const status = searchParams.get("status");
   const modelIdValue = searchParams.get("modelId");
+
+  // Pagination params
+  const pageParam = searchParams.get("page");
+  const limitParam = searchParams.get("limit");
+
+  const page = Math.max(1, Number(pageParam) || 1);
+  const limit = Math.min(MAX_PAGE_SIZE, Math.max(1, Number(limitParam) || DEFAULT_PAGE_SIZE));
+  const skip = (page - 1) * limit;
 
   const query: Record<string, unknown> = {};
   if (runType) {
@@ -32,9 +43,26 @@ export async function GET(request: Request) {
   }
 
   await connectToDatabase();
-  const runs = await RunModel.find(query, { _id: 0 })
-    .sort({ startedAt: -1 })
-    .lean();
 
-  return NextResponse.json({ ok: true, data: runs });
+  const [runs, total] = await Promise.all([
+    RunModel.find(query, { _id: 0 })
+      .sort({ startedAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .lean(),
+    RunModel.countDocuments(query),
+  ]);
+
+  const totalPages = Math.ceil(total / limit);
+
+  return NextResponse.json({
+    ok: true,
+    data: runs,
+    pagination: {
+      page,
+      limit,
+      total,
+      totalPages,
+    },
+  });
 }

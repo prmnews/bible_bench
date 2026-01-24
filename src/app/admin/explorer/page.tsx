@@ -13,11 +13,20 @@ import {
   Funnel,
   Eye,
   EyeSlash,
+  ArrowsLeftRight,
+  GridFour,
+  Table,
 } from "@phosphor-icons/react";
 import { diffWords, type Change } from "diff";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { TransformFilterPanel } from "@/components/transform-filter-panel";
+import { ChapterModelMatrix } from "@/components/chapter-model-matrix";
+import {
+  type TransformStep,
+  applyTransformsAndScore,
+} from "@/lib/client-transforms";
 
 // ============================================================================
 // Types
@@ -218,11 +227,12 @@ function FidelityGauge({ score, size = "md", thresholds = DEFAULT_THRESHOLDS }: 
   );
 }
 
-function PerfectRateRing({ rate, matchCount, totalCount, size = "md" }: { 
+function PerfectRateRing({ rate, matchCount, totalCount, size = "md", thresholds = DEFAULT_THRESHOLDS }: { 
   rate: number; 
   matchCount: number;
   totalCount: number;
-  size?: "sm" | "md" 
+  size?: "sm" | "md";
+  thresholds?: ScoreThresholds;
 }) {
   const percentage = rate * 100;
   const sizes = {
@@ -233,6 +243,13 @@ function PerfectRateRing({ rate, matchCount, totalCount, size = "md" }: {
   const radius = (s.ring - s.stroke) / 2;
   const circumference = 2 * Math.PI * radius;
   const progress = rate * circumference;
+
+  // Use threshold-based colors for consistency
+  const getStrokeColor = (pct: number, t: ScoreThresholds) => {
+    if (pct >= t.pass) return "stroke-green-500";
+    if (pct >= t.warning) return "stroke-yellow-500";
+    return "stroke-red-500";
+  };
 
   return (
     <div className={cn("relative flex flex-col items-center justify-center", s.container)}>
@@ -254,11 +271,11 @@ function PerfectRateRing({ rate, matchCount, totalCount, size = "md" }: {
           strokeDasharray={circumference}
           strokeDashoffset={circumference - progress}
           strokeLinecap="round"
-          className="stroke-primary transition-all duration-500"
+          className={cn("transition-all duration-500", getStrokeColor(percentage, thresholds))}
         />
       </svg>
       <div className="flex flex-col items-center">
-        <span className={cn("font-bold text-foreground", s.text)}>
+        <span className={cn("font-bold", s.text, getScoreColor(percentage, thresholds))}>
           {percentage.toFixed(1)}%
         </span>
         <span className="text-[8px] text-muted-foreground">
@@ -433,6 +450,7 @@ function SummaryHeader({
               matchCount={summary.matchCount}
               totalCount={summary.totalVerses}
               size="md"
+              thresholds={thresholds}
             />
           </div>
           
@@ -985,6 +1003,12 @@ function WordDiff({ canonical, llm }: { canonical: string; llm: string }) {
   );
 }
 
+type NormalizedVerseItem = VerseItem & {
+  normalizedScore: number | null;
+  normalizedHashMatch: boolean | null;
+  normalizedDiff: { substitutions: number; omissions: number; additions: number } | null;
+};
+
 function VerseComparisonView({
   items,
   chapterNumber,
@@ -994,29 +1018,89 @@ function VerseComparisonView({
 }) {
   const [filter, setFilter] = useState<"all" | "matches" | "mismatches">("all");
   const [showDiff, setShowDiff] = useState(true);
+  const [selectedTransforms, setSelectedTransforms] = useState<TransformStep[]>([]);
+  const [useNormalizedScores, setUseNormalizedScores] = useState(false);
+
+  // Handle transform changes from the filter panel
+  const handleTransformsChange = useCallback((transforms: TransformStep[]) => {
+    setSelectedTransforms(transforms);
+    setUseNormalizedScores(transforms.length > 0);
+  }, []);
+
+  // Compute normalized scores when transforms are selected
+  const normalizedItems: NormalizedVerseItem[] = useMemo(() => {
+    if (selectedTransforms.length === 0) {
+      return items.map((item) => ({
+        ...item,
+        normalizedScore: null,
+        normalizedHashMatch: null,
+        normalizedDiff: null,
+      }));
+    }
+
+    return items.map((item) => {
+      const result = applyTransformsAndScore(
+        item.llmText,
+        item.canonicalText,
+        selectedTransforms
+      );
+      return {
+        ...item,
+        normalizedScore: result.fidelityScore,
+        normalizedHashMatch: result.fidelityScore >= 100,
+        normalizedDiff: {
+          substitutions: result.diff.substitutions,
+          omissions: result.diff.omissions,
+          additions: result.diff.additions,
+        },
+      };
+    });
+  }, [items, selectedTransforms]);
+
+  // Determine which score to use for filtering
+  const getEffectiveMatch = useCallback(
+    (item: NormalizedVerseItem) => {
+      if (useNormalizedScores && item.normalizedHashMatch !== null) {
+        return item.normalizedHashMatch;
+      }
+      return item.hashMatch;
+    },
+    [useNormalizedScores]
+  );
 
   const filteredItems = useMemo(() => {
     switch (filter) {
       case "matches":
-        return items.filter((i) => i.hashMatch);
+        return normalizedItems.filter((i) => getEffectiveMatch(i));
       case "mismatches":
-        return items.filter((i) => !i.hashMatch);
+        return normalizedItems.filter((i) => !getEffectiveMatch(i));
       default:
-        return items;
+        return normalizedItems;
     }
-  }, [items, filter]);
+  }, [normalizedItems, filter, getEffectiveMatch]);
 
-  const matchCount = items.filter((i) => i.hashMatch).length;
-  const mismatchCount = items.length - matchCount;
+  const matchCount = normalizedItems.filter((i) => getEffectiveMatch(i)).length;
+  const mismatchCount = normalizedItems.length - matchCount;
 
   return (
     <div className="space-y-4">
+      {/* Transform Filter Panel */}
+      <TransformFilterPanel
+        onTransformsChange={handleTransformsChange}
+        className="mb-2"
+      />
+
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-2">
           <span className="text-sm font-medium text-foreground">Chapter {chapterNumber}</span>
           <span className="text-sm text-muted-foreground">
             ({items.length} verses)
           </span>
+          {selectedTransforms.length > 0 && (
+            <span className="rounded-full bg-blue-500/10 px-2 py-0.5 text-xs font-medium text-blue-600 dark:text-blue-400">
+              Normalized
+            </span>
+          )}
         </div>
 
         <div className="flex items-center gap-4">
@@ -1068,67 +1152,97 @@ function VerseComparisonView({
         </div>
       </div>
 
-      <ScrollArea className="h-[calc(100vh-400px)]">
+      <ScrollArea className="h-[calc(100vh-450px)]">
         <div className="space-y-4 pr-4">
-          {filteredItems.map((verse) => (
-            <div
-              key={`${verse.verseId}-${verse.modelId}`}
-              className={cn(
-                "rounded-lg border p-4 transition-all",
-                verse.hashMatch
-                  ? "border-green-500/30 bg-green-500/5"
-                  : "border-amber-500/30 bg-amber-500/5"
-              )}
-            >
-              <div className="flex items-start justify-between mb-3">
-                <div className="flex items-center gap-3">
-                  <span className="inline-flex items-center justify-center h-7 w-7 rounded-full bg-muted text-sm font-bold">
-                    {verse.verseNumber}
-                  </span>
-                  <span className="text-sm text-muted-foreground">{verse.reference}</span>
-                  <span className="text-xs text-muted-foreground">
-                    via {verse.modelName}
-                  </span>
+          {filteredItems.map((verse) => {
+            const effectiveMatch = getEffectiveMatch(verse);
+            const showNormalized = verse.normalizedScore !== null;
+
+            return (
+              <div
+                key={`${verse.verseId}-${verse.modelId}`}
+                className={cn(
+                  "rounded-lg border p-4 transition-all",
+                  effectiveMatch
+                    ? "border-green-500/30 bg-green-500/5"
+                    : "border-amber-500/30 bg-amber-500/5"
+                )}
+              >
+                <div className="flex items-start justify-between mb-3">
+                  <div className="flex items-center gap-3">
+                    <span className="inline-flex items-center justify-center h-7 w-7 rounded-full bg-muted text-sm font-bold">
+                      {verse.verseNumber}
+                    </span>
+                    <span className="text-sm text-muted-foreground">{verse.reference}</span>
+                    <span className="text-xs text-muted-foreground">
+                      via {verse.modelName}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {/* Raw Score */}
+                    <div className="flex flex-col items-end gap-0.5">
+                      <ScoreBadge score={verse.fidelityScore} showLabel={false} />
+                      <span className="text-[10px] text-muted-foreground">Raw</span>
+                    </div>
+                    {/* Normalized Score (if transforms applied) */}
+                    {showNormalized && (
+                      <>
+                        <ArrowsLeftRight className="h-3 w-3 text-muted-foreground" />
+                        <div className="flex flex-col items-end gap-0.5">
+                          <ScoreBadge score={verse.normalizedScore!} showLabel={false} />
+                          <span className="text-[10px] text-blue-600 dark:text-blue-400">Norm</span>
+                        </div>
+                      </>
+                    )}
+                    {effectiveMatch ? (
+                      <CheckCircle className="h-5 w-5 text-green-500" weight="fill" />
+                    ) : (
+                      <Warning className="h-5 w-5 text-amber-500" weight="fill" />
+                    )}
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <ScoreBadge score={verse.fidelityScore} showLabel={false} />
-                  {verse.hashMatch ? (
-                    <CheckCircle className="h-5 w-5 text-green-500" weight="fill" />
-                  ) : (
-                    <Warning className="h-5 w-5 text-amber-500" weight="fill" />
-                  )}
-                </div>
+
+                {showDiff && !effectiveMatch ? (
+                  <WordDiff canonical={verse.canonicalText} llm={verse.llmText} />
+                ) : (
+                  <div className="flex gap-4">
+                    <div className="flex-1 rounded-lg border border-border bg-muted/30 p-3">
+                      <div className="mb-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                        Canonical
+                      </div>
+                      <p className="text-sm leading-relaxed">{verse.canonicalText}</p>
+                    </div>
+                    <div className="flex-1 rounded-lg border border-border bg-muted/30 p-3">
+                      <div className="mb-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                        LLM Output
+                      </div>
+                      <p className="text-sm leading-relaxed">{verse.llmText}</p>
+                    </div>
+                  </div>
+                )}
+
+                {!effectiveMatch && (
+                  <div className="mt-3 flex items-center gap-4 text-xs text-muted-foreground">
+                    {showNormalized && verse.normalizedDiff ? (
+                      <>
+                        <span className="text-blue-600 dark:text-blue-400">[Normalized]</span>
+                        <span>Substitutions: {verse.normalizedDiff.substitutions}</span>
+                        <span>Omissions: {verse.normalizedDiff.omissions}</span>
+                        <span>Additions: {verse.normalizedDiff.additions}</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>Substitutions: {verse.diff.substitutions}</span>
+                        <span>Omissions: {verse.diff.omissions}</span>
+                        <span>Additions: {verse.diff.additions}</span>
+                      </>
+                    )}
+                    {verse.latencyMs && <span>Latency: {verse.latencyMs}ms</span>}
+                  </div>
+                )}
               </div>
-
-              {showDiff && !verse.hashMatch ? (
-                <WordDiff canonical={verse.canonicalText} llm={verse.llmText} />
-              ) : (
-                <div className="flex gap-4">
-                  <div className="flex-1 rounded-lg border border-border bg-muted/30 p-3">
-                    <div className="mb-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                      Canonical
-                    </div>
-                    <p className="text-sm leading-relaxed">{verse.canonicalText}</p>
-                  </div>
-                  <div className="flex-1 rounded-lg border border-border bg-muted/30 p-3">
-                    <div className="mb-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                      LLM Output
-                    </div>
-                    <p className="text-sm leading-relaxed">{verse.llmText}</p>
-                  </div>
-                </div>
-              )}
-
-              {!verse.hashMatch && (
-                <div className="mt-3 flex items-center gap-4 text-xs text-muted-foreground">
-                  <span>Substitutions: {verse.diff.substitutions}</span>
-                  <span>Omissions: {verse.diff.omissions}</span>
-                  <span>Additions: {verse.diff.additions}</span>
-                  {verse.latencyMs && <span>Latency: {verse.latencyMs}ms</span>}
-                </div>
-              )}
-            </div>
-          ))}
+            );
+          })}
 
           {filteredItems.length === 0 && (
             <div className="text-center py-8 text-muted-foreground">
@@ -1175,6 +1289,7 @@ function ExplorerPageContent() {
   const [data, setData] = useState<ExplorerData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [chapterViewMode, setChapterViewMode] = useState<"grid" | "matrix">("grid");
 
   // Get current params
   const campaignTag = searchParams.get("campaign");
@@ -1392,19 +1507,79 @@ function ExplorerPageContent() {
       )}
 
       {data.level === "chapter" && data.items && (
-        <ChapterGrid
-          items={data.items as ChapterItem[]}
-          onSelect={(id) =>
-            navigateTo({
-              campaign: campaignTag,
-              model: modelId,
-              bible: bibleId,
-              book: bookId,
-              chapter: String(id),
-            })
-          }
-          thresholds={data.thresholds}
-        />
+        <div className="space-y-4">
+          {/* View Toggle */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-muted-foreground">View:</span>
+              <div className="flex items-center gap-1 rounded-lg border border-border p-1">
+                <button
+                  onClick={() => setChapterViewMode("grid")}
+                  className={cn(
+                    "flex items-center gap-1.5 rounded px-3 py-1.5 text-xs font-medium transition-colors",
+                    chapterViewMode === "grid"
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:text-foreground"
+                  )}
+                >
+                  <GridFour className="h-4 w-4" />
+                  Grid
+                </button>
+                <button
+                  onClick={() => setChapterViewMode("matrix")}
+                  className={cn(
+                    "flex items-center gap-1.5 rounded px-3 py-1.5 text-xs font-medium transition-colors",
+                    chapterViewMode === "matrix"
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:text-foreground"
+                  )}
+                >
+                  <Table className="h-4 w-4" />
+                  Matrix
+                </button>
+              </div>
+            </div>
+            {chapterViewMode === "matrix" && (
+              <span className="text-xs text-muted-foreground">
+                Compare models side-by-side
+              </span>
+            )}
+          </div>
+
+          {/* Grid View */}
+          {chapterViewMode === "grid" && (
+            <ChapterGrid
+              items={data.items as ChapterItem[]}
+              onSelect={(id) =>
+                navigateTo({
+                  campaign: campaignTag,
+                  model: modelId,
+                  bible: bibleId,
+                  book: bookId,
+                  chapter: String(id),
+                })
+              }
+              thresholds={data.thresholds}
+            />
+          )}
+
+          {/* Matrix View */}
+          {chapterViewMode === "matrix" && (
+            <ChapterModelMatrix
+              items={data.items as ChapterItem[]}
+              onCellClick={(chId, mId) =>
+                navigateTo({
+                  campaign: campaignTag,
+                  model: String(mId),
+                  bible: bibleId,
+                  book: bookId,
+                  chapter: String(chId),
+                })
+              }
+              thresholds={data.thresholds}
+            />
+          )}
+        </div>
       )}
 
       {data.level === "verse" && data.items && data.chapterNumber && (
