@@ -13,6 +13,8 @@ type Model = {
     apiKey?: string;
     model?: string;
     maxTokens?: number;
+    systemPromptOverride?: string;
+    reasoningEffort?: "low" | "medium" | "high";
   };
 };
 
@@ -26,6 +28,8 @@ type ModelFormData = {
   apiKey: string;
   modelName: string;
   maxTokens: string;
+  systemPromptOverride: string;
+  reasoningEffort: "low" | "medium" | "high" | "";
 };
 
 const PROVIDERS = ["OpenAI", "Anthropic", "Google", "Mock"];
@@ -40,7 +44,16 @@ const DEFAULT_FORM: ModelFormData = {
   apiKey: "",
   modelName: "",
   maxTokens: "4096",
+  systemPromptOverride: "",
+  reasoningEffort: "",
 };
+
+// Reasoning model patterns to detect when to show reasoning effort dropdown
+const REASONING_MODEL_PATTERNS = [/^o1/i, /^o3/i, /^gpt-5/i, /reasoning/i];
+
+function isReasoningModel(modelName: string): boolean {
+  return REASONING_MODEL_PATTERNS.some((pattern) => pattern.test(modelName));
+}
 
 function ModelForm({
   initialData,
@@ -56,7 +69,7 @@ function ModelForm({
   const [form, setForm] = useState<ModelFormData>(initialData);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
     const { name, value, type } = e.target;
     if (type === "checkbox") {
@@ -68,6 +81,10 @@ function ModelForm({
       setForm((prev) => ({ ...prev, [name]: value }));
     }
   };
+
+  // Determine if we should show reasoning effort based on provider and model name
+  const showReasoningEffort =
+    form.provider === "OpenAI" && isReasoningModel(form.modelName);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -185,6 +202,54 @@ function ModelForm({
         <p className="mt-1 text-xs text-muted-foreground">
           Leave blank to keep existing key when editing
         </p>
+      </div>
+
+      {/* Advanced Settings */}
+      <div className="border-t border-border pt-4">
+        <h3 className="mb-3 text-sm font-medium text-foreground">Advanced Settings</h3>
+        
+        <div className="space-y-4">
+          {/* System Prompt Override */}
+          <div>
+            <label className="block text-sm font-medium text-foreground">
+              System Prompt Override
+            </label>
+            <textarea
+              name="systemPromptOverride"
+              value={form.systemPromptOverride}
+              onChange={handleChange}
+              rows={4}
+              className="mt-1 block w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring font-mono"
+              placeholder="Leave empty to use default low-effort prompt for retrieval tasks"
+            />
+            <p className="mt-1 text-xs text-muted-foreground">
+              Custom system prompt for this model. Leave empty to use the default.
+            </p>
+          </div>
+
+          {/* Reasoning Effort - only shown for OpenAI reasoning models */}
+          {showReasoningEffort && (
+            <div>
+              <label className="block text-sm font-medium text-foreground">
+                Reasoning Effort
+              </label>
+              <select
+                name="reasoningEffort"
+                value={form.reasoningEffort}
+                onChange={handleChange}
+                className="mt-1 block w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
+              >
+                <option value="">Default (low for retrieval)</option>
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+              </select>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Controls reasoning depth for o1/o3 models. Low is recommended for retrieval tasks.
+              </p>
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="flex items-center gap-2">
@@ -336,6 +401,14 @@ export default function AdminModelsPage() {
       } else if (editingModel?.apiConfigEncrypted?.apiKey) {
         apiConfigEncrypted.apiKey = editingModel.apiConfigEncrypted.apiKey;
       }
+      // Include system prompt override if provided
+      if (data.systemPromptOverride.trim()) {
+        apiConfigEncrypted.systemPromptOverride = data.systemPromptOverride.trim();
+      }
+      // Include reasoning effort if provided (for OpenAI reasoning models)
+      if (data.reasoningEffort) {
+        apiConfigEncrypted.reasoningEffort = data.reasoningEffort;
+      }
 
       const payload = {
         modelId: Number(data.modelId),
@@ -436,6 +509,8 @@ export default function AdminModelsPage() {
         apiKey: "",
         modelName: editingModel.apiConfigEncrypted?.model ?? "",
         maxTokens: String(editingModel.apiConfigEncrypted?.maxTokens ?? 4096),
+        systemPromptOverride: editingModel.apiConfigEncrypted?.systemPromptOverride ?? "",
+        reasoningEffort: editingModel.apiConfigEncrypted?.reasoningEffort ?? "",
       };
     }
     return DEFAULT_FORM;

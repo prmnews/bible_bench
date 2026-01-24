@@ -9,6 +9,8 @@ type TransformStepPayload = {
   type: string;
   enabled: boolean;
   params: Record<string, unknown>;
+  severity?: "cosmetic" | "minor" | "significant" | "critical" | null;
+  description?: string | null;
 };
 
 type TransformProfilePayload = {
@@ -104,11 +106,26 @@ function validateProfile(payload: unknown): ValidationResult {
       return { ok: false, error: "step.params must be an object." };
     }
 
+    // Optional severity field
+    const severity = step["severity"];
+    const validSeverities = ["cosmetic", "minor", "significant", "critical"];
+    if (severity !== undefined && severity !== null && !validSeverities.includes(String(severity))) {
+      return { ok: false, error: "step.severity must be one of: cosmetic, minor, significant, critical." };
+    }
+
+    // Optional description field
+    const description = step["description"];
+    if (description !== undefined && description !== null && typeof description !== "string") {
+      return { ok: false, error: "step.description must be a string." };
+    }
+
     parsedSteps.push({
       order,
       type,
       enabled,
       params,
+      severity: severity as TransformStepPayload["severity"] ?? null,
+      description: description as string ?? null,
     });
   }
 

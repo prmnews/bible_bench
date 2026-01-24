@@ -1,3 +1,5 @@
+type TransformSeverity = "cosmetic" | "minor" | "significant" | "critical";
+
 type TransformStep = {
   order: number;
   type:
@@ -11,6 +13,8 @@ type TransformStep = {
     | "trim";
   enabled: boolean;
   params: Record<string, unknown>;
+  severity?: TransformSeverity;
+  description?: string;
 };
 
 type TransformProfile = {
@@ -131,4 +135,4 @@ export function applyTransformProfile(input: string, profile: TransformProfile) 
   }, input);
 }
 
-export type { TransformProfile, TransformStep };
+export type { TransformProfile, TransformStep, TransformSeverity };

@@ -1,0 +1,119 @@
+[
+  {
+    "profileId": 10,
+    "name": "UNICODE_NORMALIZATION_V1",
+    "scope": "model_output",
+    "version": 1,
+    "bibleId": 1001,
+    "isDefault": false,
+    "description": "Normalize Unicode quotation marks and apostrophes to ASCII equivalents for LLM output comparison",
+    "steps": [
+      {
+        "order": 1,
+        "type": "replaceMap",
+        "enabled": true,
+        "severity": "cosmetic",
+        "description": "Normalize curly apostrophes to straight apostrophes",
+        "params": {
+          "map": {
+            "'": "'",
+            "'": "'"
+          }
+        }
+      },
+      {
+        "order": 2,
+        "type": "replaceMap",
+        "enabled": true,
+        "severity": "cosmetic",
+        "description": "Normalize curly quotes to straight quotes",
+        "params": {
+          "map": {
+            """: "\"",
+            """: "\""
+          }
+        }
+      },
+      {
+        "order": 3,
+        "type": "replaceMap",
+        "enabled": true,
+        "severity": "cosmetic",
+        "description": "Normalize dashes (em-dash and en-dash to hyphen)",
+        "params": {
+          "map": {
+            "—": "-",
+            "–": "-"
+          }
+        }
+      },
+      {
+        "order": 4,
+        "type": "collapseWhitespace",
+        "enabled": true,
+        "severity": "cosmetic",
+        "description": "Collapse multiple whitespace characters to single space",
+        "params": {}
+      },
+      {
+        "order": 5,
+        "type": "trim",
+        "enabled": true,
+        "severity": "cosmetic",
+        "description": "Remove leading and trailing whitespace",
+        "params": {}
+      }
+    ],
+    "isActive": true
+  },
+  {
+    "profileId": 11,
+    "name": "PUNCTUATION_NORMALIZATION_V1",
+    "scope": "model_output",
+    "version": 1,
+    "bibleId": 1001,
+    "isDefault": false,
+    "description": "Normalize minor punctuation variations in LLM output",
+    "steps": [
+      {
+        "order": 1,
+        "type": "regexReplace",
+        "enabled": true,
+        "severity": "minor",
+        "description": "Normalize multiple periods to ellipsis",
+        "params": {
+          "pattern": "\\.{2,}",
+          "replacement": "..."
+        }
+      },
+      {
+        "order": 2,
+        "type": "regexReplace",
+        "enabled": true,
+        "severity": "minor",
+        "description": "Remove spaces before punctuation",
+        "params": {
+          "pattern": "\\s+([.,;:!?])",
+          "replacement": "$1"
+        }
+      },
+      {
+        "order": 3,
+        "type": "collapseWhitespace",
+        "enabled": true,
+        "severity": "cosmetic",
+        "description": "Collapse whitespace after punctuation normalization",
+        "params": {}
+      },
+      {
+        "order": 4,
+        "type": "trim",
+        "enabled": true,
+        "severity": "cosmetic",
+        "description": "Trim whitespace",
+        "params": {}
+      }
+    ],
+    "isActive": true
+  }
+]

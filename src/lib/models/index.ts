@@ -350,6 +350,8 @@ export const transformProfilesValidator: JsonSchemaValidator = {
               bsonType: "object",
               additionalProperties: true,
             },
+            severity: nullableStringSchema,
+            description: nullableStringSchema,
           },
           additionalProperties: true,
         },
@@ -932,6 +934,8 @@ const transformStepSchema = new Schema(
     type: { type: String, required: true },
     enabled: { type: Boolean, required: true },
     params: { type: Schema.Types.Mixed, required: true, default: {} },
+    severity: { type: String, enum: ["cosmetic", "minor", "significant", "critical"], default: null },
+    description: { type: String, default: null },
   },
   { _id: false }
 );
