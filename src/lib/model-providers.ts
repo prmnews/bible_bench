@@ -383,7 +383,7 @@ async function generateOpenAIResponse(
     const effort = configuredEffort && validEfforts.includes(configuredEffort) 
       ? configuredEffort 
       : "low"; // Default to low effort for retrieval tasks
-    (requestOptions as Record<string, unknown>).reasoning_effort = effort;
+    (requestOptions as unknown as Record<string, unknown>).reasoning_effort = effort;
   }
 
   let response: ChatCompletion;
