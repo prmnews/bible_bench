@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 
+import { recomputeAllAggregatesBulk } from "@/lib/aggregation";
 import { applyTransformProfile } from "@/lib/transforms";
 import { compareText } from "@/lib/evaluation";
 import { sha256 } from "@/lib/hash";
@@ -21,7 +22,6 @@ import {
   mapToCanonicalVerses,
   type CanonicalVerse,
 } from "@/lib/verse-parser";
-import { computeAllAggregates } from "@/lib/aggregation";
 
 type RunType = "MODEL_CHAPTER" | "MODEL_VERSE";
 type RunScope = "bible" | "book" | "chapter" | "verse";
@@ -70,6 +70,7 @@ type RunResult =
   | { ok: false; status: number; error: string };
 
 type StartRunParams = {
+  campaignTag: string;
   runId?: string;
   modelId: number;
   runType: RunType;
@@ -264,12 +265,13 @@ async function createRunItems(
 }
 
 async function executeRunItems(params: {
+  campaignTag: string;
   runId: string;
   modelId: number;
   targetType: RunTargetType;
   targetIds: number[];
 }) {
-  const { runId, modelId, targetType, targetIds } = params;
+  const { campaignTag, runId, modelId, targetType, targetIds } = params;
   const model = await ModelModel.findOne({ modelId }).lean();
   if (!model) {
     throw new Error("Model not found.");
@@ -313,6 +315,10 @@ async function executeRunItems(params: {
           throw new Error("No canonical verses found for chapter.");
         }
 
+        // #region agent log
+        fetch('http://127.0.0.1:7246/ingest/3ff6390d-24c9-4902-b3c7-355c7ec4a00e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'model-runs.ts:CHAPTER-START',message:'Starting chapter model run',data:{runId,modelId,targetId,reference:chapter.reference,verseCount:canonicalVerses.length,provider:model.provider},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'ALL'})}).catch(()=>{});
+        // #endregion
+
         const startTime = Date.now();
         const {
           responseRaw,
@@ -330,6 +336,10 @@ async function executeRunItems(params: {
           model,
         });
         const latencyMs = Date.now() - startTime;
+
+        // #region agent log
+        fetch('http://127.0.0.1:7246/ingest/3ff6390d-24c9-4902-b3c7-355c7ec4a00e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'model-runs.ts:CHAPTER-RESPONSE',message:'Chapter model response received',data:{runId,targetId,latencyMs,responseRawLength:responseRaw?.length||0,hasParsed:!!parsed,parseError,hasExtractedText:!!extractedText},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'ALL'})}).catch(()=>{});
+        // #endregion
         const latencyPerVerse = Math.round(latencyMs / canonicalVerses.length);
 
         await LlmRawResponseModel.create({
@@ -388,10 +398,11 @@ async function executeRunItems(params: {
           );
 
           await LlmVerseResultModel.updateOne(
-            { runId, modelId, verseId: mapped.verseId },
+            { campaignTag, modelId, verseId: mapped.verseId },
             {
               $set: {
                 resultId: createResultId(),
+                campaignTag,
                 runId,
                 modelId,
                 verseId: mapped.verseId,
@@ -477,28 +488,35 @@ async function executeRunItems(params: {
           responseProcessed
         );
 
-        await LlmVerseResultModel.create({
-          resultId: createResultId(),
-          runId,
-          modelId,
-          verseId: verse.verseId,
-          chapterId: verse.chapterId,
-          bookId: verse.bookId,
-          bibleId: verse.bibleId,
-          evaluatedAt: attemptTime,
-          responseRaw,
-          responseProcessed,
-          hashRaw,
-          hashProcessed,
-          hashMatch,
-          fidelityScore,
-          diff,
-          latencyMs,
-          audit: {
-            createdAt: attemptTime,
-            createdBy: "model_run",
+        await LlmVerseResultModel.updateOne(
+          { campaignTag, modelId, verseId: verse.verseId },
+          {
+            $set: {
+              resultId: createResultId(),
+              campaignTag,
+              runId,
+              modelId,
+              verseId: verse.verseId,
+              chapterId: verse.chapterId,
+              bookId: verse.bookId,
+              bibleId: verse.bibleId,
+              evaluatedAt: attemptTime,
+              responseRaw,
+              responseProcessed,
+              hashRaw,
+              hashProcessed,
+              hashMatch,
+              fidelityScore,
+              diff,
+              latencyMs,
+              audit: {
+                createdAt: attemptTime,
+                createdBy: "model_run",
+              },
+            },
           },
-        });
+          { upsert: true }
+        );
       }
 
       await RunItemModel.updateOne(
@@ -515,8 +533,14 @@ async function executeRunItems(params: {
     } catch (error) {
       failed += 1;
       const message = error instanceof Error ? error.message : "Run item failed.";
+      const errorName = error instanceof Error ? error.name : "Unknown";
       lastError = message;
       lastErrorAt = new Date();
+
+      // #region agent log
+      fetch('http://127.0.0.1:7246/ingest/3ff6390d-24c9-4902-b3c7-355c7ec4a00e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'model-runs.ts:ITEM-ERROR',message:'Run item failed with error',data:{runId,targetId,errorName,errorMessage:message},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'ALL'})}).catch(()=>{});
+      // #endregion
+
       await RunItemModel.updateOne(
         { runId, targetType, targetId },
         {
@@ -600,6 +624,7 @@ export async function startModelRun(params: StartRunParams): Promise<RunResult> 
   // rather than being caught by error handling that assumes the document exists
   await RunModel.create({
     runId,
+    campaignTag: params.campaignTag,
     runType: params.runType,
     modelId: params.modelId,
     scope: params.scope,
@@ -627,6 +652,7 @@ export async function startModelRun(params: StartRunParams): Promise<RunResult> 
     await createRunItems(runId, targetType, targetIds);
     log("run_items", "info", `Created ${targetIds.length} run items.`);
     const { success, failed, lastError, lastErrorAt } = await executeRunItems({
+      campaignTag: params.campaignTag,
       runId,
       modelId: params.modelId,
       targetType,
@@ -667,22 +693,16 @@ export async function startModelRun(params: StartRunParams): Promise<RunResult> 
       }
     );
 
-    // Compute and store aggregates after run completion
-    log("aggregation", "info", "Computing aggregates...");
-    const aggResult = await computeAllAggregates(runId);
-    log(
-      "aggregation",
-      aggResult.errors.length > 0 ? "warn" : "info",
-      `Aggregation complete: ${aggResult.chaptersProcessed} chapters, ${aggResult.booksProcessed} books, ${aggResult.biblesProcessed} bibles.`
-    );
-    if (aggResult.errors.length > 0) {
-      for (const err of aggResult.errors) {
-        log("aggregation", "error", err);
+    // Auto-trigger aggregations on successful completion (no failures)
+    if (failed === 0) {
+      try {
+        await recomputeAllAggregatesBulk();
+        log("aggregation", "info", "Aggregations recomputed successfully.");
+      } catch (aggError) {
+        const aggMessage = aggError instanceof Error ? aggError.message : "Unknown error";
+        log("aggregation", "warn", `Aggregation failed: ${aggMessage}`);
       }
     }
-
-    // Update logs with aggregation entries
-    await RunModel.updateOne({ runId }, { $set: { logs } });
 
     return {
       ok: true,
@@ -763,7 +783,9 @@ export async function retryFailedRunItems(runId: string): Promise<RunResult> {
   const targetIds = failedItems.map((item) => item.targetId);
   log("retry", "info", `Retry started for ${targetIds.length} items.`);
   log("retry", "info", `Retrying ${targetIds.length} failed items.`);
+  const campaignTag = run.campaignTag as string;
   const { lastError, lastErrorAt } = await executeRunItems({
+    campaignTag,
     runId,
     modelId: run.modelId as number,
     targetType,
@@ -811,17 +833,16 @@ export async function retryFailedRunItems(runId: string): Promise<RunResult> {
     }
   );
 
-  // Re-compute aggregates after retry
-  log("aggregation", "info", "Re-computing aggregates after retry...");
-  const aggResult = await computeAllAggregates(runId);
-  log(
-    "aggregation",
-    aggResult.errors.length > 0 ? "warn" : "info",
-    `Aggregation complete: ${aggResult.chaptersProcessed} chapters, ${aggResult.booksProcessed} books, ${aggResult.biblesProcessed} bibles.`
-  );
-
-  // Update logs with aggregation entries
-  await RunModel.updateOne({ runId }, { $set: { logs } });
+  // Auto-trigger aggregations on successful completion (no failures)
+  if (failedCount === 0) {
+    try {
+      await recomputeAllAggregatesBulk();
+      log("aggregation", "info", "Aggregations recomputed successfully.");
+    } catch (aggError) {
+      const aggMessage = aggError instanceof Error ? aggError.message : "Unknown error";
+      log("aggregation", "warn", `Aggregation failed: ${aggMessage}`);
+    }
+  }
 
   return {
     ok: true,

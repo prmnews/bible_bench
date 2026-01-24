@@ -78,7 +78,7 @@ function ModelForm({
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-zinc-700">
+          <label className="block text-sm font-medium text-foreground">
             Model ID
           </label>
           <input
@@ -87,19 +87,19 @@ function ModelForm({
             value={form.modelId}
             onChange={handleChange}
             required
-            className="mt-1 block w-full rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="mt-1 block w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
             placeholder="1"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-zinc-700">
+          <label className="block text-sm font-medium text-foreground">
             Provider
           </label>
           <select
             name="provider"
             value={form.provider}
             onChange={handleChange}
-            className="mt-1 block w-full rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="mt-1 block w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
           >
             {PROVIDERS.map((p) => (
               <option key={p} value={p}>
@@ -112,7 +112,7 @@ function ModelForm({
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-zinc-700">
+          <label className="block text-sm font-medium text-foreground">
             Display Name
           </label>
           <input
@@ -121,12 +121,12 @@ function ModelForm({
             value={form.displayName}
             onChange={handleChange}
             required
-            className="mt-1 block w-full rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="mt-1 block w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
             placeholder="GPT-4o"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-zinc-700">
+          <label className="block text-sm font-medium text-foreground">
             Version
           </label>
           <input
@@ -135,7 +135,7 @@ function ModelForm({
             value={form.version}
             onChange={handleChange}
             required
-            className="mt-1 block w-full rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="mt-1 block w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
             placeholder="2024-08"
           />
         </div>
@@ -143,7 +143,7 @@ function ModelForm({
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-zinc-700">
+          <label className="block text-sm font-medium text-foreground">
             Model Identifier
           </label>
           <input
@@ -151,12 +151,12 @@ function ModelForm({
             name="modelName"
             value={form.modelName}
             onChange={handleChange}
-            className="mt-1 block w-full rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="mt-1 block w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
             placeholder="gpt-4o, claude-sonnet-4-20250514, gemini-2.0-flash"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-zinc-700">
+          <label className="block text-sm font-medium text-foreground">
             Max Tokens
           </label>
           <input
@@ -164,14 +164,14 @@ function ModelForm({
             name="maxTokens"
             value={form.maxTokens}
             onChange={handleChange}
-            className="mt-1 block w-full rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="mt-1 block w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
             placeholder="4096"
           />
         </div>
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-zinc-700">
+        <label className="block text-sm font-medium text-foreground">
           API Key
         </label>
         <input
@@ -179,10 +179,10 @@ function ModelForm({
           name="apiKey"
           value={form.apiKey}
           onChange={handleChange}
-          className="mt-1 block w-full rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="mt-1 block w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
           placeholder="sk-..."
         />
-        <p className="mt-1 text-xs text-zinc-500">
+        <p className="mt-1 text-xs text-muted-foreground">
           Leave blank to keep existing key when editing
         </p>
       </div>
@@ -194,25 +194,25 @@ function ModelForm({
           id="isActive"
           checked={form.isActive}
           onChange={handleChange}
-          className="h-4 w-4 rounded border-zinc-300 text-blue-600 focus:ring-blue-500"
+          className="h-4 w-4 rounded border-input text-primary focus:ring-ring"
         />
-        <label htmlFor="isActive" className="text-sm text-zinc-700">
+        <label htmlFor="isActive" className="text-sm text-foreground">
           Active
         </label>
       </div>
 
-      <div className="flex justify-end gap-2 pt-4 border-t border-zinc-200">
+      <div className="flex justify-end gap-2 pt-4 border-t border-border">
         <button
           type="button"
           onClick={onCancel}
-          className="rounded-md border border-zinc-300 bg-white px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50"
+          className="rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-accent/20 hover:text-accent-foreground"
         >
           Cancel
         </button>
         <button
           type="submit"
           disabled={isSubmitting}
-          className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50"
+          className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
         >
           {isSubmitting ? "Saving..." : "Save Model"}
         </button>
@@ -237,28 +237,28 @@ function ModelRow({
   return (
     <tr>
       <td className="whitespace-nowrap px-4 py-3 text-sm">
-        <div className="font-medium text-zinc-900">{model.displayName}</div>
-        <div className="text-xs text-zinc-500">ID: {model.modelId}</div>
+        <div className="font-medium text-foreground">{model.displayName}</div>
+        <div className="text-xs text-muted-foreground">ID: {model.modelId}</div>
       </td>
-      <td className="whitespace-nowrap px-4 py-3 text-sm text-zinc-600">
+      <td className="whitespace-nowrap px-4 py-3 text-sm text-muted-foreground">
         {model.provider}
       </td>
-      <td className="whitespace-nowrap px-4 py-3 text-sm text-zinc-600">
+      <td className="whitespace-nowrap px-4 py-3 text-sm text-muted-foreground">
         {model.version}
       </td>
       <td className="whitespace-nowrap px-4 py-3 text-sm">
         <span
           className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${
             model.isActive
-              ? "bg-green-100 text-green-700"
-              : "bg-yellow-100 text-yellow-700"
+              ? "bg-green-500/10 text-green-600 dark:text-green-400"
+              : "bg-yellow-500/10 text-yellow-600 dark:text-yellow-400"
           }`}
         >
           {model.isActive ? "Active" : "Inactive"}
         </span>
       </td>
-      <td className="whitespace-nowrap px-4 py-3 text-sm text-zinc-600">
-        <code className="rounded bg-zinc-100 px-1.5 py-0.5 text-xs">
+      <td className="whitespace-nowrap px-4 py-3 text-sm text-muted-foreground">
+        <code className="rounded bg-muted px-1.5 py-0.5 text-xs">
           {model.apiConfigEncrypted?.model ?? "-"}
         </code>
       </td>
@@ -266,20 +266,20 @@ function ModelRow({
         <div className="flex items-center justify-end gap-2">
           <button
             onClick={onEdit}
-            className="rounded border border-zinc-300 px-2 py-1 text-xs font-medium text-zinc-700 hover:bg-zinc-50"
+            className="rounded border border-input px-2 py-1 text-xs font-medium hover:bg-accent/20 hover:text-accent-foreground"
           >
             Edit
           </button>
           <button
             onClick={onToggle}
-            className="rounded border border-zinc-300 px-2 py-1 text-xs font-medium text-zinc-700 hover:bg-zinc-50"
+            className="rounded border border-input px-2 py-1 text-xs font-medium hover:bg-accent/20 hover:text-accent-foreground"
           >
             {model.isActive ? "Disable" : "Enable"}
           </button>
           <button
             onClick={() => onRun("bible")}
             disabled={isRunning || !model.isActive}
-            className="rounded bg-blue-600 px-2 py-1 text-xs font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+            className="rounded bg-primary px-2 py-1 text-xs font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
           >
             {isRunning ? "Running..." : "Run"}
           </button>
@@ -444,8 +444,8 @@ export default function AdminModelsPage() {
   if (loading) {
     return (
       <section className="space-y-4">
-        <h1 className="text-2xl font-semibold text-zinc-900">Models</h1>
-        <div className="text-sm text-zinc-500">Loading...</div>
+        <h1 className="text-2xl font-semibold text-foreground">Models</h1>
+        <div className="text-sm text-muted-foreground">Loading...</div>
       </section>
     );
   }
@@ -454,25 +454,25 @@ export default function AdminModelsPage() {
     <section className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-zinc-900">Models</h1>
-          <p className="mt-1 text-sm text-zinc-500">
+          <h1 className="text-2xl font-semibold text-foreground">Models</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
             Manage LLM models and their API configurations.
           </p>
         </div>
         <button
           onClick={openAddForm}
-          className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800"
+          className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
         >
           Add Model
         </button>
       </div>
 
       {error && (
-        <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+        <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive">
           {error}
           <button
             onClick={() => setError(null)}
-            className="ml-2 text-red-800 underline"
+            className="ml-2 underline"
           >
             Dismiss
           </button>
@@ -480,11 +480,11 @@ export default function AdminModelsPage() {
       )}
 
       {runMessage && (
-        <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 text-sm text-blue-700">
+        <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 text-sm text-primary">
           {runMessage}
           <button
             onClick={() => setRunMessage(null)}
-            className="ml-2 text-blue-800 underline"
+            className="ml-2 underline"
           >
             Dismiss
           </button>
@@ -492,8 +492,8 @@ export default function AdminModelsPage() {
       )}
 
       {showForm && (
-        <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-4">
-          <h2 className="mb-4 text-lg font-medium text-zinc-900">
+        <div className="rounded-lg border border-border bg-card p-4">
+          <h2 className="mb-4 text-lg font-medium text-foreground">
             {editingModel ? "Edit Model" : "Add New Model"}
           </h2>
           <ModelForm
@@ -509,35 +509,35 @@ export default function AdminModelsPage() {
       )}
 
       {models.length === 0 ? (
-        <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-6 text-center text-sm text-zinc-500">
+        <div className="rounded-lg border border-border bg-muted p-6 text-center text-sm text-muted-foreground">
           No models registered yet. Click &quot;Add Model&quot; to create one.
         </div>
       ) : (
-        <div className="overflow-hidden rounded-lg border border-zinc-200">
-          <table className="min-w-full divide-y divide-zinc-200">
-            <thead className="bg-zinc-50">
+        <div className="overflow-x-auto rounded-lg border border-border">
+          <table className="min-w-full divide-y divide-border">
+            <thead className="bg-muted">
               <tr>
-                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">
+                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                   Model
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">
+                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                   Provider
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">
+                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                   Version
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">
+                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                   Status
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">
+                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                   Model ID
                 </th>
-                <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-zinc-500">
+                <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-muted-foreground">
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-200 bg-white">
+            <tbody className="divide-y divide-border bg-card">
               {models.map((model) => (
                 <ModelRow
                   key={model.modelId}

@@ -1,0 +1,320 @@
+[{
+  "_id": {
+    "$oid": "6973f14ea88318b065cf0c3c"
+  },
+  "verseCount": 62,
+  "matchCount": 62,
+  "evaluatedAt": {
+    "$date": "2026-01-22T22:34:07.848Z"
+  },
+  "modelId": 3,
+  "bibleId": 1001,
+  "bookId": 10,
+  "chapterId": 1001,
+  "avgFidelity": 100,
+  "perfectRate": 1
+},
+{
+  "_id": {
+    "$oid": "6973f14ea88318b065cf0c3d"
+  },
+  "verseCount": 18,
+  "matchCount": 14,
+  "evaluatedAt": {
+    "$date": "2026-01-22T22:44:58.579Z"
+  },
+  "modelId": 3,
+  "bibleId": 1001,
+  "bookId": 10,
+  "chapterId": 1013,
+  "avgFidelity": 99.53,
+  "perfectRate": 0.7778
+},
+{
+  "_id": {
+    "$oid": "6973f14ea88318b065cf0c3e"
+  },
+  "verseCount": 24,
+  "matchCount": 21,
+  "evaluatedAt": {
+    "$date": "2026-01-22T22:39:25.327Z"
+  },
+  "modelId": 3,
+  "bibleId": 1001,
+  "bookId": 10,
+  "chapterId": 1007,
+  "avgFidelity": 99.92,
+  "perfectRate": 0.875
+},
+{
+  "_id": {
+    "$oid": "6973f14ea88318b065cf0c3f"
+  },
+  "verseCount": 20,
+  "matchCount": 14,
+  "evaluatedAt": {
+    "$date": "2026-01-22T23:05:28.584Z"
+  },
+  "modelId": 3,
+  "bibleId": 1001,
+  "bookId": 10,
+  "chapterId": 1033,
+  "avgFidelity": 98.19,
+  "perfectRate": 0.7
+},
+{
+  "_id": {
+    "$oid": "6973f14ea88318b065cf0c40"
+  },
+  "verseCount": 34,
+  "matchCount": 10,
+  "evaluatedAt": {
+    "$date": "2026-01-22T23:47:46.620Z"
+  },
+  "modelId": 3,
+  "bibleId": 1001,
+  "bookId": 10,
+  "chapterId": 1043,
+  "avgFidelity": 80.81,
+  "perfectRate": 0.2941
+},
+{
+  "_id": {
+    "$oid": "6973f14ea88318b065cf0c41"
+  },
+  "verseCount": 31,
+  "matchCount": 31,
+  "evaluatedAt": {
+    "$date": "2026-01-23T00:13:29.609Z"
+  },
+  "modelId": 9,
+  "bibleId": 1001,
+  "bookId": 10,
+  "chapterId": 1001,
+  "avgFidelity": 100,
+  "perfectRate": 1
+},
+{
+  "_id": {
+    "$oid": "6973f14ea88318b065cf0c42"
+  },
+  "verseCount": 22,
+  "matchCount": 18,
+  "evaluatedAt": {
+    "$date": "2026-01-22T22:40:14.343Z"
+  },
+  "modelId": 3,
+  "bibleId": 1001,
+  "bookId": 10,
+  "chapterId": 1008,
+  "avgFidelity": 99.82,
+  "perfectRate": 0.8182
+},
+{
+  "_id": {
+    "$oid": "6973f14ea88318b065cf0c43"
+  },
+  "verseCount": 31,
+  "matchCount": 29,
+  "evaluatedAt": {
+    "$date": "2026-01-23T21:33:49.576Z"
+  },
+  "modelId": 2,
+  "bibleId": 1001,
+  "bookId": 10,
+  "chapterId": 1001,
+  "avgFidelity": 99.91,
+  "perfectRate": 0.9355
+},
+{
+  "_id": {
+    "$oid": "6973f14ea88318b065cf0c44"
+  },
+  "verseCount": 21,
+  "matchCount": 21,
+  "evaluatedAt": {
+    "$date": "2026-01-22T22:46:46.861Z"
+  },
+  "modelId": 3,
+  "bibleId": 1001,
+  "bookId": 10,
+  "chapterId": 1015,
+  "avgFidelity": 100,
+  "perfectRate": 1
+},
+{
+  "_id": {
+    "$oid": "6973f14ea88318b065cf0c45"
+  },
+  "verseCount": 26,
+  "matchCount": 21,
+  "evaluatedAt": {
+    "$date": "2026-01-22T22:36:34.177Z"
+  },
+  "modelId": 3,
+  "bibleId": 1001,
+  "bookId": 10,
+  "chapterId": 1004,
+  "avgFidelity": 99.76,
+  "perfectRate": 0.8077
+},
+{
+  "_id": {
+    "$oid": "6973f14ea88318b065cf0c46"
+  },
+  "verseCount": 32,
+  "matchCount": 29,
+  "evaluatedAt": {
+    "$date": "2026-01-22T22:42:06.848Z"
+  },
+  "modelId": 3,
+  "bibleId": 1001,
+  "bookId": 10,
+  "chapterId": 1010,
+  "avgFidelity": 99.81,
+  "perfectRate": 0.9062
+},
+{
+  "_id": {
+    "$oid": "6973f14ea88318b065cf0c47"
+  },
+  "verseCount": 43,
+  "matchCount": 1,
+  "evaluatedAt": {
+    "$date": "2026-01-22T23:08:31.133Z"
+  },
+  "modelId": 3,
+  "bibleId": 1001,
+  "bookId": 10,
+  "chapterId": 1036,
+  "avgFidelity": 28.1,
+  "perfectRate": 0.0233
+},
+{
+  "_id": {
+    "$oid": "6973f14ea88318b065cf0c48"
+  },
+  "verseCount": 22,
+  "matchCount": 20,
+  "evaluatedAt": {
+    "$date": "2026-01-22T22:38:22.457Z"
+  },
+  "modelId": 3,
+  "bibleId": 1001,
+  "bookId": 10,
+  "chapterId": 1006,
+  "avgFidelity": 99.91,
+  "perfectRate": 0.9091
+},
+{
+  "_id": {
+    "$oid": "6973f14ea88318b065cf0c49"
+  },
+  "verseCount": 22,
+  "matchCount": 14,
+  "evaluatedAt": {
+    "$date": "2026-01-22T23:52:33.579Z"
+  },
+  "modelId": 3,
+  "bibleId": 1001,
+  "bookId": 10,
+  "chapterId": 1048,
+  "avgFidelity": 94.15,
+  "perfectRate": 0.6364
+},
+{
+  "_id": {
+    "$oid": "6973f14ea88318b065cf0c4a"
+  },
+  "verseCount": 20,
+  "matchCount": 16,
+  "evaluatedAt": {
+    "$date": "2026-01-22T22:44:11.674Z"
+  },
+  "modelId": 3,
+  "bibleId": 1001,
+  "bookId": 10,
+  "chapterId": 1012,
+  "avgFidelity": 99.85,
+  "perfectRate": 0.8
+},
+{
+  "_id": {
+    "$oid": "6973f14ea88318b065cf0c4b"
+  },
+  "verseCount": 24,
+  "matchCount": 19,
+  "evaluatedAt": {
+    "$date": "2026-01-22T22:53:24.983Z"
+  },
+  "modelId": 3,
+  "bibleId": 1001,
+  "bookId": 10,
+  "chapterId": 1022,
+  "avgFidelity": 99.05,
+  "perfectRate": 0.7917
+},
+{
+  "_id": {
+    "$oid": "6973f14ea88318b065cf0c4c"
+  },
+  "verseCount": 24,
+  "matchCount": 22,
+  "evaluatedAt": {
+    "$date": "2026-01-22T22:35:40.302Z"
+  },
+  "modelId": 3,
+  "bibleId": 1001,
+  "bookId": 10,
+  "chapterId": 1003,
+  "avgFidelity": 99.9,
+  "perfectRate": 0.9167
+},
+{
+  "_id": {
+    "$oid": "6973f14ea88318b065cf0c4d"
+  },
+  "verseCount": 25,
+  "matchCount": 25,
+  "evaluatedAt": {
+    "$date": "2026-01-22T22:34:52.796Z"
+  },
+  "modelId": 3,
+  "bibleId": 1001,
+  "bookId": 10,
+  "chapterId": 1002,
+  "avgFidelity": 100,
+  "perfectRate": 1
+},
+{
+  "_id": {
+    "$oid": "6973f14ea88318b065cf0c4e"
+  },
+  "verseCount": 16,
+  "matchCount": 8,
+  "evaluatedAt": {
+    "$date": "2026-01-22T22:47:35.653Z"
+  },
+  "modelId": 3,
+  "bibleId": 1001,
+  "bookId": 10,
+  "chapterId": 1016,
+  "avgFidelity": 99.12,
+  "perfectRate": 0.5
+},
+{
+  "_id": {
+    "$oid": "6973f14ea88318b065cf0c4f"
+  },
+  "verseCount": 29,
+  "matchCount": 22,
+  "evaluatedAt": {
+    "$date": "2026-01-22T22:41:06.255Z"
+  },
+  "modelId": 3,
+  "bibleId": 1001,
+  "bookId": 10,
+  "chapterId": 1009,
+  "avgFidelity": 99.48,
+  "perfectRate": 0.7586
+}]

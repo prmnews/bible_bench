@@ -66,18 +66,18 @@ function ConfigRow({
   const isEnabled = config.value === "1" || config.value === "true";
 
   return (
-    <div className="rounded-lg border border-zinc-200 bg-white p-4">
+    <div className="rounded-lg border border-border bg-card p-4">
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1">
-          <div className="font-medium text-zinc-900">
+          <div className="font-medium text-foreground">
             {known?.label ?? config.key}
           </div>
           {known?.description && (
-            <div className="text-sm text-zinc-500">{known.description}</div>
+            <div className="text-sm text-muted-foreground">{known.description}</div>
           )}
-          <div className="mt-1 flex items-center gap-3 text-xs text-zinc-400">
+          <div className="mt-1 flex items-center gap-3 text-xs text-muted-foreground">
             <span>
-              Key: <code className="rounded bg-zinc-100 px-1">{config.key}</code>
+              Key: <code className="rounded bg-muted px-1">{config.key}</code>
             </span>
             <span>Modified: {formatDate(config.modifiedAt)}</span>
             {config.modifiedBy && <span>By: {config.modifiedBy}</span>}
@@ -89,12 +89,12 @@ function ConfigRow({
             <button
               onClick={handleToggle}
               disabled={isSaving}
-              className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 ${
-                isEnabled ? "bg-blue-600" : "bg-zinc-200"
+              className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:opacity-50 ${
+                isEnabled ? "bg-primary" : "bg-muted"
               }`}
             >
               <span
-                className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+                className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-background shadow ring-0 transition duration-200 ease-in-out ${
                   isEnabled ? "translate-x-5" : "translate-x-0"
                 }`}
               />
@@ -105,30 +105,30 @@ function ConfigRow({
                 type="text"
                 value={editValue}
                 onChange={(e) => setEditValue(e.target.value)}
-                className="rounded-md border border-zinc-300 px-2 py-1 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="rounded-md border border-input bg-background px-2 py-1 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
               />
               <button
                 onClick={handleSave}
                 disabled={isSaving}
-                className="rounded-md bg-blue-600 px-2 py-1 text-xs font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+                className="rounded-md bg-primary px-2 py-1 text-xs font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
               >
                 Save
               </button>
               <button
                 onClick={handleCancel}
-                className="rounded-md border border-zinc-300 px-2 py-1 text-xs font-medium text-zinc-700 hover:bg-zinc-50"
+                className="rounded-md border border-input px-2 py-1 text-xs font-medium hover:bg-accent/20 hover:text-accent-foreground"
               >
                 Cancel
               </button>
             </div>
           ) : (
             <div className="flex items-center gap-2">
-              <code className="rounded bg-zinc-100 px-2 py-1 text-sm">
+              <code className="rounded bg-muted px-2 py-1 text-sm">
                 {config.value.length > 50 ? config.value.slice(0, 50) + "..." : config.value}
               </code>
               <button
                 onClick={() => setIsEditing(true)}
-                className="rounded-md border border-zinc-300 px-2 py-1 text-xs font-medium text-zinc-700 hover:bg-zinc-50"
+                className="rounded-md border border-input px-2 py-1 text-xs font-medium hover:bg-accent/20 hover:text-accent-foreground"
               >
                 Edit
               </button>
@@ -139,7 +139,7 @@ function ConfigRow({
             <button
               onClick={() => onDelete(config.key)}
               disabled={isSaving}
-              className="rounded-md border border-red-200 px-2 py-1 text-xs font-medium text-red-600 hover:bg-red-50 disabled:opacity-50"
+              className="rounded-md border border-destructive/50 px-2 py-1 text-xs font-medium text-destructive hover:bg-destructive/10 disabled:opacity-50"
             >
               Delete
             </button>
@@ -177,7 +177,7 @@ function NewConfigForm({
     return (
       <button
         onClick={() => setShowForm(true)}
-        className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800"
+        className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
       >
         Add Config
       </button>
@@ -185,11 +185,11 @@ function NewConfigForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="rounded-lg border border-zinc-200 bg-zinc-50 p-4">
-      <h3 className="mb-3 font-medium text-zinc-900">Add New Config</h3>
+    <form onSubmit={handleSubmit} className="rounded-lg border border-border bg-card p-4">
+      <h3 className="mb-3 font-medium text-foreground">Add New Config</h3>
       <div className="grid gap-3 sm:grid-cols-2">
         <div>
-          <label className="block text-sm font-medium text-zinc-700">Key</label>
+          <label className="block text-sm font-medium text-foreground">Key</label>
           <input
             type="text"
             value={newKey}
@@ -197,21 +197,21 @@ function NewConfigForm({
             placeholder="MY_CONFIG_KEY"
             pattern="^[A-Z0-9_-]+$"
             required
-            className="mt-1 block w-full rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="mt-1 block w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
           />
-          <p className="mt-1 text-xs text-zinc-500">
+          <p className="mt-1 text-xs text-muted-foreground">
             Alphanumeric, underscores, hyphens only
           </p>
         </div>
         <div>
-          <label className="block text-sm font-medium text-zinc-700">Value</label>
+          <label className="block text-sm font-medium text-foreground">Value</label>
           <input
             type="text"
             value={newValue}
             onChange={(e) => setNewValue(e.target.value)}
             placeholder="config value"
             required
-            className="mt-1 block w-full rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="mt-1 block w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
           />
         </div>
       </div>
@@ -223,14 +223,14 @@ function NewConfigForm({
             setNewKey("");
             setNewValue("");
           }}
-          className="rounded-md border border-zinc-300 bg-white px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50"
+          className="rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-accent/20 hover:text-accent-foreground"
         >
           Cancel
         </button>
         <button
           type="submit"
           disabled={isAdding}
-          className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50"
+          className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
         >
           {isAdding ? "Adding..." : "Add Config"}
         </button>
@@ -340,8 +340,8 @@ export default function AdminConfigPage() {
   if (loading) {
     return (
       <section className="space-y-4">
-        <h1 className="text-2xl font-semibold text-zinc-900">Configuration</h1>
-        <div className="text-sm text-zinc-500">Loading...</div>
+        <h1 className="text-2xl font-semibold text-foreground">Configuration</h1>
+        <div className="text-sm text-muted-foreground">Loading...</div>
       </section>
     );
   }
@@ -350,25 +350,25 @@ export default function AdminConfigPage() {
     <section className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-zinc-900">Configuration</h1>
-          <p className="mt-1 text-sm text-zinc-500">
+          <h1 className="text-2xl font-semibold text-foreground">Configuration</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
             Manage application feature flags and settings.
           </p>
         </div>
         <button
           onClick={fetchConfigs}
-          className="rounded-md border border-zinc-300 bg-white px-3 py-1.5 text-sm font-medium text-zinc-700 hover:bg-zinc-50"
+          className="rounded-md border border-input bg-background px-3 py-1.5 text-sm font-medium hover:bg-accent/20 hover:text-accent-foreground"
         >
           Refresh
         </button>
       </div>
 
       {error && (
-        <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+        <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive">
           {error}
           <button
             onClick={() => setError(null)}
-            className="ml-2 text-red-800 underline"
+            className="ml-2 underline"
           >
             Dismiss
           </button>
@@ -378,7 +378,7 @@ export default function AdminConfigPage() {
       <NewConfigForm onAdd={handleAdd} isAdding={saving !== null} />
 
       {configs.length === 0 ? (
-        <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-6 text-center text-sm text-zinc-500">
+        <div className="rounded-lg border border-border bg-muted p-6 text-center text-sm text-muted-foreground">
           No configuration keys set. Add one above.
         </div>
       ) : (

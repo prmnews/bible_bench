@@ -1,6 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { GoogleGenerativeAI, SchemaType, type Schema } from "@google/generative-ai";
 import OpenAI from "openai";
+import type { ChatCompletion } from "openai/resources/chat/completions";
 
 // ============================================================================
 // RESPONSE SCHEMAS
@@ -289,6 +290,23 @@ async function generateMockResponse(
 // OPENAI PROVIDER
 // ============================================================================
 
+// Reasoning models (o1, o3, gpt-5-nano, etc.) use reasoning tokens that count against max_completion_tokens.
+// They need much higher limits to leave room for actual output after reasoning.
+const REASONING_MODEL_PATTERNS = [
+  /^o1/i,
+  /^o3/i,
+  /^gpt-5/i,
+  /reasoning/i,
+];
+
+function isReasoningModel(modelName: string): boolean {
+  return REASONING_MODEL_PATTERNS.some((pattern) => pattern.test(modelName));
+}
+
+// Reasoning models need higher token limits; standard models can use lower limits
+const DEFAULT_MAX_TOKENS_STANDARD = 4096;
+const DEFAULT_MAX_TOKENS_REASONING = 32768;
+
 async function generateOpenAIResponse(
   params: ModelResponseParams
 ): Promise<ModelResponseResult> {
@@ -303,24 +321,67 @@ async function generateOpenAIResponse(
   }
 
   const modelName = getString(config["model"]) ?? "gpt-4o";
-  const maxTokens = typeof config["maxTokens"] === "number" ? config["maxTokens"] : 4096;
+  const isReasoning = isReasoningModel(modelName);
+  
+  // For reasoning models, enforce a minimum token limit to accommodate reasoning tokens + output
+  const configuredMaxTokens = typeof config["maxTokens"] === "number" ? config["maxTokens"] : null;
+  const defaultMaxTokens = isReasoning ? DEFAULT_MAX_TOKENS_REASONING : DEFAULT_MAX_TOKENS_STANDARD;
+  const minTokensForReasoning = isReasoning ? DEFAULT_MAX_TOKENS_REASONING : 0;
+  const baseMaxTokens = configuredMaxTokens ?? defaultMaxTokens;
+  const maxTokens = Math.max(baseMaxTokens, minTokensForReasoning);
+
+  // #region agent log
+  const logStartTime = Date.now();
+  fetch('http://127.0.0.1:7246/ingest/3ff6390d-24c9-4902-b3c7-355c7ec4a00e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'model-providers.ts:OpenAI-START',message:'OpenAI request starting',data:{modelName,maxTokens,isReasoning,targetType:params.targetType,targetId:params.targetId,reference:params.reference},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'A,B,D'})}).catch(()=>{});
+  // #endregion
 
   const client = new OpenAI({ apiKey });
   const prompt = buildPrompt(params);
 
-  const response = await client.chat.completions.create({
+  // Build request options - reasoning models don't support response_format
+  const requestOptions: Parameters<typeof client.chat.completions.create>[0] = {
     model: modelName,
     max_completion_tokens: maxTokens,
-    response_format: { type: "json_object" },
+    stream: false, // Explicitly disable streaming to narrow return type
     messages: [
       { role: "system", content: SYSTEM_PROMPT },
       { role: "user", content: prompt },
     ],
-  });
+  };
+
+  // Only add response_format for non-reasoning models (reasoning models don't support it)
+  if (!isReasoning) {
+    requestOptions.response_format = { type: "json_object" };
+  }
+
+  let response: ChatCompletion;
+  try {
+    response = await client.chat.completions.create(requestOptions) as ChatCompletion;
+  } catch (sdkError) {
+    // #region agent log
+    const sdkErrorMsg = sdkError instanceof Error ? sdkError.message : String(sdkError);
+    const sdkErrorName = sdkError instanceof Error ? sdkError.name : 'Unknown';
+    fetch('http://127.0.0.1:7246/ingest/3ff6390d-24c9-4902-b3c7-355c7ec4a00e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'model-providers.ts:OpenAI-SDK-ERROR',message:'OpenAI SDK threw error',data:{errorName:sdkErrorName,errorMessage:sdkErrorMsg,durationMs:Date.now()-logStartTime},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'B,E'})}).catch(()=>{});
+    // #endregion
+    throw sdkError;
+  }
+
+  // #region agent log
+  const choice0 = response.choices[0];
+  const finishReason = choice0?.finish_reason;
+  const messageContent = choice0?.message?.content;
+  const messageRefusal = (choice0?.message as unknown as Record<string, unknown>)?.refusal;
+  const contentLength = typeof messageContent === 'string' ? messageContent.length : 0;
+  fetch('http://127.0.0.1:7246/ingest/3ff6390d-24c9-4902-b3c7-355c7ec4a00e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'model-providers.ts:OpenAI-RESPONSE',message:'OpenAI response received',data:{durationMs:Date.now()-logStartTime,finishReason,hasContent:!!messageContent,contentLength,hasRefusal:!!messageRefusal,refusal:messageRefusal||null,choicesCount:response.choices?.length||0,model:response.model,usage:response.usage,isReasoning},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'A,C'})}).catch(()=>{});
+  // #endregion
 
   const responseRaw = response.choices[0]?.message?.content ?? "";
   const { parsed, parseError } = parseJsonResponse(responseRaw, params.targetType);
   const extractedText = extractText(parsed, params.targetType);
+
+  // #region agent log
+  fetch('http://127.0.0.1:7246/ingest/3ff6390d-24c9-4902-b3c7-355c7ec4a00e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'model-providers.ts:OpenAI-PARSED',message:'OpenAI response parsed',data:{responseRawLength:responseRaw.length,hasParsed:!!parsed,parseError,hasExtractedText:!!extractedText},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'A'})}).catch(()=>{});
+  // #endregion
 
   return { responseRaw, parsed, parseError, extractedText };
 }
@@ -348,8 +409,9 @@ async function generateAnthropicResponse(
   const client = new Anthropic({ apiKey });
   const prompt = buildPrompt(params);
 
-  // Anthropic doesn't have native JSON mode, so we rely on prompt engineering
-  const response = await client.messages.create({
+  // Use streaming to avoid the 10-minute timeout restriction
+  // Anthropic SDK requires streaming for potentially long-running operations
+  const stream = client.messages.stream({
     model: modelName,
     max_tokens: maxTokens,
     system: SYSTEM_PROMPT,
@@ -357,6 +419,9 @@ async function generateAnthropicResponse(
       { role: "user", content: prompt },
     ],
   });
+
+  // Collect the streamed response
+  const response = await stream.finalMessage();
 
   const textBlock = response.content.find((block) => block.type === "text");
   const responseRaw = textBlock?.type === "text" ? textBlock.text : "";

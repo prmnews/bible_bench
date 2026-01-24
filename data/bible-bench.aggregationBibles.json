@@ -1,0 +1,48 @@
+[{
+  "_id": {
+    "$oid": "6973f14fa88318b065cf0c53"
+  },
+  "bookCount": 1,
+  "chapterCount": 1,
+  "verseCount": 31,
+  "matchCount": 31,
+  "evaluatedAt": {
+    "$date": "2026-01-23T00:13:29.609Z"
+  },
+  "modelId": 9,
+  "bibleId": 1001,
+  "avgFidelity": 100,
+  "perfectRate": 1
+},
+{
+  "_id": {
+    "$oid": "6973f14fa88318b065cf0c54"
+  },
+  "bookCount": 1,
+  "chapterCount": 18,
+  "verseCount": 484,
+  "matchCount": 357,
+  "evaluatedAt": {
+    "$date": "2026-01-22T23:52:33.579Z"
+  },
+  "modelId": 3,
+  "bibleId": 1001,
+  "avgFidelity": 94.3,
+  "perfectRate": 0.7376
+},
+{
+  "_id": {
+    "$oid": "6973f14fa88318b065cf0c55"
+  },
+  "bookCount": 1,
+  "chapterCount": 1,
+  "verseCount": 31,
+  "matchCount": 29,
+  "evaluatedAt": {
+    "$date": "2026-01-23T21:33:49.576Z"
+  },
+  "modelId": 2,
+  "bibleId": 1001,
+  "avgFidelity": 99.91,
+  "perfectRate": 0.9355
+}]

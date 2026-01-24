@@ -4,6 +4,7 @@ import { isAdminAvailable } from "@/lib/admin";
 import { startModelRun } from "@/lib/model-runs";
 
 type RunBookPayload = {
+  campaignTag: string;
   runId?: string;
   bookId: number;
   limit?: number;
@@ -25,6 +26,11 @@ function isNumber(value: unknown): value is number {
 function validatePayload(payload: unknown): ValidationResult {
   if (!isRecord(payload)) {
     return { ok: false, error: "Body must be a JSON object." };
+  }
+
+  const campaignTag = payload["campaignTag"];
+  if (typeof campaignTag !== "string" || campaignTag.trim().length === 0) {
+    return { ok: false, error: "campaignTag must be a non-empty string." };
   }
 
   const runId = payload["runId"];
@@ -50,6 +56,7 @@ function validatePayload(payload: unknown): ValidationResult {
   return {
     ok: true,
     data: {
+      campaignTag: campaignTag.trim(),
       runId: typeof runId === "string" ? runId.trim() : undefined,
       bookId,
       limit: limit as number | undefined,
@@ -92,6 +99,7 @@ export async function POST(
   }
 
   const result = await startModelRun({
+    campaignTag: validation.data.campaignTag,
     runId: validation.data.runId,
     modelId,
     runType: "MODEL_CHAPTER",

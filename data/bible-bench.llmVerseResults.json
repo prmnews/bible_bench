@@ -1,0 +1,1116 @@
+[{
+  "_id": {
+    "$oid": "697473b8a88318b065d033b8"
+  },
+  "campaignTag": "Testing",
+  "modelId": 6,
+  "verseId": 1001001,
+  "__v": 0,
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-24T07:24:31.804Z"
+    },
+    "createdBy": "model_run"
+  },
+  "bibleId": 1001,
+  "bookId": 10,
+  "chapterId": 1001,
+  "diff": {
+    "substitutions": 0,
+    "omissions": 0,
+    "additions": 0,
+    "transpositions": 0
+  },
+  "evaluatedAt": {
+    "$date": "2026-01-24T07:24:31.804Z"
+  },
+  "fidelityScore": 100,
+  "hashMatch": true,
+  "hashProcessed": "6f785a86b2716dcc5a48caa0de944396ba871d5c7f3bf776993648335fcb2bb2",
+  "hashRaw": "6f785a86b2716dcc5a48caa0de944396ba871d5c7f3bf776993648335fcb2bb2",
+  "latencyMs": 270,
+  "responseProcessed": "In the beginning God created the heaven and the earth.",
+  "responseRaw": "In the beginning God created the heaven and the earth.",
+  "resultId": 1769239480405198,
+  "runId": "a3760dd0-3efa-4260-bc18-cf4877978f61"
+},
+{
+  "_id": {
+    "$oid": "697473b8a88318b065d033b9"
+  },
+  "campaignTag": "Testing",
+  "modelId": 6,
+  "verseId": 1001002,
+  "__v": 0,
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-24T07:24:31.804Z"
+    },
+    "createdBy": "model_run"
+  },
+  "bibleId": 1001,
+  "bookId": 10,
+  "chapterId": 1001,
+  "diff": {
+    "substitutions": 0,
+    "omissions": 0,
+    "additions": 0,
+    "transpositions": 0
+  },
+  "evaluatedAt": {
+    "$date": "2026-01-24T07:24:31.804Z"
+  },
+  "fidelityScore": 100,
+  "hashMatch": true,
+  "hashProcessed": "3164732a2a2f2fcb68d7dec5be737b18c66c8d743a98d34c8bb8eb866d822d4b",
+  "hashRaw": "3164732a2a2f2fcb68d7dec5be737b18c66c8d743a98d34c8bb8eb866d822d4b",
+  "latencyMs": 270,
+  "responseProcessed": "And the earth was without form, and void; and darkness was upon the face of the deep. And the Spirit of God moved upon the face of the waters.",
+  "responseRaw": "And the earth was without form, and void; and darkness was upon the face of the deep. And the Spirit of God moved upon the face of the waters.",
+  "resultId": 1769239480477395,
+  "runId": "a3760dd0-3efa-4260-bc18-cf4877978f61"
+},
+{
+  "_id": {
+    "$oid": "697473b8a88318b065d033ba"
+  },
+  "verseId": 1001003,
+  "campaignTag": "Testing",
+  "modelId": 6,
+  "__v": 0,
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-24T07:24:31.804Z"
+    },
+    "createdBy": "model_run"
+  },
+  "bibleId": 1001,
+  "bookId": 10,
+  "chapterId": 1001,
+  "diff": {
+    "substitutions": 0,
+    "omissions": 0,
+    "additions": 0,
+    "transpositions": 0
+  },
+  "evaluatedAt": {
+    "$date": "2026-01-24T07:24:31.804Z"
+  },
+  "fidelityScore": 100,
+  "hashMatch": true,
+  "hashProcessed": "cb548ddda54d247e18490056cf4de91c26531b9cce58851ca16841ec4c28f3bb",
+  "hashRaw": "cb548ddda54d247e18490056cf4de91c26531b9cce58851ca16841ec4c28f3bb",
+  "latencyMs": 270,
+  "responseProcessed": "And God said, Let there be light: and there was light.",
+  "responseRaw": "And God said, Let there be light: and there was light.",
+  "resultId": 1769239480530701,
+  "runId": "a3760dd0-3efa-4260-bc18-cf4877978f61"
+},
+{
+  "_id": {
+    "$oid": "697473b8a88318b065d033bb"
+  },
+  "verseId": 1001004,
+  "campaignTag": "Testing",
+  "modelId": 6,
+  "__v": 0,
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-24T07:24:31.804Z"
+    },
+    "createdBy": "model_run"
+  },
+  "bibleId": 1001,
+  "bookId": 10,
+  "chapterId": 1001,
+  "diff": {
+    "substitutions": 0,
+    "omissions": 0,
+    "additions": 0,
+    "transpositions": 0
+  },
+  "evaluatedAt": {
+    "$date": "2026-01-24T07:24:31.804Z"
+  },
+  "fidelityScore": 100,
+  "hashMatch": true,
+  "hashProcessed": "c7f4eaa2516c827656cee88fd3a1dd18f8854f601ba9931b7be38ebd27b4e3d9",
+  "hashRaw": "c7f4eaa2516c827656cee88fd3a1dd18f8854f601ba9931b7be38ebd27b4e3d9",
+  "latencyMs": 270,
+  "responseProcessed": "And God saw the light, that it was good: and God divided the light from the darkness.",
+  "responseRaw": "And God saw the light, that it was good: and God divided the light from the darkness.",
+  "resultId": 1769239480738153,
+  "runId": "a3760dd0-3efa-4260-bc18-cf4877978f61"
+},
+{
+  "_id": {
+    "$oid": "697473b8a88318b065d033bc"
+  },
+  "verseId": 1001005,
+  "campaignTag": "Testing",
+  "modelId": 6,
+  "__v": 0,
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-24T07:24:31.804Z"
+    },
+    "createdBy": "model_run"
+  },
+  "bibleId": 1001,
+  "bookId": 10,
+  "chapterId": 1001,
+  "diff": {
+    "substitutions": 0,
+    "omissions": 0,
+    "additions": 0,
+    "transpositions": 0
+  },
+  "evaluatedAt": {
+    "$date": "2026-01-24T07:24:31.804Z"
+  },
+  "fidelityScore": 100,
+  "hashMatch": true,
+  "hashProcessed": "e7e654aa7e64c7804c0d80f68bd47f0fad0c7623a7d7ded5a2e67804186ce1fc",
+  "hashRaw": "e7e654aa7e64c7804c0d80f68bd47f0fad0c7623a7d7ded5a2e67804186ce1fc",
+  "latencyMs": 270,
+  "responseProcessed": "And God called the light Day, and the darkness he called Night. And the evening and the morning were the first day.",
+  "responseRaw": "And God called the light Day, and the darkness he called Night. And the evening and the morning were the first day.",
+  "resultId": 1769239480791200,
+  "runId": "a3760dd0-3efa-4260-bc18-cf4877978f61"
+},
+{
+  "_id": {
+    "$oid": "697473b8a88318b065d033bd"
+  },
+  "verseId": 1001006,
+  "campaignTag": "Testing",
+  "modelId": 6,
+  "__v": 0,
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-24T07:24:31.804Z"
+    },
+    "createdBy": "model_run"
+  },
+  "bibleId": 1001,
+  "bookId": 10,
+  "chapterId": 1001,
+  "diff": {
+    "substitutions": 0,
+    "omissions": 0,
+    "additions": 0,
+    "transpositions": 0
+  },
+  "evaluatedAt": {
+    "$date": "2026-01-24T07:24:31.804Z"
+  },
+  "fidelityScore": 100,
+  "hashMatch": true,
+  "hashProcessed": "cf4e1d6641c75fb22db52e245c7c36d453bbbc539d35a2f0c80899f3879f2970",
+  "hashRaw": "cf4e1d6641c75fb22db52e245c7c36d453bbbc539d35a2f0c80899f3879f2970",
+  "latencyMs": 270,
+  "responseProcessed": "And God said, Let there be a firmament in the midst of the waters, and let it divide the waters from the waters.",
+  "responseRaw": "And God said, Let there be a firmament in the midst of the waters, and let it divide the waters from the waters.",
+  "resultId": 1769239480847032,
+  "runId": "a3760dd0-3efa-4260-bc18-cf4877978f61"
+},
+{
+  "_id": {
+    "$oid": "697473b8a88318b065d033be"
+  },
+  "verseId": 1001007,
+  "campaignTag": "Testing",
+  "modelId": 6,
+  "__v": 0,
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-24T07:24:31.804Z"
+    },
+    "createdBy": "model_run"
+  },
+  "bibleId": 1001,
+  "bookId": 10,
+  "chapterId": 1001,
+  "diff": {
+    "substitutions": 0,
+    "omissions": 0,
+    "additions": 0,
+    "transpositions": 0
+  },
+  "evaluatedAt": {
+    "$date": "2026-01-24T07:24:31.804Z"
+  },
+  "fidelityScore": 100,
+  "hashMatch": true,
+  "hashProcessed": "199c4036de39622e4d6aec9c894f0554bec10e1e663f79e0e3c0059bd5afd6b4",
+  "hashRaw": "199c4036de39622e4d6aec9c894f0554bec10e1e663f79e0e3c0059bd5afd6b4",
+  "latencyMs": 270,
+  "responseProcessed": "And God made the firmament, and divided the waters which were under the firmament from the waters which were above the firmament: and it was so.",
+  "responseRaw": "And God made the firmament, and divided the waters which were under the firmament from the waters which were above the firmament: and it was so.",
+  "resultId": 1769239480905489,
+  "runId": "a3760dd0-3efa-4260-bc18-cf4877978f61"
+},
+{
+  "_id": {
+    "$oid": "697473b8a88318b065d033c0"
+  },
+  "verseId": 1001008,
+  "campaignTag": "Testing",
+  "modelId": 6,
+  "__v": 0,
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-24T07:24:31.804Z"
+    },
+    "createdBy": "model_run"
+  },
+  "bibleId": 1001,
+  "bookId": 10,
+  "chapterId": 1001,
+  "diff": {
+    "substitutions": 0,
+    "omissions": 0,
+    "additions": 0,
+    "transpositions": 0
+  },
+  "evaluatedAt": {
+    "$date": "2026-01-24T07:24:31.804Z"
+  },
+  "fidelityScore": 100,
+  "hashMatch": true,
+  "hashProcessed": "b81a0cf4aea052c2d8107decff4df4ff611488c48afaa31207e92bfb9a51511e",
+  "hashRaw": "b81a0cf4aea052c2d8107decff4df4ff611488c48afaa31207e92bfb9a51511e",
+  "latencyMs": 270,
+  "responseProcessed": "And God called the firmament Heaven. And the evening and the morning were the second day.",
+  "responseRaw": "And God called the firmament Heaven. And the evening and the morning were the second day.",
+  "resultId": 1769239480964447,
+  "runId": "a3760dd0-3efa-4260-bc18-cf4877978f61"
+},
+{
+  "_id": {
+    "$oid": "697473b9a88318b065d033c1"
+  },
+  "modelId": 6,
+  "verseId": 1001009,
+  "campaignTag": "Testing",
+  "__v": 0,
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-24T07:24:31.804Z"
+    },
+    "createdBy": "model_run"
+  },
+  "bibleId": 1001,
+  "bookId": 10,
+  "chapterId": 1001,
+  "diff": {
+    "substitutions": 0,
+    "omissions": 0,
+    "additions": 0,
+    "transpositions": 0
+  },
+  "evaluatedAt": {
+    "$date": "2026-01-24T07:24:31.804Z"
+  },
+  "fidelityScore": 100,
+  "hashMatch": true,
+  "hashProcessed": "47afd14e20ac2a18276c603b4dbaef8426e71b5a3cb8cd7281c1021cba0a52bd",
+  "hashRaw": "47afd14e20ac2a18276c603b4dbaef8426e71b5a3cb8cd7281c1021cba0a52bd",
+  "latencyMs": 270,
+  "responseProcessed": "And God said, Let the waters under the heaven be gathered together unto one place, and let the dry land appear: and it was so.",
+  "responseRaw": "And God said, Let the waters under the heaven be gathered together unto one place, and let the dry land appear: and it was so.",
+  "resultId": 1769239481025982,
+  "runId": "a3760dd0-3efa-4260-bc18-cf4877978f61"
+},
+{
+  "_id": {
+    "$oid": "697473b9a88318b065d033c2"
+  },
+  "verseId": 1001010,
+  "campaignTag": "Testing",
+  "modelId": 6,
+  "__v": 0,
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-24T07:24:31.804Z"
+    },
+    "createdBy": "model_run"
+  },
+  "bibleId": 1001,
+  "bookId": 10,
+  "chapterId": 1001,
+  "diff": {
+    "substitutions": 0,
+    "omissions": 0,
+    "additions": 0,
+    "transpositions": 0
+  },
+  "evaluatedAt": {
+    "$date": "2026-01-24T07:24:31.804Z"
+  },
+  "fidelityScore": 100,
+  "hashMatch": true,
+  "hashProcessed": "4e330418a7d2d455358befc7941622c9aad328c4aa803ca466aaa5ede7792aac",
+  "hashRaw": "4e330418a7d2d455358befc7941622c9aad328c4aa803ca466aaa5ede7792aac",
+  "latencyMs": 270,
+  "responseProcessed": "And God called the dry land Earth; and the gathering together of the waters called he Seas: and God saw that it was good.",
+  "responseRaw": "And God called the dry land Earth; and the gathering together of the waters called he Seas: and God saw that it was good.",
+  "resultId": 1769239481084000,
+  "runId": "a3760dd0-3efa-4260-bc18-cf4877978f61"
+},
+{
+  "_id": {
+    "$oid": "697473b9a88318b065d033c3"
+  },
+  "verseId": 1001011,
+  "campaignTag": "Testing",
+  "modelId": 6,
+  "__v": 0,
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-24T07:24:31.804Z"
+    },
+    "createdBy": "model_run"
+  },
+  "bibleId": 1001,
+  "bookId": 10,
+  "chapterId": 1001,
+  "diff": {
+    "substitutions": 0,
+    "omissions": 0,
+    "additions": 0,
+    "transpositions": 0
+  },
+  "evaluatedAt": {
+    "$date": "2026-01-24T07:24:31.804Z"
+  },
+  "fidelityScore": 100,
+  "hashMatch": true,
+  "hashProcessed": "daa9240ba8dae065602337da7e6964a00258b6f8db1401ea24d3f895ff0078f5",
+  "hashRaw": "daa9240ba8dae065602337da7e6964a00258b6f8db1401ea24d3f895ff0078f5",
+  "latencyMs": 270,
+  "responseProcessed": "And God said, Let the earth bring forth grass, the herb yielding seed, and the fruit tree yielding fruit after his kind, whose seed is in itself, upon the earth: and it was so.",
+  "responseRaw": "And God said, Let the earth bring forth grass, the herb yielding seed, and the fruit tree yielding fruit after his kind, whose seed is in itself, upon the earth: and it was so.",
+  "resultId": 1769239481144515,
+  "runId": "a3760dd0-3efa-4260-bc18-cf4877978f61"
+},
+{
+  "_id": {
+    "$oid": "697473b9a88318b065d033c4"
+  },
+  "campaignTag": "Testing",
+  "modelId": 6,
+  "verseId": 1001012,
+  "__v": 0,
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-24T07:24:31.804Z"
+    },
+    "createdBy": "model_run"
+  },
+  "bibleId": 1001,
+  "bookId": 10,
+  "chapterId": 1001,
+  "diff": {
+    "substitutions": 0,
+    "omissions": 0,
+    "additions": 0,
+    "transpositions": 0
+  },
+  "evaluatedAt": {
+    "$date": "2026-01-24T07:24:31.804Z"
+  },
+  "fidelityScore": 100,
+  "hashMatch": true,
+  "hashProcessed": "cb94e86fa0bc88d59c6e7f0984eb1779fb5f614e2fc9b625b4bbda329722ff39",
+  "hashRaw": "cb94e86fa0bc88d59c6e7f0984eb1779fb5f614e2fc9b625b4bbda329722ff39",
+  "latencyMs": 270,
+  "responseProcessed": "And the earth brought forth grass, and herb yielding seed after his kind, and the tree yielding fruit, whose seed was in itself, after his kind: and God saw that it was good.",
+  "responseRaw": "And the earth brought forth grass, and herb yielding seed after his kind, and the tree yielding fruit, whose seed was in itself, after his kind: and God saw that it was good.",
+  "resultId": 1769239481202794,
+  "runId": "a3760dd0-3efa-4260-bc18-cf4877978f61"
+},
+{
+  "_id": {
+    "$oid": "697473b9a88318b065d033c5"
+  },
+  "campaignTag": "Testing",
+  "modelId": 6,
+  "verseId": 1001013,
+  "__v": 0,
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-24T07:24:31.804Z"
+    },
+    "createdBy": "model_run"
+  },
+  "bibleId": 1001,
+  "bookId": 10,
+  "chapterId": 1001,
+  "diff": {
+    "substitutions": 0,
+    "omissions": 0,
+    "additions": 0,
+    "transpositions": 0
+  },
+  "evaluatedAt": {
+    "$date": "2026-01-24T07:24:31.804Z"
+  },
+  "fidelityScore": 100,
+  "hashMatch": true,
+  "hashProcessed": "52788427d7efa43d2cfb6e561b8a7cfe03c267eebe16c56a15758a5acb985b3d",
+  "hashRaw": "52788427d7efa43d2cfb6e561b8a7cfe03c267eebe16c56a15758a5acb985b3d",
+  "latencyMs": 270,
+  "responseProcessed": "And the evening and the morning were the third day.",
+  "responseRaw": "And the evening and the morning were the third day.",
+  "resultId": 1769239481255572,
+  "runId": "a3760dd0-3efa-4260-bc18-cf4877978f61"
+},
+{
+  "_id": {
+    "$oid": "697473b9a88318b065d033c6"
+  },
+  "verseId": 1001014,
+  "campaignTag": "Testing",
+  "modelId": 6,
+  "__v": 0,
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-24T07:24:31.804Z"
+    },
+    "createdBy": "model_run"
+  },
+  "bibleId": 1001,
+  "bookId": 10,
+  "chapterId": 1001,
+  "diff": {
+    "substitutions": 0,
+    "omissions": 0,
+    "additions": 0,
+    "transpositions": 0
+  },
+  "evaluatedAt": {
+    "$date": "2026-01-24T07:24:31.804Z"
+  },
+  "fidelityScore": 100,
+  "hashMatch": true,
+  "hashProcessed": "206822d521aab9ee18d131b794fd1668665af8df1d7e36ec837bc2513ce5cb1c",
+  "hashRaw": "206822d521aab9ee18d131b794fd1668665af8df1d7e36ec837bc2513ce5cb1c",
+  "latencyMs": 270,
+  "responseProcessed": "And God said, Let there be lights in the firmament of the heaven to divide the day from the night; and let them be for signs, and for seasons, and for days, and years:",
+  "responseRaw": "And God said, Let there be lights in the firmament of the heaven to divide the day from the night; and let them be for signs, and for seasons, and for days, and years:",
+  "resultId": 1769239481315076,
+  "runId": "a3760dd0-3efa-4260-bc18-cf4877978f61"
+},
+{
+  "_id": {
+    "$oid": "697473b9a88318b065d033c7"
+  },
+  "verseId": 1001015,
+  "campaignTag": "Testing",
+  "modelId": 6,
+  "__v": 0,
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-24T07:24:31.804Z"
+    },
+    "createdBy": "model_run"
+  },
+  "bibleId": 1001,
+  "bookId": 10,
+  "chapterId": 1001,
+  "diff": {
+    "substitutions": 0,
+    "omissions": 0,
+    "additions": 0,
+    "transpositions": 0
+  },
+  "evaluatedAt": {
+    "$date": "2026-01-24T07:24:31.804Z"
+  },
+  "fidelityScore": 100,
+  "hashMatch": true,
+  "hashProcessed": "610b1fec2770ca5b58135b3eb1f27e9bff29fbeb9d989fb8bea6b265f3428006",
+  "hashRaw": "610b1fec2770ca5b58135b3eb1f27e9bff29fbeb9d989fb8bea6b265f3428006",
+  "latencyMs": 270,
+  "responseProcessed": "And let them be for lights in the firmament of the heaven to give light upon the earth: and it was so.",
+  "responseRaw": "And let them be for lights in the firmament of the heaven to give light upon the earth: and it was so.",
+  "resultId": 1769239481372005,
+  "runId": "a3760dd0-3efa-4260-bc18-cf4877978f61"
+},
+{
+  "_id": {
+    "$oid": "697473b9a88318b065d033c8"
+  },
+  "campaignTag": "Testing",
+  "modelId": 6,
+  "verseId": 1001016,
+  "__v": 0,
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-24T07:24:31.804Z"
+    },
+    "createdBy": "model_run"
+  },
+  "bibleId": 1001,
+  "bookId": 10,
+  "chapterId": 1001,
+  "diff": {
+    "substitutions": 0,
+    "omissions": 0,
+    "additions": 0,
+    "transpositions": 0
+  },
+  "evaluatedAt": {
+    "$date": "2026-01-24T07:24:31.804Z"
+  },
+  "fidelityScore": 100,
+  "hashMatch": true,
+  "hashProcessed": "fe61c0c61ab63c47a24f9054c176046227318b4460caab87719b0c017e901de5",
+  "hashRaw": "fe61c0c61ab63c47a24f9054c176046227318b4460caab87719b0c017e901de5",
+  "latencyMs": 270,
+  "responseProcessed": "And God made two great lights; the greater light to rule the day, and the lesser light to rule the night: he made the stars also.",
+  "responseRaw": "And God made two great lights; the greater light to rule the day, and the lesser light to rule the night: he made the stars also.",
+  "resultId": 1769239481430228,
+  "runId": "a3760dd0-3efa-4260-bc18-cf4877978f61"
+},
+{
+  "_id": {
+    "$oid": "697473b9a88318b065d033c9"
+  },
+  "campaignTag": "Testing",
+  "modelId": 6,
+  "verseId": 1001017,
+  "__v": 0,
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-24T07:24:31.804Z"
+    },
+    "createdBy": "model_run"
+  },
+  "bibleId": 1001,
+  "bookId": 10,
+  "chapterId": 1001,
+  "diff": {
+    "substitutions": 0,
+    "omissions": 0,
+    "additions": 0,
+    "transpositions": 0
+  },
+  "evaluatedAt": {
+    "$date": "2026-01-24T07:24:31.804Z"
+  },
+  "fidelityScore": 100,
+  "hashMatch": true,
+  "hashProcessed": "20fd94e696664df72f725d1f902713559167e9fc9d726b9f09acbcf0eedf338a",
+  "hashRaw": "20fd94e696664df72f725d1f902713559167e9fc9d726b9f09acbcf0eedf338a",
+  "latencyMs": 270,
+  "responseProcessed": "And God set them in the firmament of the heaven to give light upon the earth,",
+  "responseRaw": "And God set them in the firmament of the heaven to give light upon the earth,",
+  "resultId": 1769239481487943,
+  "runId": "a3760dd0-3efa-4260-bc18-cf4877978f61"
+},
+{
+  "_id": {
+    "$oid": "697473b9a88318b065d033ca"
+  },
+  "campaignTag": "Testing",
+  "modelId": 6,
+  "verseId": 1001018,
+  "__v": 0,
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-24T07:24:31.804Z"
+    },
+    "createdBy": "model_run"
+  },
+  "bibleId": 1001,
+  "bookId": 10,
+  "chapterId": 1001,
+  "diff": {
+    "substitutions": 0,
+    "omissions": 0,
+    "additions": 0,
+    "transpositions": 0
+  },
+  "evaluatedAt": {
+    "$date": "2026-01-24T07:24:31.804Z"
+  },
+  "fidelityScore": 100,
+  "hashMatch": true,
+  "hashProcessed": "8fae82cb6c725dae48d41d10717da5ef2257c6765a0b60821c2fef10b5bd86ae",
+  "hashRaw": "8fae82cb6c725dae48d41d10717da5ef2257c6765a0b60821c2fef10b5bd86ae",
+  "latencyMs": 270,
+  "responseProcessed": "And to rule over the day and over the night, and to divide the light from the darkness: and God saw that it was good.",
+  "responseRaw": "And to rule over the day and over the night, and to divide the light from the darkness: and God saw that it was good.",
+  "resultId": 1769239481539811,
+  "runId": "a3760dd0-3efa-4260-bc18-cf4877978f61"
+},
+{
+  "_id": {
+    "$oid": "697473b9a88318b065d033cb"
+  },
+  "modelId": 6,
+  "verseId": 1001019,
+  "campaignTag": "Testing",
+  "__v": 0,
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-24T07:24:31.804Z"
+    },
+    "createdBy": "model_run"
+  },
+  "bibleId": 1001,
+  "bookId": 10,
+  "chapterId": 1001,
+  "diff": {
+    "substitutions": 0,
+    "omissions": 0,
+    "additions": 0,
+    "transpositions": 0
+  },
+  "evaluatedAt": {
+    "$date": "2026-01-24T07:24:31.804Z"
+  },
+  "fidelityScore": 100,
+  "hashMatch": true,
+  "hashProcessed": "c42dd30c4ffe83c141802436cd9f9fee639304fd506ee373e44342fd53d2bc4a",
+  "hashRaw": "c42dd30c4ffe83c141802436cd9f9fee639304fd506ee373e44342fd53d2bc4a",
+  "latencyMs": 270,
+  "responseProcessed": "And the evening and the morning were the fourth day.",
+  "responseRaw": "And the evening and the morning were the fourth day.",
+  "resultId": 1769239481597636,
+  "runId": "a3760dd0-3efa-4260-bc18-cf4877978f61"
+},
+{
+  "_id": {
+    "$oid": "697473b9a88318b065d033cc"
+  },
+  "modelId": 6,
+  "verseId": 1001020,
+  "campaignTag": "Testing",
+  "__v": 0,
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-24T07:24:31.804Z"
+    },
+    "createdBy": "model_run"
+  },
+  "bibleId": 1001,
+  "bookId": 10,
+  "chapterId": 1001,
+  "diff": {
+    "substitutions": 0,
+    "omissions": 0,
+    "additions": 0,
+    "transpositions": 0
+  },
+  "evaluatedAt": {
+    "$date": "2026-01-24T07:24:31.804Z"
+  },
+  "fidelityScore": 100,
+  "hashMatch": true,
+  "hashProcessed": "bf644ea6a308bc6fb58706baeaf05d8957e3ca8ca260f9a4a679130cae7d9ce6",
+  "hashRaw": "bf644ea6a308bc6fb58706baeaf05d8957e3ca8ca260f9a4a679130cae7d9ce6",
+  "latencyMs": 270,
+  "responseProcessed": "And God said, Let the waters bring forth abundantly the moving creature that hath life, and fowl that may fly above the earth in the open firmament of heaven.",
+  "responseRaw": "And God said, Let the waters bring forth abundantly the moving creature that hath life, and fowl that may fly above the earth in the open firmament of heaven.",
+  "resultId": 1769239481657287,
+  "runId": "a3760dd0-3efa-4260-bc18-cf4877978f61"
+},
+{
+  "_id": {
+    "$oid": "697473b9a88318b065d033cd"
+  },
+  "campaignTag": "Testing",
+  "modelId": 6,
+  "verseId": 1001021,
+  "__v": 0,
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-24T07:24:31.804Z"
+    },
+    "createdBy": "model_run"
+  },
+  "bibleId": 1001,
+  "bookId": 10,
+  "chapterId": 1001,
+  "diff": {
+    "substitutions": 0,
+    "omissions": 0,
+    "additions": 0,
+    "transpositions": 0
+  },
+  "evaluatedAt": {
+    "$date": "2026-01-24T07:24:31.804Z"
+  },
+  "fidelityScore": 100,
+  "hashMatch": true,
+  "hashProcessed": "8282bab8a0bff0a270673c8907135223e644f83dbfde9de1e7bd23ffd04a1cf9",
+  "hashRaw": "8282bab8a0bff0a270673c8907135223e644f83dbfde9de1e7bd23ffd04a1cf9",
+  "latencyMs": 270,
+  "responseProcessed": "And God created great whales, and every living creature that moveth, which the waters brought forth abundantly, after their kind, and every winged fowl after his kind: and God saw that it was good.",
+  "responseRaw": "And God created great whales, and every living creature that moveth, which the waters brought forth abundantly, after their kind, and every winged fowl after his kind: and God saw that it was good.",
+  "resultId": 1769239481716366,
+  "runId": "a3760dd0-3efa-4260-bc18-cf4877978f61"
+},
+{
+  "_id": {
+    "$oid": "697473b9a88318b065d033ce"
+  },
+  "campaignTag": "Testing",
+  "modelId": 6,
+  "verseId": 1001022,
+  "__v": 0,
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-24T07:24:31.804Z"
+    },
+    "createdBy": "model_run"
+  },
+  "bibleId": 1001,
+  "bookId": 10,
+  "chapterId": 1001,
+  "diff": {
+    "substitutions": 0,
+    "omissions": 0,
+    "additions": 0,
+    "transpositions": 0
+  },
+  "evaluatedAt": {
+    "$date": "2026-01-24T07:24:31.804Z"
+  },
+  "fidelityScore": 100,
+  "hashMatch": true,
+  "hashProcessed": "592e90b256f3d1161747c1e092bf57625ec66a00f120b27c92be48725e27c4c4",
+  "hashRaw": "592e90b256f3d1161747c1e092bf57625ec66a00f120b27c92be48725e27c4c4",
+  "latencyMs": 270,
+  "responseProcessed": "And God blessed them, saying, Be fruitful, and multiply, and fill the waters in the seas, and let fowl multiply in the earth.",
+  "responseRaw": "And God blessed them, saying, Be fruitful, and multiply, and fill the waters in the seas, and let fowl multiply in the earth.",
+  "resultId": 1769239481775695,
+  "runId": "a3760dd0-3efa-4260-bc18-cf4877978f61"
+},
+{
+  "_id": {
+    "$oid": "697473b9a88318b065d033cf"
+  },
+  "campaignTag": "Testing",
+  "modelId": 6,
+  "verseId": 1001023,
+  "__v": 0,
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-24T07:24:31.804Z"
+    },
+    "createdBy": "model_run"
+  },
+  "bibleId": 1001,
+  "bookId": 10,
+  "chapterId": 1001,
+  "diff": {
+    "substitutions": 0,
+    "omissions": 0,
+    "additions": 0,
+    "transpositions": 0
+  },
+  "evaluatedAt": {
+    "$date": "2026-01-24T07:24:31.804Z"
+  },
+  "fidelityScore": 100,
+  "hashMatch": true,
+  "hashProcessed": "cae40ebeb3b664ce7641880d8c8341e8710a1c8d6a0d3d8ce9100bca3c15fc17",
+  "hashRaw": "cae40ebeb3b664ce7641880d8c8341e8710a1c8d6a0d3d8ce9100bca3c15fc17",
+  "latencyMs": 270,
+  "responseProcessed": "And the evening and the morning were the fifth day.",
+  "responseRaw": "And the evening and the morning were the fifth day.",
+  "resultId": 1769239481824140,
+  "runId": "a3760dd0-3efa-4260-bc18-cf4877978f61"
+},
+{
+  "_id": {
+    "$oid": "697473b9a88318b065d033d0"
+  },
+  "verseId": 1001024,
+  "campaignTag": "Testing",
+  "modelId": 6,
+  "__v": 0,
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-24T07:24:31.804Z"
+    },
+    "createdBy": "model_run"
+  },
+  "bibleId": 1001,
+  "bookId": 10,
+  "chapterId": 1001,
+  "diff": {
+    "substitutions": 0,
+    "omissions": 0,
+    "additions": 0,
+    "transpositions": 0
+  },
+  "evaluatedAt": {
+    "$date": "2026-01-24T07:24:31.804Z"
+  },
+  "fidelityScore": 100,
+  "hashMatch": true,
+  "hashProcessed": "6adca8c882984b4ba1f483d630af6b8a4ee775becfae70702574d690401a61fb",
+  "hashRaw": "6adca8c882984b4ba1f483d630af6b8a4ee775becfae70702574d690401a61fb",
+  "latencyMs": 270,
+  "responseProcessed": "And God said, Let the earth bring forth the living creature after his kind, cattle, and creeping thing, and beast of the earth after his kind: and it was so.",
+  "responseRaw": "And God said, Let the earth bring forth the living creature after his kind, cattle, and creeping thing, and beast of the earth after his kind: and it was so.",
+  "resultId": 1769239481882231,
+  "runId": "a3760dd0-3efa-4260-bc18-cf4877978f61"
+},
+{
+  "_id": {
+    "$oid": "697473b9a88318b065d033d1"
+  },
+  "verseId": 1001025,
+  "campaignTag": "Testing",
+  "modelId": 6,
+  "__v": 0,
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-24T07:24:31.804Z"
+    },
+    "createdBy": "model_run"
+  },
+  "bibleId": 1001,
+  "bookId": 10,
+  "chapterId": 1001,
+  "diff": {
+    "substitutions": 0,
+    "omissions": 0,
+    "additions": 0,
+    "transpositions": 0
+  },
+  "evaluatedAt": {
+    "$date": "2026-01-24T07:24:31.804Z"
+  },
+  "fidelityScore": 100,
+  "hashMatch": true,
+  "hashProcessed": "f4e462fcd5b988829ba409e844c9ae6aa518471890e222c1de780db58d6c18e4",
+  "hashRaw": "f4e462fcd5b988829ba409e844c9ae6aa518471890e222c1de780db58d6c18e4",
+  "latencyMs": 270,
+  "responseProcessed": "And God made the beast of the earth after his kind, and cattle after their kind, and every thing that creepeth upon the earth after his kind: and God saw that it was good.",
+  "responseRaw": "And God made the beast of the earth after his kind, and cattle after their kind, and every thing that creepeth upon the earth after his kind: and God saw that it was good.",
+  "resultId": 1769239481942725,
+  "runId": "a3760dd0-3efa-4260-bc18-cf4877978f61"
+},
+{
+  "_id": {
+    "$oid": "697473baa88318b065d033d2"
+  },
+  "modelId": 6,
+  "verseId": 1001026,
+  "campaignTag": "Testing",
+  "__v": 0,
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-24T07:24:31.804Z"
+    },
+    "createdBy": "model_run"
+  },
+  "bibleId": 1001,
+  "bookId": 10,
+  "chapterId": 1001,
+  "diff": {
+    "substitutions": 0,
+    "omissions": 0,
+    "additions": 0,
+    "transpositions": 0
+  },
+  "evaluatedAt": {
+    "$date": "2026-01-24T07:24:31.804Z"
+  },
+  "fidelityScore": 100,
+  "hashMatch": true,
+  "hashProcessed": "87cc6a6a32700ef89ce8deac215f0d9b3c6806cb8740d4679c4cc98085edb137",
+  "hashRaw": "87cc6a6a32700ef89ce8deac215f0d9b3c6806cb8740d4679c4cc98085edb137",
+  "latencyMs": 270,
+  "responseProcessed": "And God said, Let us make man in our image, after our likeness: and let them have dominion over the fish of the sea, and over the fowl of the air, and over the cattle, and over all the earth, and over every creeping thing that creepeth upon the earth.",
+  "responseRaw": "And God said, Let us make man in our image, after our likeness: and let them have dominion over the fish of the sea, and over the fowl of the air, and over the cattle, and over all the earth, and over every creeping thing that creepeth upon the earth.",
+  "resultId": 1769239482001292,
+  "runId": "a3760dd0-3efa-4260-bc18-cf4877978f61"
+},
+{
+  "_id": {
+    "$oid": "697473baa88318b065d033d3"
+  },
+  "modelId": 6,
+  "verseId": 1001027,
+  "campaignTag": "Testing",
+  "__v": 0,
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-24T07:24:31.804Z"
+    },
+    "createdBy": "model_run"
+  },
+  "bibleId": 1001,
+  "bookId": 10,
+  "chapterId": 1001,
+  "diff": {
+    "substitutions": 0,
+    "omissions": 0,
+    "additions": 0,
+    "transpositions": 0
+  },
+  "evaluatedAt": {
+    "$date": "2026-01-24T07:24:31.804Z"
+  },
+  "fidelityScore": 100,
+  "hashMatch": true,
+  "hashProcessed": "b4e3886a552f937500c418cfc6b5f49f6d15f25b0020f9df3223c2866abba25e",
+  "hashRaw": "b4e3886a552f937500c418cfc6b5f49f6d15f25b0020f9df3223c2866abba25e",
+  "latencyMs": 270,
+  "responseProcessed": "So God created man in his own image, in the image of God created he him; male and female created he them.",
+  "responseRaw": "So God created man in his own image, in the image of God created he him; male and female created he them.",
+  "resultId": 1769239482049972,
+  "runId": "a3760dd0-3efa-4260-bc18-cf4877978f61"
+},
+{
+  "_id": {
+    "$oid": "697473baa88318b065d033d4"
+  },
+  "modelId": 6,
+  "verseId": 1001028,
+  "campaignTag": "Testing",
+  "__v": 0,
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-24T07:24:31.804Z"
+    },
+    "createdBy": "model_run"
+  },
+  "bibleId": 1001,
+  "bookId": 10,
+  "chapterId": 1001,
+  "diff": {
+    "substitutions": 0,
+    "omissions": 0,
+    "additions": 0,
+    "transpositions": 0
+  },
+  "evaluatedAt": {
+    "$date": "2026-01-24T07:24:31.804Z"
+  },
+  "fidelityScore": 100,
+  "hashMatch": true,
+  "hashProcessed": "b0f6791f3a897bd2418416f4336afbfeee6ddcd7462783ac9e9cec3a39f80044",
+  "hashRaw": "b0f6791f3a897bd2418416f4336afbfeee6ddcd7462783ac9e9cec3a39f80044",
+  "latencyMs": 270,
+  "responseProcessed": "And God blessed them, and God said unto them, Be fruitful, and multiply, and replenish the earth, and subdue it: and have dominion over the fish of the sea, and over the fowl of the air, and over every living thing that moveth upon the earth.",
+  "responseRaw": "And God blessed them, and God said unto them, Be fruitful, and multiply, and replenish the earth, and subdue it: and have dominion over the fish of the sea, and over the fowl of the air, and over every living thing that moveth upon the earth.",
+  "resultId": 1769239482128590,
+  "runId": "a3760dd0-3efa-4260-bc18-cf4877978f61"
+},
+{
+  "_id": {
+    "$oid": "697473baa88318b065d033d5"
+  },
+  "verseId": 1001029,
+  "campaignTag": "Testing",
+  "modelId": 6,
+  "__v": 0,
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-24T07:24:31.804Z"
+    },
+    "createdBy": "model_run"
+  },
+  "bibleId": 1001,
+  "bookId": 10,
+  "chapterId": 1001,
+  "diff": {
+    "substitutions": 0,
+    "omissions": 0,
+    "additions": 0,
+    "transpositions": 0
+  },
+  "evaluatedAt": {
+    "$date": "2026-01-24T07:24:31.804Z"
+  },
+  "fidelityScore": 100,
+  "hashMatch": true,
+  "hashProcessed": "9b330fa47edb7c2e54efc1d04b0f4b8653f92399b29d9787d61d111f55b7cc26",
+  "hashRaw": "9b330fa47edb7c2e54efc1d04b0f4b8653f92399b29d9787d61d111f55b7cc26",
+  "latencyMs": 270,
+  "responseProcessed": "And God said, Behold, I have given you every herb bearing seed, which is upon the face of all the earth, and every tree, in the which is the fruit of a tree yielding seed; to you it shall be for meat.",
+  "responseRaw": "And God said, Behold, I have given you every herb bearing seed, which is upon the face of all the earth, and every tree, in the which is the fruit of a tree yielding seed; to you it shall be for meat.",
+  "resultId": 1769239482215814,
+  "runId": "a3760dd0-3efa-4260-bc18-cf4877978f61"
+},
+{
+  "_id": {
+    "$oid": "697473baa88318b065d033d6"
+  },
+  "campaignTag": "Testing",
+  "modelId": 6,
+  "verseId": 1001030,
+  "__v": 0,
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-24T07:24:31.804Z"
+    },
+    "createdBy": "model_run"
+  },
+  "bibleId": 1001,
+  "bookId": 10,
+  "chapterId": 1001,
+  "diff": {
+    "substitutions": 0,
+    "omissions": 0,
+    "additions": 0,
+    "transpositions": 0
+  },
+  "evaluatedAt": {
+    "$date": "2026-01-24T07:24:31.804Z"
+  },
+  "fidelityScore": 100,
+  "hashMatch": true,
+  "hashProcessed": "a8305101b2c623022008dc7f45e3bff678daf0319e78bd2672dfc1d7a4dfdf08",
+  "hashRaw": "a8305101b2c623022008dc7f45e3bff678daf0319e78bd2672dfc1d7a4dfdf08",
+  "latencyMs": 270,
+  "responseProcessed": "And to every beast of the earth, and to every fowl of the air, and to every thing that creepeth upon the earth, wherein there is life, I have given every green herb for meat: and it was so.",
+  "responseRaw": "And to every beast of the earth, and to every fowl of the air, and to every thing that creepeth upon the earth, wherein there is life, I have given every green herb for meat: and it was so.",
+  "resultId": 1769239482272171,
+  "runId": "a3760dd0-3efa-4260-bc18-cf4877978f61"
+},
+{
+  "_id": {
+    "$oid": "697473baa88318b065d033d7"
+  },
+  "verseId": 1001031,
+  "campaignTag": "Testing",
+  "modelId": 6,
+  "__v": 0,
+  "audit": {
+    "createdAt": {
+      "$date": "2026-01-24T07:24:31.804Z"
+    },
+    "createdBy": "model_run"
+  },
+  "bibleId": 1001,
+  "bookId": 10,
+  "chapterId": 1001,
+  "diff": {
+    "substitutions": 0,
+    "omissions": 0,
+    "additions": 0,
+    "transpositions": 0
+  },
+  "evaluatedAt": {
+    "$date": "2026-01-24T07:24:31.804Z"
+  },
+  "fidelityScore": 100,
+  "hashMatch": true,
+  "hashProcessed": "67c821b497f91cff9ddf49410abda3916c1e81ba28d186c66c5ef69fd8efa23d",
+  "hashRaw": "67c821b497f91cff9ddf49410abda3916c1e81ba28d186c66c5ef69fd8efa23d",
+  "latencyMs": 270,
+  "responseProcessed": "And God saw every thing that he had made, and, behold, it was very good. And the evening and the morning were the sixth day.",
+  "responseRaw": "And God saw every thing that he had made, and, behold, it was very good. And the evening and the morning were the sixth day.",
+  "resultId": 1769239482333047,
+  "runId": "a3760dd0-3efa-4260-bc18-cf4877978f61"
+}]
