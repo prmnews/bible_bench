@@ -16,6 +16,7 @@ import {
   ArrowsLeftRight,
   GridFour,
   Table,
+  FileCode,
 } from "@phosphor-icons/react";
 import { diffWords, type Change } from "diff";
 import { cn } from "@/lib/utils";
@@ -23,6 +24,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { TransformFilterPanel } from "@/components/transform-filter-panel";
 import { ChapterModelMatrix } from "@/components/chapter-model-matrix";
+import { ChapterRawModal } from "@/components/chapter-raw-modal";
 import {
   type TransformStep,
   applyTransformsAndScore,
@@ -125,7 +127,8 @@ type VerseItem = {
   modelId: number;
   modelName: string;
   canonicalText: string;
-  llmText: string;
+  llmTextRaw: string;
+  llmTextProcessed: string;
   hashMatch: boolean;
   fidelityScore: number;
   diff: { substitutions: number; omissions: number; additions: number };
@@ -1012,14 +1015,19 @@ type NormalizedVerseItem = VerseItem & {
 function VerseComparisonView({
   items,
   chapterNumber,
+  chapterId,
+  selectedModelId,
 }: {
   items: VerseItem[];
   chapterNumber: number;
+  chapterId: number;
+  selectedModelId?: number | null;
 }) {
   const [filter, setFilter] = useState<"all" | "matches" | "mismatches">("all");
   const [showDiff, setShowDiff] = useState(true);
   const [selectedTransforms, setSelectedTransforms] = useState<TransformStep[]>([]);
   const [useNormalizedScores, setUseNormalizedScores] = useState(false);
+  const [showRawModal, setShowRawModal] = useState(false);
 
   // Handle transform changes from the filter panel
   const handleTransformsChange = useCallback((transforms: TransformStep[]) => {
@@ -1039,8 +1047,10 @@ function VerseComparisonView({
     }
 
     return items.map((item) => {
+      // Apply transforms to the RAW LLM text (not already-processed text)
+      // This allows client-side normalization to have a visible effect
       const result = applyTransformsAndScore(
-        item.llmText,
+        item.llmTextRaw,
         item.canonicalText,
         selectedTransforms
       );
@@ -1149,8 +1159,26 @@ function VerseComparisonView({
             {showDiff ? <EyeSlash className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             {showDiff ? "Hide Diff" : "Show Diff"}
           </Button>
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowRawModal(true)}
+            className="gap-2"
+          >
+            <FileCode className="h-4 w-4" />
+            View Raw Chapter
+          </Button>
         </div>
       </div>
+
+      {/* Chapter Raw Comparison Modal */}
+      <ChapterRawModal
+        open={showRawModal}
+        onOpenChange={setShowRawModal}
+        chapterId={chapterId}
+        modelId={selectedModelId ?? undefined}
+      />
 
       <ScrollArea className="h-[calc(100vh-450px)]">
         <div className="space-y-4 pr-4">
@@ -1203,7 +1231,7 @@ function VerseComparisonView({
                 </div>
 
                 {showDiff && !effectiveMatch ? (
-                  <WordDiff canonical={verse.canonicalText} llm={verse.llmText} />
+                  <WordDiff canonical={verse.canonicalText} llm={verse.llmTextProcessed} />
                 ) : (
                   <div className="flex gap-4">
                     <div className="flex-1 rounded-lg border border-border bg-muted/30 p-3">
@@ -1216,7 +1244,7 @@ function VerseComparisonView({
                       <div className="mb-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">
                         LLM Output
                       </div>
-                      <p className="text-sm leading-relaxed">{verse.llmText}</p>
+                      <p className="text-sm leading-relaxed">{verse.llmTextProcessed}</p>
                     </div>
                   </div>
                 )}
@@ -1582,10 +1610,12 @@ function ExplorerPageContent() {
         </div>
       )}
 
-      {data.level === "verse" && data.items && data.chapterNumber && (
+      {data.level === "verse" && data.items && data.chapterNumber && data.chapterId && (
         <VerseComparisonView
           items={data.items as VerseItem[]}
           chapterNumber={data.chapterNumber}
+          chapterId={data.chapterId}
+          selectedModelId={data.selectedModelId}
         />
       )}
     </section>

@@ -16,8 +16,8 @@
         "description": "Normalize curly apostrophes to straight apostrophes",
         "params": {
           "map": {
-            "'": "'",
-            "'": "'"
+            "\u2018": "'",
+            "\u2019": "'"
           }
         }
       },
@@ -29,8 +29,8 @@
         "description": "Normalize curly quotes to straight quotes",
         "params": {
           "map": {
-            """: "\"",
-            """: "\""
+            "\u201C": "\"",
+            "\u201D": "\""
           }
         }
       },
@@ -42,8 +42,8 @@
         "description": "Normalize dashes (em-dash and en-dash to hyphen)",
         "params": {
           "map": {
-            "—": "-",
-            "–": "-"
+            "\u2014": "-",
+            "\u2013": "-"
           }
         }
       },

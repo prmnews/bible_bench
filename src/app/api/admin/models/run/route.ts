@@ -193,6 +193,7 @@ export async function POST(request: Request) {
             scopeIds: { chapterId },
             limit: validation.data.limit,
             skip: validation.data.skip,
+            executeAsync: true,
           });
 
           if (result.ok) {
@@ -235,6 +236,7 @@ export async function POST(request: Request) {
           scopeIds: { bookId },
           limit: validation.data.limit,
           skip: validation.data.skip,
+          executeAsync: true,
         });
 
         if (result.ok) {
