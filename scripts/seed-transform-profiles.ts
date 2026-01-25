@@ -87,7 +87,7 @@ async function main() {
 
   let created = 0;
   let updated = 0;
-  let skipped = 0;
+  const skipped = 0;
 
   for (const profile of seedProfiles) {
     // Check if profile already exists
