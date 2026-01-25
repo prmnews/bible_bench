@@ -1,8 +1,248 @@
 {
   "collection": "models",
-  "documentCount": 0,
-  "sampleSize": 0,
-  "fieldAnalysis": {},
-  "samples": [],
+  "documentCount": 10,
+  "sampleSize": 5,
+  "fieldAnalysis": {
+    "_id": {
+      "type": "ObjectId",
+      "count": 5,
+      "sample": "696f823dd6ddad8890e80e84"
+    },
+    "modelId": {
+      "type": "number",
+      "count": 5,
+      "sample": 1
+    },
+    "__v": {
+      "type": "number",
+      "count": 5,
+      "sample": 0
+    },
+    "apiConfigEncrypted": {
+      "type": "object",
+      "count": 5,
+      "sample": "[object]"
+    },
+    "apiConfigEncrypted.model": {
+      "type": "string",
+      "count": 5,
+      "sample": "mock"
+    },
+    "apiConfigEncrypted.maxTokens": {
+      "type": "number",
+      "count": 5,
+      "sample": 4096
+    },
+    "apiConfigEncrypted.mode": {
+      "type": "string",
+      "count": 1,
+      "sample": "echo_processed"
+    },
+    "audit": {
+      "type": "object",
+      "count": 5,
+      "sample": "[object]"
+    },
+    "audit.createdAt": {
+      "type": "date",
+      "count": 5,
+      "sample": "2026-01-20T13:25:17.009Z"
+    },
+    "audit.createdBy": {
+      "type": "string",
+      "count": 5,
+      "sample": "admin"
+    },
+    "capabilities": {
+      "type": "object",
+      "count": 5,
+      "sample": "[object]"
+    },
+    "capabilities.supportsJsonSchema": {
+      "type": "boolean",
+      "count": 5,
+      "sample": false
+    },
+    "capabilities.supportsToolCalls": {
+      "type": "boolean",
+      "count": 5,
+      "sample": false
+    },
+    "capabilities.supportsStrictJson": {
+      "type": "boolean",
+      "count": 5,
+      "sample": false
+    },
+    "capabilities.supportsStreaming": {
+      "type": "boolean",
+      "count": 5,
+      "sample": false
+    },
+    "displayName": {
+      "type": "string",
+      "count": 5,
+      "sample": "Mock Model"
+    },
+    "isActive": {
+      "type": "boolean",
+      "count": 5,
+      "sample": false
+    },
+    "provider": {
+      "type": "string",
+      "count": 5,
+      "sample": "Mock"
+    },
+    "routingMethod": {
+      "type": "string",
+      "count": 5,
+      "sample": "direct"
+    },
+    "version": {
+      "type": "string",
+      "count": 5,
+      "sample": "1.0"
+    },
+    "apiConfigEncrypted.apiKey": {
+      "type": "string",
+      "count": 4,
+      "sample": "REDACTED_OPENAI_API_KEY"
+    },
+    "apiConfigEncrypted.reasoningEffort": {
+      "type": "string",
+      "count": 3,
+      "sample": "low"
+    }
+  },
+  "samples": [
+    {
+      "_id": "696f823dd6ddad8890e80e84",
+      "modelId": 1,
+      "__v": 0,
+      "apiConfigEncrypted": {
+        "model": "mock",
+        "maxTokens": 4096,
+        "mode": "echo_processed"
+      },
+      "audit": {
+        "createdAt": "2026-01-20T13:25:17.009Z",
+        "createdBy": "admin"
+      },
+      "capabilities": {
+        "supportsJsonSchema": false,
+        "supportsToolCalls": false,
+        "supportsStrictJson": false,
+        "supportsStreaming": false
+      },
+      "displayName": "Mock Model",
+      "isActive": false,
+      "provider": "Mock",
+      "routingMethod": "direct",
+      "version": "1.0"
+    },
+    {
+      "_id": "696f88e6d6ddad8890e80fa3",
+      "modelId": 2,
+      "__v": 0,
+      "apiConfigEncrypted": {
+        "model": "gpt-5-nano",
+        "maxTokens": 128000,
+        "apiKey": "REDACTED_OPENAI_API_KEY",
+        "reasoningEffort": "low"
+      },
+      "audit": {
+        "createdAt": "2026-01-20T13:53:42.820Z",
+        "createdBy": "admin"
+      },
+      "capabilities": {
+        "supportsJsonSchema": false,
+        "supportsToolCalls": false,
+        "supportsStrictJson": false,
+        "supportsStreaming": false
+      },
+      "displayName": "GPT-5-Nano",
+      "isActive": false,
+      "provider": "OpenAI",
+      "routingMethod": "direct",
+      "version": "2025-08-07"
+    },
+    {
+      "_id": "696f893cd6ddad8890e80fa5",
+      "modelId": 3,
+      "__v": 0,
+      "apiConfigEncrypted": {
+        "model": "gpt-5-mini-2025-08-07",
+        "maxTokens": 128000,
+        "apiKey": "REDACTED_OPENAI_API_KEY",
+        "reasoningEffort": "low"
+      },
+      "audit": {
+        "createdAt": "2026-01-20T13:55:08.529Z",
+        "createdBy": "admin"
+      },
+      "capabilities": {
+        "supportsJsonSchema": false,
+        "supportsToolCalls": false,
+        "supportsStrictJson": false,
+        "supportsStreaming": false
+      },
+      "displayName": "GPT-5-Mini",
+      "isActive": false,
+      "provider": "OpenAI",
+      "routingMethod": "direct",
+      "version": "2025-08-07"
+    },
+    {
+      "_id": "696f89b7d6ddad8890e80fde",
+      "modelId": 4,
+      "__v": 0,
+      "apiConfigEncrypted": {
+        "model": "gpt-5.2-2025-12-11",
+        "maxTokens": 128000,
+        "apiKey": "REDACTED_OPENAI_API_KEY",
+        "reasoningEffort": "low"
+      },
+      "audit": {
+        "createdAt": "2026-01-20T13:57:11.758Z",
+        "createdBy": "admin"
+      },
+      "capabilities": {
+        "supportsJsonSchema": false,
+        "supportsToolCalls": false,
+        "supportsStrictJson": false,
+        "supportsStreaming": false
+      },
+      "displayName": "GPT-5.2",
+      "isActive": false,
+      "provider": "OpenAI",
+      "routingMethod": "direct",
+      "version": "2025-12-11"
+    },
+    {
+      "_id": "696f8aedd6ddad8890e80ff0",
+      "modelId": 5,
+      "__v": 0,
+      "apiConfigEncrypted": {
+        "model": "claude-sonnet-4-5-20250929",
+        "maxTokens": 128000,
+        "apiKey": "REDACTED_ANTHROPIC_API_KEY"
+      },
+      "audit": {
+        "createdAt": "2026-01-20T14:02:21.035Z",
+        "createdBy": "admin"
+      },
+      "capabilities": {
+        "supportsJsonSchema": false,
+        "supportsToolCalls": false,
+        "supportsStrictJson": false,
+        "supportsStreaming": false
+      },
+      "displayName": "Sonnet 4.5",
+      "isActive": false,
+      "provider": "Anthropic",
+      "routingMethod": "direct",
+      "version": "20250929"
+    }
+  ],
   "validationErrors": []
 }

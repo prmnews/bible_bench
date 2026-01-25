@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-01-20T03:17:43.016Z",
+  "timestamp": "2026-01-25T18:42:44.471Z",
   "sampleSize": 50,
   "totalErrors": 0,
   "collectionStats": {
@@ -18,34 +18,34 @@
       "sampled": 50,
       "errors": 0
     },
-    "rawChapters": {
+    "canonicalRawChapters": {
       "total": 1189,
       "sampled": 50,
       "errors": 0
     },
-    "chapters": {
+    "canonicalChapters": {
       "total": 1189,
       "sampled": 50,
       "errors": 0
     },
-    "verses": {
+    "canonicalVerses": {
       "total": 31102,
       "sampled": 50,
       "errors": 0
     },
     "transformProfiles": {
-      "total": 2,
-      "sampled": 2,
+      "total": 4,
+      "sampled": 4,
       "errors": 0
     },
     "models": {
-      "total": 0,
-      "sampled": 0,
+      "total": 10,
+      "sampled": 10,
       "errors": 0
     },
     "schemaValidatorRuns": {
-      "total": 4,
-      "sampled": 4,
+      "total": 3,
+      "sampled": 3,
       "errors": 0
     }
   },

@@ -1,8 +1,110 @@
 {
   "collection": "runItems",
-  "documentCount": 0,
-  "sampleSize": 0,
-  "fieldAnalysis": {},
-  "samples": [],
+  "documentCount": 314,
+  "sampleSize": 5,
+  "fieldAnalysis": {
+    "_id": {
+      "type": "ObjectId",
+      "count": 5,
+      "sample": "6973f8b6739491b54e86f717"
+    },
+    "runId": {
+      "type": "string",
+      "count": 5,
+      "sample": "9c72a774-8351-4b3f-80c1-363e400e4622"
+    },
+    "targetType": {
+      "type": "string",
+      "count": 5,
+      "sample": "chapter"
+    },
+    "targetId": {
+      "type": "number",
+      "count": 5,
+      "sample": 1001
+    },
+    "status": {
+      "type": "string",
+      "count": 5,
+      "sample": "success"
+    },
+    "attempts": {
+      "type": "number",
+      "count": 5,
+      "sample": 1
+    },
+    "lastError": {
+      "type": "null",
+      "count": 5,
+      "sample": null
+    },
+    "updatedAt": {
+      "type": "date",
+      "count": 5,
+      "sample": "2026-01-23T22:41:58.116Z"
+    },
+    "__v": {
+      "type": "number",
+      "count": 5,
+      "sample": 0
+    }
+  },
+  "samples": [
+    {
+      "_id": "6973f8b6739491b54e86f717",
+      "runId": "9c72a774-8351-4b3f-80c1-363e400e4622",
+      "targetType": "chapter",
+      "targetId": 1001,
+      "status": "success",
+      "attempts": 1,
+      "lastError": null,
+      "updatedAt": "2026-01-23T22:41:58.116Z",
+      "__v": 0
+    },
+    {
+      "_id": "6973f936739491b54e86f746",
+      "runId": "db780559-6b2c-47a8-a84b-6c2c8c6e304c",
+      "targetType": "chapter",
+      "targetId": 1002,
+      "status": "success",
+      "attempts": 1,
+      "lastError": null,
+      "updatedAt": "2026-01-23T22:43:33.587Z",
+      "__v": 0
+    },
+    {
+      "_id": "6973f995739491b54e86f76f",
+      "runId": "7342ed17-8d86-4e50-b725-a3ec1745ef23",
+      "targetType": "chapter",
+      "targetId": 1003,
+      "status": "success",
+      "attempts": 1,
+      "lastError": null,
+      "updatedAt": "2026-01-23T22:45:28.441Z",
+      "__v": 0
+    },
+    {
+      "_id": "6973fa08739491b54e86f797",
+      "runId": "3de53614-0c63-4f7c-807e-c369693e8ce4",
+      "targetType": "chapter",
+      "targetId": 1004,
+      "status": "success",
+      "attempts": 1,
+      "lastError": null,
+      "updatedAt": "2026-01-23T22:47:10.451Z",
+      "__v": 0
+    },
+    {
+      "_id": "6973fa6e739491b54e86f7c1",
+      "runId": "2a30f477-744e-4819-8fb2-239c01bb7326",
+      "targetType": "chapter",
+      "targetId": 1005,
+      "status": "success",
+      "attempts": 1,
+      "lastError": null,
+      "updatedAt": "2026-01-23T22:48:38.964Z",
+      "__v": 0
+    }
+  ],
   "validationErrors": []
 }

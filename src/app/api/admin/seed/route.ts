@@ -198,104 +198,166 @@ async function seedTransformProfiles(): Promise<{
   let existing = 0;
 
   // Canonical profile for ETL processing
-  const canonicalProfile = await TransformProfileModel.findOne({
-    profileId: 1,
-  }).lean();
-  if (!canonicalProfile) {
-    await TransformProfileModel.create({
-      profileId: 1,
-      name: "KJV_CANONICAL_V1",
-      scope: "canonical",
-      version: 1,
-      bibleId: 1001,
-      isDefault: true,
-      description: "Default canonical transform profile for KJV Bible text",
-      steps: [
-        {
-          order: 1,
-          type: "stripMarkupTags",
-          enabled: true,
-          params: {
-            tagNames: [
-              "wj",
-              "add",
-              "verse-span",
-              "para",
-              "char",
-              "verse",
-              "chapter",
-            ],
+  const canonicalResult = await TransformProfileModel.updateOne(
+    { profileId: 1 },
+    {
+      $set: {
+        profileId: 1,
+        name: "KJV_CANONICAL_V1",
+        scope: "canonical",
+        version: 4,
+        bibleId: 1001,
+        isDefault: true,
+        description: "Default canonical transform profile for KJV Bible text",
+        steps: [
+          {
+            order: 1,
+            type: "stripMarkupTags",
+            enabled: true,
+            params: {
+              tagNames: [
+                "wj",
+                "add",
+                "verse-span",
+                "para",
+                "char",
+                "verse",
+                "chapter",
+              ],
+            },
           },
-        },
-        {
-          order: 2,
-          type: "stripParagraphMarkers",
-          enabled: true,
-          params: { markers: ["\u00b6"] },
-        },
-        {
-          order: 3,
-          type: "stripVerseNumbers",
-          enabled: true,
-          params: { patterns: ["^\\d+\\s*"] },
-        },
-        {
-          order: 4,
-          type: "collapseWhitespace",
-          enabled: true,
-          params: {},
-        },
-        {
-          order: 5,
-          type: "trim",
-          enabled: true,
-          params: {},
-        },
-      ],
-      isActive: true,
-      audit: {
-        createdAt: now,
-        createdBy: "seed",
+          {
+            order: 2,
+            type: "stripParagraphMarkers",
+            enabled: true,
+            params: { markers: ["\u00b6"] },
+          },
+          {
+            order: 3,
+            type: "regexReplace",
+            enabled: true,
+            description: "Format leading verse numbers as bracketed labels",
+            params: {
+              pattern: "^\\s*(\\d+)\\s*",
+              replacement: "[$1] ",
+            },
+          },
+          {
+            order: 4,
+            type: "replaceMap",
+            enabled: true,
+            severity: "cosmetic",
+            description: "Normalize Unicode quotes/apostrophes to ASCII equivalents",
+            params: {
+              map: {
+                "\u2018": "'",
+                "\u2019": "'",
+                "\u201C": '"',
+                "\u201D": '"',
+                "\u2014": "-",
+                "\u2013": "-",
+              },
+            },
+          },
+          {
+            order: 5,
+            type: "collapseWhitespace",
+            enabled: true,
+            params: {},
+          },
+          {
+            order: 6,
+            type: "trim",
+            enabled: true,
+            params: {},
+          },
+        ],
+        isActive: true,
       },
-    });
+      $setOnInsert: {
+        audit: {
+          createdAt: now,
+          createdBy: "seed",
+        },
+      },
+    },
+    { upsert: true }
+  );
+  const canonicalUpserted =
+    (canonicalResult as { upsertedCount?: number }).upsertedCount ?? 0;
+  if (canonicalUpserted > 0) {
     created++;
   } else {
     existing++;
   }
 
   // Model output profile for normalizing LLM responses
-  const modelProfile = await TransformProfileModel.findOne({
-    profileId: 2,
-  }).lean();
-  if (!modelProfile) {
-    await TransformProfileModel.create({
-      profileId: 2,
-      name: "MODEL_OUTPUT_V1",
-      scope: "model_output",
-      version: 1,
-      bibleId: 1001,
-      isDefault: true,
-      description: "Default transform profile for model output normalization",
-      steps: [
-        {
-          order: 1,
-          type: "collapseWhitespace",
-          enabled: true,
-          params: {},
-        },
-        {
-          order: 2,
-          type: "trim",
-          enabled: true,
-          params: {},
-        },
-      ],
-      isActive: true,
-      audit: {
-        createdAt: now,
-        createdBy: "seed",
+  const modelResult = await TransformProfileModel.updateOne(
+    { profileId: 2 },
+    {
+      $set: {
+        profileId: 2,
+        name: "MODEL_OUTPUT_V1",
+        scope: "model_output",
+        version: 4,
+        bibleId: 1001,
+        isDefault: true,
+        description: "Default transform profile for model output normalization",
+        steps: [
+          {
+            order: 1,
+            type: "replaceMap",
+            enabled: true,
+            severity: "cosmetic",
+            description: "Normalize Unicode quotes/apostrophes to ASCII equivalents",
+            params: {
+              map: {
+                "\u2018": "'",
+                "\u2019": "'",
+                "\u201C": '"',
+                "\u201D": '"',
+                "\u2014": "-",
+                "\u2013": "-",
+              },
+            },
+          },
+          {
+            order: 2,
+            type: "regexReplace",
+            enabled: true,
+            description: "Format leading verse numbers as bracketed labels",
+            params: {
+              pattern: "^\\s*(\\d+)\\s*",
+              replacement: "[$1] ",
+            },
+          },
+          {
+            order: 3,
+            type: "collapseWhitespace",
+            enabled: true,
+            params: {},
+          },
+          {
+            order: 4,
+            type: "trim",
+            enabled: true,
+            params: {},
+          },
+        ],
+        isActive: true,
       },
-    });
+      $setOnInsert: {
+        audit: {
+          createdAt: now,
+          createdBy: "seed",
+        },
+      },
+    },
+    { upsert: true }
+  );
+  const modelUpserted =
+    (modelResult as { upsertedCount?: number }).upsertedCount ?? 0;
+  if (modelUpserted > 0) {
     created++;
   } else {
     existing++;

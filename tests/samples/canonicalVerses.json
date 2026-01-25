@@ -1,0 +1,455 @@
+{
+  "collection": "canonicalVerses",
+  "documentCount": 31102,
+  "sampleSize": 10,
+  "fieldAnalysis": {
+    "_id": {
+      "type": "ObjectId",
+      "count": 10,
+      "sample": "69766397a88318b065d59272"
+    },
+    "verseId": {
+      "type": "number",
+      "count": 10,
+      "sample": 1001001
+    },
+    "__v": {
+      "type": "number",
+      "count": 10,
+      "sample": 0
+    },
+    "audit": {
+      "type": "object",
+      "count": 10,
+      "sample": "[object]"
+    },
+    "audit.createdAt": {
+      "type": "date",
+      "count": 10,
+      "sample": "2026-01-25T18:40:23.279Z"
+    },
+    "audit.createdBy": {
+      "type": "string",
+      "count": 10,
+      "sample": "verse_transform"
+    },
+    "bibleId": {
+      "type": "number",
+      "count": 10,
+      "sample": 1001
+    },
+    "bookId": {
+      "type": "number",
+      "count": 10,
+      "sample": 10
+    },
+    "chapterId": {
+      "type": "number",
+      "count": 10,
+      "sample": 1001
+    },
+    "chapterNumber": {
+      "type": "number",
+      "count": 10,
+      "sample": 1
+    },
+    "etlControl": {
+      "type": "object",
+      "count": 10,
+      "sample": "[object]"
+    },
+    "etlControl.stage": {
+      "type": "string",
+      "count": 10,
+      "sample": "verses"
+    },
+    "etlControl.isLocked": {
+      "type": "boolean",
+      "count": 10,
+      "sample": false
+    },
+    "etlControl.lockedBy": {
+      "type": "null",
+      "count": 10,
+      "sample": null
+    },
+    "etlControl.lockedAt": {
+      "type": "null",
+      "count": 10,
+      "sample": null
+    },
+    "etlControl.lastProcessedBy": {
+      "type": "string",
+      "count": 10,
+      "sample": "verse_transform"
+    },
+    "etlControl.lastProcessedAt": {
+      "type": "date",
+      "count": 10,
+      "sample": "2026-01-25T18:40:23.279Z"
+    },
+    "etlControl.batchId": {
+      "type": "string",
+      "count": 10,
+      "sample": "rerun-canonical-etl-1769366417264"
+    },
+    "hashProcessed": {
+      "type": "string",
+      "count": 10,
+      "sample": "3047c9c1928da6ffadbfcc7e2045ddeb8cba9cbe3ae9a064a31ce29f2d5f3244"
+    },
+    "hashRaw": {
+      "type": "string",
+      "count": 10,
+      "sample": "872a4f043b342336daa01346db430e8c94c20acffedb6a409b0dd5daca35a1fe"
+    },
+    "offsetEnd": {
+      "type": "number",
+      "count": 10,
+      "sample": 57
+    },
+    "offsetStart": {
+      "type": "number",
+      "count": 10,
+      "sample": 1
+    },
+    "reference": {
+      "type": "string",
+      "count": 10,
+      "sample": "Genesis 1:1"
+    },
+    "textProcessed": {
+      "type": "string",
+      "count": 10,
+      "sample": "[1] In the beginning God created the heaven and the earth."
+    },
+    "textRaw": {
+      "type": "string",
+      "count": 10,
+      "sample": "1In the beginning God created the heaven and the earth. "
+    },
+    "transformProfileId": {
+      "type": "number",
+      "count": 10,
+      "sample": 1
+    },
+    "verseNumber": {
+      "type": "number",
+      "count": 10,
+      "sample": 1
+    }
+  },
+  "samples": [
+    {
+      "_id": "69766397a88318b065d59272",
+      "verseId": 1001001,
+      "__v": 0,
+      "audit": {
+        "createdAt": "2026-01-25T18:40:23.279Z",
+        "createdBy": "verse_transform"
+      },
+      "bibleId": 1001,
+      "bookId": 10,
+      "chapterId": 1001,
+      "chapterNumber": 1,
+      "etlControl": {
+        "stage": "verses",
+        "isLocked": false,
+        "lockedBy": null,
+        "lockedAt": null,
+        "lastProcessedBy": "verse_transform",
+        "lastProcessedAt": "2026-01-25T18:40:23.279Z",
+        "batchId": "rerun-canonical-etl-1769366417264"
+      },
+      "hashProcessed": "3047c9c1928da6ffadbfcc7e2045ddeb8cba9cbe3ae9a064a31ce29f2d5f3244",
+      "hashRaw": "872a4f043b342336daa01346db430e8c94c20acffedb6a409b0dd5daca35a1fe",
+      "offsetEnd": 57,
+      "offsetStart": 1,
+      "reference": "Genesis 1:1",
+      "textProcessed": "[1] In the beginning God created the heaven and the earth.",
+      "textRaw": "1In the beginning God created the heaven and the earth. ",
+      "transformProfileId": 1,
+      "verseNumber": 1
+    },
+    {
+      "_id": "69766397a88318b065d59273",
+      "verseId": 1001002,
+      "__v": 0,
+      "audit": {
+        "createdAt": "2026-01-25T18:40:23.279Z",
+        "createdBy": "verse_transform"
+      },
+      "bibleId": 1001,
+      "bookId": 10,
+      "chapterId": 1001,
+      "chapterNumber": 1,
+      "etlControl": {
+        "stage": "verses",
+        "isLocked": false,
+        "lockedBy": null,
+        "lockedAt": null,
+        "lastProcessedBy": "verse_transform",
+        "lastProcessedAt": "2026-01-25T18:40:23.279Z",
+        "batchId": "rerun-canonical-etl-1769366417264"
+      },
+      "hashProcessed": "fa51a33228eb511dba75030e8b918c04d5274fe3f59724f3fe0cfecc4bf3f51d",
+      "hashRaw": "39e76289939c1d02e324cd43420e7b3a27316bd40ba018fd6d6b0270d7b7bb28",
+      "offsetEnd": 200,
+      "offsetStart": 57,
+      "reference": "Genesis 1:2",
+      "textProcessed": "[2] And the earth was without form, and void; and darkness was upon the face of the deep. And the Spirit of God moved upon the face of the waters.",
+      "textRaw": "2And the earth was without form, and void; and darkness was upon the face of the deep. And the Spirit of God moved upon the face of the waters.",
+      "transformProfileId": 1,
+      "verseNumber": 2
+    },
+    {
+      "_id": "69766397a88318b065d59274",
+      "verseId": 1001011,
+      "__v": 0,
+      "audit": {
+        "createdAt": "2026-01-25T18:40:23.279Z",
+        "createdBy": "verse_transform"
+      },
+      "bibleId": 1001,
+      "bookId": 10,
+      "chapterId": 1001,
+      "chapterNumber": 1,
+      "etlControl": {
+        "stage": "verses",
+        "isLocked": false,
+        "lockedBy": null,
+        "lockedAt": null,
+        "lastProcessedBy": "verse_transform",
+        "lastProcessedAt": "2026-01-25T18:40:23.279Z",
+        "batchId": "rerun-canonical-etl-1769366417264"
+      },
+      "hashProcessed": "686d3305186255c7cf7f99f4fbcd8a9976817e49d571d6708985f699a9d2d79c",
+      "hashRaw": "dd638dad6882aecaa3e39f03c325bf6fc761920bb9885d1fdac57e4a3f64b648",
+      "offsetEnd": 1244,
+      "offsetStart": 1065,
+      "reference": "Genesis 1:11",
+      "textProcessed": "[11] And God said, Let the earth bring forth grass, the herb yielding seed, and the fruit tree yielding fruit after his kind, whose seed is in itself, upon the earth: and it was so.",
+      "textRaw": "11And God said, Let the earth bring forth grass, the herb yielding seed, and the fruit tree yielding fruit after his kind, whose seed is in itself, upon the earth: and it was so. ",
+      "transformProfileId": 1,
+      "verseNumber": 11
+    },
+    {
+      "_id": "69766397a88318b065d59275",
+      "verseId": 1004021,
+      "__v": 0,
+      "audit": {
+        "createdAt": "2026-01-25T18:40:23.279Z",
+        "createdBy": "verse_transform"
+      },
+      "bibleId": 1001,
+      "bookId": 10,
+      "chapterId": 1004,
+      "chapterNumber": 4,
+      "etlControl": {
+        "stage": "verses",
+        "isLocked": false,
+        "lockedBy": null,
+        "lockedAt": null,
+        "lastProcessedBy": "verse_transform",
+        "lastProcessedAt": "2026-01-25T18:40:23.279Z",
+        "batchId": "rerun-canonical-etl-1769366417264"
+      },
+      "hashProcessed": "5ea7a20820ca71b51da70ad3a18c16a0758a94d938c0f6dc6beddee834dc8375",
+      "hashRaw": "20ec29e1d1df35608b4608303d658fdef08316286969478ff881f5a79c0e2af7",
+      "offsetEnd": 2584,
+      "offsetStart": 2488,
+      "reference": "Genesis 4:21",
+      "textProcessed": "[21] And his brother's name was Jubal: he was the father of all such as handle the harp and organ.",
+      "textRaw": "21And his brother’s name was Jubal: he was the father of all such as handle the harp and organ. ",
+      "transformProfileId": 1,
+      "verseNumber": 21
+    },
+    {
+      "_id": "69766397a88318b065d59276",
+      "verseId": 1004022,
+      "__v": 0,
+      "audit": {
+        "createdAt": "2026-01-25T18:40:23.279Z",
+        "createdBy": "verse_transform"
+      },
+      "bibleId": 1001,
+      "bookId": 10,
+      "chapterId": 1004,
+      "chapterNumber": 4,
+      "etlControl": {
+        "stage": "verses",
+        "isLocked": false,
+        "lockedBy": null,
+        "lockedAt": null,
+        "lastProcessedBy": "verse_transform",
+        "lastProcessedAt": "2026-01-25T18:40:23.279Z",
+        "batchId": "rerun-canonical-etl-1769366417264"
+      },
+      "hashProcessed": "29d80ddd76dd8a1834ff44d3c172089947c8da2cb4f7c3e9c6054ea8458a528a",
+      "hashRaw": "94585a2ee582047d92ada2db3742f4b23a86deaaa3d8debbc0893a323b33c99d",
+      "offsetEnd": 2716,
+      "offsetStart": 2584,
+      "reference": "Genesis 4:22",
+      "textProcessed": "[22] And Zillah, she also bare Tubal-cain, an instructer of every artificer in brass and iron: and the sister of Tubal-cain was Naamah.",
+      "textRaw": "22And Zillah, she also bare Tubal-cain, an instructer of every artificer in brass and iron: and the sister of Tubal-cain was Naamah.",
+      "transformProfileId": 1,
+      "verseNumber": 22
+    },
+    {
+      "_id": "69766397a88318b065d59277",
+      "verseId": 1004023,
+      "__v": 0,
+      "audit": {
+        "createdAt": "2026-01-25T18:40:23.279Z",
+        "createdBy": "verse_transform"
+      },
+      "bibleId": 1001,
+      "bookId": 10,
+      "chapterId": 1004,
+      "chapterNumber": 4,
+      "etlControl": {
+        "stage": "verses",
+        "isLocked": false,
+        "lockedBy": null,
+        "lockedAt": null,
+        "lastProcessedBy": "verse_transform",
+        "lastProcessedAt": "2026-01-25T18:40:23.279Z",
+        "batchId": "rerun-canonical-etl-1769366417264"
+      },
+      "hashProcessed": "fb3cbd8351bbd4a882ece97ece19f13806ca22f963e0d415ce93793f07392480",
+      "hashRaw": "85738973a2f1525bc19aa94dffeb1570933a4c248c575d67631f741f28c56d97",
+      "offsetEnd": 2893,
+      "offsetStart": 2716,
+      "reference": "Genesis 4:23",
+      "textProcessed": "[23] And Lamech said unto his wives, Adah and Zillah, Hear my voice; ye wives of Lamech, hearken unto my speech: for I have slain a man to my wounding, and a young man to my hurt.",
+      "textRaw": "23And Lamech said unto his wives, Adah and Zillah, Hear my voice; ye wives of Lamech, hearken unto my speech: for I have slain a man to my wounding, and a young man to my hurt. ",
+      "transformProfileId": 1,
+      "verseNumber": 23
+    },
+    {
+      "_id": "69766397a88318b065d59278",
+      "verseId": 1004024,
+      "__v": 0,
+      "audit": {
+        "createdAt": "2026-01-25T18:40:23.279Z",
+        "createdBy": "verse_transform"
+      },
+      "bibleId": 1001,
+      "bookId": 10,
+      "chapterId": 1004,
+      "chapterNumber": 4,
+      "etlControl": {
+        "stage": "verses",
+        "isLocked": false,
+        "lockedBy": null,
+        "lockedAt": null,
+        "lastProcessedBy": "verse_transform",
+        "lastProcessedAt": "2026-01-25T18:40:23.279Z",
+        "batchId": "rerun-canonical-etl-1769366417264"
+      },
+      "hashProcessed": "3ad8c93bd926c9beb927ea1c03c19b804f446158c8d8895c702e2bc2f4e390bd",
+      "hashRaw": "59df5daedc5fa69dc9eee5960a2da0ab2336a956f74d22eb3b679e40040f0c75",
+      "offsetEnd": 2966,
+      "offsetStart": 2893,
+      "reference": "Genesis 4:24",
+      "textProcessed": "[24] If Cain shall be avenged sevenfold, truly Lamech seventy and sevenfold.",
+      "textRaw": "24If Cain shall be avenged sevenfold, truly Lamech seventy and sevenfold.",
+      "transformProfileId": 1,
+      "verseNumber": 24
+    },
+    {
+      "_id": "69766397a88318b065d59279",
+      "verseId": 1004025,
+      "__v": 0,
+      "audit": {
+        "createdAt": "2026-01-25T18:40:23.279Z",
+        "createdBy": "verse_transform"
+      },
+      "bibleId": 1001,
+      "bookId": 10,
+      "chapterId": 1004,
+      "chapterNumber": 4,
+      "etlControl": {
+        "stage": "verses",
+        "isLocked": false,
+        "lockedBy": null,
+        "lockedAt": null,
+        "lastProcessedBy": "verse_transform",
+        "lastProcessedAt": "2026-01-25T18:40:23.279Z",
+        "batchId": "rerun-canonical-etl-1769366417264"
+      },
+      "hashProcessed": "2c74aea2bc0222ed3123550b8b1bca2862b8ac062f82b9a6434413ed00ef7f0d",
+      "hashRaw": "eb1fc1fbecc1842c92e213839b75a949001f1e608e61e23ab26b565e39e53ec9",
+      "offsetEnd": 3129,
+      "offsetStart": 2966,
+      "reference": "Genesis 4:25",
+      "textProcessed": "[25] And Adam knew his wife again; and she bare a son, and called his name Seth: For God, said she, hath appointed me another seed instead of Abel, whom Cain slew.",
+      "textRaw": "25¶ And Adam knew his wife again; and she bare a son, and called his name Seth: For God, said she, hath appointed me another seed instead of Abel, whom Cain slew. ",
+      "transformProfileId": 1,
+      "verseNumber": 25
+    },
+    {
+      "_id": "69766397a88318b065d5927a",
+      "verseId": 1004026,
+      "__v": 0,
+      "audit": {
+        "createdAt": "2026-01-25T18:40:23.279Z",
+        "createdBy": "verse_transform"
+      },
+      "bibleId": 1001,
+      "bookId": 10,
+      "chapterId": 1004,
+      "chapterNumber": 4,
+      "etlControl": {
+        "stage": "verses",
+        "isLocked": false,
+        "lockedBy": null,
+        "lockedAt": null,
+        "lastProcessedBy": "verse_transform",
+        "lastProcessedAt": "2026-01-25T18:40:23.279Z",
+        "batchId": "rerun-canonical-etl-1769366417264"
+      },
+      "hashProcessed": "70b269776c1203b7568af127fdfbfd0eefd559d1799a29c608b319254a9e376b",
+      "hashRaw": "f4787ac5a23396ce389f5bdf65cedf5ae42deea3afc750026b42b40609625571",
+      "offsetEnd": 3256,
+      "offsetStart": 3129,
+      "reference": "Genesis 4:26",
+      "textProcessed": "[26] And to Seth, to him also there was born a son; and he called his name Enos: then began men to call upon the name of the LORD.",
+      "textRaw": "26And to Seth, to him also there was born a son; and he called his name Enos: then began men to call upon the name of the LORD.",
+      "transformProfileId": 1,
+      "verseNumber": 26
+    },
+    {
+      "_id": "69766397a88318b065d5927b",
+      "verseId": 1005001,
+      "__v": 0,
+      "audit": {
+        "createdAt": "2026-01-25T18:40:23.279Z",
+        "createdBy": "verse_transform"
+      },
+      "bibleId": 1001,
+      "bookId": 10,
+      "chapterId": 1005,
+      "chapterNumber": 5,
+      "etlControl": {
+        "stage": "verses",
+        "isLocked": false,
+        "lockedBy": null,
+        "lockedAt": null,
+        "lastProcessedBy": "verse_transform",
+        "lastProcessedAt": "2026-01-25T18:40:23.279Z",
+        "batchId": "rerun-canonical-etl-1769366417264"
+      },
+      "hashProcessed": "8211c367809b30cdeb7c4e3ad204fffa682151b6af39bad1aba8c18340dd4ebc",
+      "hashRaw": "94ef87a0a81513c83870c32b93b17ac6c972cf32341500008c69472c5ab952dd",
+      "offsetEnd": 116,
+      "offsetStart": 1,
+      "reference": "Genesis 5:1",
+      "textProcessed": "[1] This is the book of the generations of Adam. In the day that God created man, in the likeness of God made he him;",
+      "textRaw": "1This is the book of the generations of Adam. In the day that God created man, in the likeness of God made he him; ",
+      "transformProfileId": 1,
+      "verseNumber": 1
+    }
+  ],
+  "validationErrors": []
+}

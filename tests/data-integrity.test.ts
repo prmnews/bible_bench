@@ -77,9 +77,9 @@ describe("Data Integrity", () => {
         "dimLanguages",
         "dimBibles",
         "dimBooks",
-        "rawChapters",
-        "chapters",
-        "verses",
+        "canonicalRawChapters",
+        "canonicalChapters",
+        "canonicalVerses",
         "transformProfiles",
       ];
 
@@ -91,7 +91,7 @@ describe("Data Integrity", () => {
       checks.push({
         name: "Document Counts",
         status: "pass",
-        message: `dimBooks=${counts.dimBooks}, rawChapters=${counts.rawChapters}, chapters=${counts.chapters}, verses=${counts.verses}`,
+        message: `dimBooks=${counts.dimBooks}, canonicalRawChapters=${counts.canonicalRawChapters}, canonicalChapters=${counts.canonicalChapters}, canonicalVerses=${counts.canonicalVerses}`,
         details: counts,
       });
 
@@ -138,8 +138,8 @@ describe("Data Integrity", () => {
       assert.strictEqual(orphans.length, 0, "All books should reference valid bibles");
     });
 
-    it("should have valid bookId references in rawChapters", async () => {
-      const rawChapters = await db.collection("rawChapters").find({}).limit(1000).toArray();
+    it("should have valid bookId references in canonicalRawChapters", async () => {
+      const rawChapters = await db.collection("canonicalRawChapters").find({}).limit(1000).toArray();
       const bookIds = new Set(
         (await db.collection("dimBooks").find({}).toArray()).map((b) => b.bookId)
       );
@@ -155,10 +155,10 @@ describe("Data Integrity", () => {
       assert.strictEqual(orphans.length, 0, "All raw chapters should reference valid books");
     });
 
-    it("should have valid rawChapterId references in chapters", async () => {
-      const chapters = await db.collection("chapters").find({}).limit(1000).toArray();
+    it("should have valid rawChapterId references in canonicalChapters", async () => {
+      const chapters = await db.collection("canonicalChapters").find({}).limit(1000).toArray();
       const rawChapterIds = new Set(
-        (await db.collection("rawChapters").find({}).toArray()).map((c) => c.rawChapterId)
+        (await db.collection("canonicalRawChapters").find({}).toArray()).map((c) => c.rawChapterId)
       );
 
       const orphans = chapters.filter((c) => !rawChapterIds.has(c.rawChapterId));
@@ -172,10 +172,10 @@ describe("Data Integrity", () => {
       assert.strictEqual(orphans.length, 0, "All chapters should reference valid raw chapters");
     });
 
-    it("should have valid chapterId references in verses", async () => {
-      const verses = await db.collection("verses").find({}).limit(5000).toArray();
+    it("should have valid chapterId references in canonicalVerses", async () => {
+      const verses = await db.collection("canonicalVerses").find({}).limit(5000).toArray();
       const chapterIds = new Set(
-        (await db.collection("chapters").find({}).toArray()).map((c) => c.chapterId)
+        (await db.collection("canonicalChapters").find({}).toArray()).map((c) => c.chapterId)
       );
 
       const orphans = verses.filter((v) => !chapterIds.has(v.chapterId));
@@ -220,7 +220,7 @@ describe("Data Integrity", () => {
     });
 
     it("should have unique chapterId values", async () => {
-      const chapters = await db.collection("chapters").find({}).toArray();
+      const chapters = await db.collection("canonicalChapters").find({}).toArray();
       const ids = chapters.map((c) => c.chapterId);
       const uniqueIds = new Set(ids);
 
@@ -234,7 +234,7 @@ describe("Data Integrity", () => {
     });
 
     it("should have unique verseId values", async () => {
-      const verses = await db.collection("verses").find({}).toArray();
+      const verses = await db.collection("canonicalVerses").find({}).toArray();
       const ids = verses.map((v) => v.verseId);
       const uniqueIds = new Set(ids);
 
@@ -263,7 +263,7 @@ describe("Data Integrity", () => {
     });
 
     it("should have valid chapter numbers", async () => {
-      const chapters = await db.collection("chapters").find({}).limit(1000).toArray();
+      const chapters = await db.collection("canonicalChapters").find({}).limit(1000).toArray();
       const invalidChapters = chapters.filter((c) => c.chapterNumber < 1 || c.chapterNumber > 150);
 
       checks.push({
@@ -276,7 +276,7 @@ describe("Data Integrity", () => {
     });
 
     it("should have valid verse numbers", async () => {
-      const verses = await db.collection("verses").find({}).limit(5000).toArray();
+      const verses = await db.collection("canonicalVerses").find({}).limit(5000).toArray();
       const invalidVerses = verses.filter((v) => v.verseNumber < 1 || v.verseNumber > 200);
 
       checks.push({
@@ -289,7 +289,7 @@ describe("Data Integrity", () => {
     });
 
     it("should have non-empty text in chapters", async () => {
-      const chapters = await db.collection("chapters").find({}).limit(1000).toArray();
+      const chapters = await db.collection("canonicalChapters").find({}).limit(1000).toArray();
       const emptyChapters = chapters.filter(
         (c) => !c.textRaw || c.textRaw.trim().length === 0 || !c.textProcessed || c.textProcessed.trim().length === 0
       );
@@ -304,7 +304,7 @@ describe("Data Integrity", () => {
     });
 
     it("should have non-empty text in verses", async () => {
-      const verses = await db.collection("verses").find({}).limit(5000).toArray();
+      const verses = await db.collection("canonicalVerses").find({}).limit(5000).toArray();
       const emptyVerses = verses.filter(
         (v) => !v.textRaw || v.textRaw.trim().length === 0 || !v.textProcessed || v.textProcessed.trim().length === 0
       );
@@ -319,7 +319,7 @@ describe("Data Integrity", () => {
     });
 
     it("should have valid hashes (64 char hex)", async () => {
-      const chapters = await db.collection("chapters").find({}).limit(100).toArray();
+      const chapters = await db.collection("canonicalChapters").find({}).limit(100).toArray();
       const hashPattern = /^[a-f0-9]{64}$/;
       const invalidHashes = chapters.filter(
         (c) => !hashPattern.test(c.hashRaw) || !hashPattern.test(c.hashProcessed)
@@ -337,7 +337,7 @@ describe("Data Integrity", () => {
 
   describe("Reference Format Validation", () => {
     it("should have valid reference format in chapters", async () => {
-      const chapters = await db.collection("chapters").find({}).limit(100).toArray();
+      const chapters = await db.collection("canonicalChapters").find({}).limit(100).toArray();
       // Reference format: "Book Chapter" e.g., "Genesis 1", "1 John 3"
       const refPattern = /^[\w\s]+\s+\d+$/;
       const invalidRefs = chapters.filter((c) => !refPattern.test(c.reference));
@@ -353,7 +353,7 @@ describe("Data Integrity", () => {
     });
 
     it("should have valid reference format in verses", async () => {
-      const verses = await db.collection("verses").find({}).limit(500).toArray();
+      const verses = await db.collection("canonicalVerses").find({}).limit(500).toArray();
       // Reference format: "Book Chapter:Verse" e.g., "Genesis 1:1", "1 John 3:16"
       const refPattern = /^[\w\s]+\s+\d+:\d+$/;
       const invalidRefs = verses.filter((v) => !refPattern.test(v.reference));
@@ -370,17 +370,17 @@ describe("Data Integrity", () => {
   });
 
   describe("Count Consistency", () => {
-    it("should have matching rawChapter and chapter counts", async () => {
-      const rawCount = await db.collection("rawChapters").countDocuments();
-      const chapterCount = await db.collection("chapters").countDocuments();
+    it("should have matching canonicalRawChapter and canonicalChapter counts", async () => {
+      const rawCount = await db.collection("canonicalRawChapters").countDocuments();
+      const chapterCount = await db.collection("canonicalChapters").countDocuments();
 
       checks.push({
-        name: "Raw ↔ Chapter Count",
+        name: "CanonicalRaw ↔ CanonicalChapter Count",
         status: rawCount === chapterCount ? "pass" : "fail",
         message: rawCount === chapterCount ? `Both have ${rawCount} documents` : `Raw: ${rawCount}, Chapters: ${chapterCount}`,
       });
 
-      assert.strictEqual(rawCount, chapterCount, "rawChapters and chapters should have same count");
+      assert.strictEqual(rawCount, chapterCount, "canonicalRawChapters and canonicalChapters should have same count");
     });
 
     it("should have 66 books for KJV", async () => {
@@ -396,7 +396,7 @@ describe("Data Integrity", () => {
     });
 
     it("should have 1189 chapters for KJV", async () => {
-      const chapterCount = await db.collection("chapters").countDocuments({ bibleId: 1001 });
+      const chapterCount = await db.collection("canonicalChapters").countDocuments({ bibleId: 1001 });
 
       checks.push({
         name: "KJV Chapter Count",
@@ -408,7 +408,7 @@ describe("Data Integrity", () => {
     });
 
     it("should have approximately 31102 verses for KJV", async () => {
-      const verseCount = await db.collection("verses").countDocuments({ bibleId: 1001 });
+      const verseCount = await db.collection("canonicalVerses").countDocuments({ bibleId: 1001 });
       // KJV has 31,102 verses but some sources differ slightly
       const isClose = verseCount >= 31000 && verseCount <= 31200;
 

@@ -1,0 +1,95 @@
+{
+  "collection": "modelProfileMap",
+  "documentCount": 10,
+  "sampleSize": 5,
+  "fieldAnalysis": {
+    "_id": {
+      "type": "ObjectId",
+      "count": 5,
+      "sample": "6976345fa88318b065d38ef1"
+    },
+    "modelId": {
+      "type": "number",
+      "count": 5,
+      "sample": 1
+    },
+    "__v": {
+      "type": "number",
+      "count": 5,
+      "sample": 0
+    },
+    "audit": {
+      "type": "object",
+      "count": 5,
+      "sample": "[object]"
+    },
+    "audit.createdAt": {
+      "type": "date",
+      "count": 5,
+      "sample": "2026-01-25T15:18:55.400Z"
+    },
+    "audit.createdBy": {
+      "type": "string",
+      "count": 5,
+      "sample": "setup-model-profile-map"
+    },
+    "modelProfileId": {
+      "type": "number",
+      "count": 5,
+      "sample": 2
+    }
+  },
+  "samples": [
+    {
+      "_id": "6976345fa88318b065d38ef1",
+      "modelId": 1,
+      "__v": 0,
+      "audit": {
+        "createdAt": "2026-01-25T15:18:55.400Z",
+        "createdBy": "setup-model-profile-map"
+      },
+      "modelProfileId": 2
+    },
+    {
+      "_id": "6976345fa88318b065d38ef2",
+      "modelId": 2,
+      "__v": 0,
+      "audit": {
+        "createdAt": "2026-01-25T15:18:55.400Z",
+        "createdBy": "setup-model-profile-map"
+      },
+      "modelProfileId": 2
+    },
+    {
+      "_id": "6976345fa88318b065d38ef3",
+      "modelId": 3,
+      "__v": 0,
+      "audit": {
+        "createdAt": "2026-01-25T15:18:55.400Z",
+        "createdBy": "setup-model-profile-map"
+      },
+      "modelProfileId": 2
+    },
+    {
+      "_id": "6976345fa88318b065d38ef4",
+      "modelId": 4,
+      "__v": 0,
+      "audit": {
+        "createdAt": "2026-01-25T15:18:55.400Z",
+        "createdBy": "setup-model-profile-map"
+      },
+      "modelProfileId": 2
+    },
+    {
+      "_id": "6976345fa88318b065d38ef5",
+      "modelId": 5,
+      "__v": 0,
+      "audit": {
+        "createdAt": "2026-01-25T15:18:55.400Z",
+        "createdBy": "setup-model-profile-map"
+      },
+      "modelProfileId": 2
+    }
+  ],
+  "validationErrors": []
+}

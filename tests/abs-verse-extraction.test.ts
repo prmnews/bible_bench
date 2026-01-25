@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { extractAbsVerses } from "../src/lib/abs";
+import { extractAbsVerses, flattenAbsText, flattenAbsTextWithBrackets } from "../src/lib/abs";
 import { buildReference, parseVerseNumber } from "../src/lib/etl";
 
 test("extractAbsVerses returns ordered verses with offsets", () => {
@@ -72,4 +72,140 @@ test("parseVerseNumber handles missing numeric suffix", () => {
 test("buildReference uses fallback when reference is empty", () => {
   assert.equal(buildReference("GEN 1", 1, 1, 2), "GEN 1:2");
   assert.equal(buildReference("", 1, 1, 2), "1 1:2");
+});
+
+// =============================================================================
+// flattenAbsText tests
+// =============================================================================
+
+test("flattenAbsText extracts all text from ABS payload", () => {
+  const payload = {
+    content: [
+      { type: "text", text: "In the beginning " },
+      { type: "text", text: "God created " },
+      { type: "text", text: "the heaven and the earth." },
+    ],
+  };
+
+  const result = flattenAbsText(payload);
+  assert.equal(result, "In the beginning God created the heaven and the earth.");
+});
+
+test("flattenAbsText handles nested items", () => {
+  const payload = {
+    content: [
+      {
+        attrs: { verseId: "Gen 1:1" },
+        items: [
+          { type: "text", text: "In the beginning " },
+          { type: "text", text: "God" },
+        ],
+      },
+      { type: "text", text: " created." },
+    ],
+  };
+
+  const result = flattenAbsText(payload);
+  assert.equal(result, "In the beginning God created.");
+});
+
+test("flattenAbsText returns empty string for invalid payload", () => {
+  assert.equal(flattenAbsText(null), "");
+  assert.equal(flattenAbsText(undefined), "");
+  assert.equal(flattenAbsText("string"), "");
+  assert.equal(flattenAbsText(123), "");
+});
+
+test("flattenAbsText returns empty string for missing content", () => {
+  const payload = {};
+  assert.equal(flattenAbsText(payload), "");
+});
+
+test("flattenAbsText returns empty string for non-array content", () => {
+  const payload = { content: "not an array" };
+  assert.equal(flattenAbsText(payload), "");
+});
+
+test("flattenAbsText preserves special characters", () => {
+  const payload = {
+    content: [
+      { type: "text", text: "¶ The LORD's word" },
+    ],
+  };
+
+  const result = flattenAbsText(payload);
+  assert.equal(result, "¶ The LORD's word");
+});
+
+test("flattenAbsText handles deeply nested structure", () => {
+  const payload = {
+    content: [
+      {
+        items: [
+          {
+            items: [
+              { type: "text", text: "Deep " },
+              { type: "text", text: "nesting" },
+            ],
+          },
+        ],
+      },
+    ],
+  };
+
+  const result = flattenAbsText(payload);
+  assert.equal(result, "Deep nesting");
+});
+
+// =============================================================================
+// flattenAbsTextWithBrackets tests
+// =============================================================================
+
+test("flattenAbsTextWithBrackets formats verses with brackets", () => {
+  const payload = {
+    content: [
+      {
+        attrs: { verseId: "Gen 1:1" },
+        items: [{ type: "text", text: "In the beginning" }],
+      },
+      {
+        attrs: { verseId: "Gen 1:2" },
+        items: [{ type: "text", text: "And the earth" }],
+      },
+    ],
+  };
+
+  const result = flattenAbsTextWithBrackets(payload);
+  assert.equal(result, "[Gen 1:1] In the beginning [Gen 1:2] And the earth");
+});
+
+test("flattenAbsTextWithBrackets returns empty string for no verses", () => {
+  const payload = {
+    content: [
+      { type: "text", text: "Just some text without verse markers" },
+    ],
+  };
+
+  const result = flattenAbsTextWithBrackets(payload);
+  assert.equal(result, "");
+});
+
+test("flattenAbsTextWithBrackets handles single verse", () => {
+  const payload = {
+    content: [
+      {
+        attrs: { verseId: "PSA 23:1" },
+        items: [{ type: "text", text: "The LORD is my shepherd" }],
+      },
+    ],
+  };
+
+  const result = flattenAbsTextWithBrackets(payload);
+  assert.equal(result, "[PSA 23:1] The LORD is my shepherd");
+});
+
+test("flattenAbsTextWithBrackets handles invalid payload", () => {
+  assert.equal(flattenAbsTextWithBrackets(null), "");
+  assert.equal(flattenAbsTextWithBrackets(undefined), "");
+  assert.equal(flattenAbsTextWithBrackets({}), "");
 });

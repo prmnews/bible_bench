@@ -1,22 +1,37 @@
 {
-  "collection": "dimBooks",
+  "collection": "canonicalBooks",
   "documentCount": 66,
   "sampleSize": 10,
   "fieldAnalysis": {
     "_id": {
       "type": "ObjectId",
       "count": 10,
-      "sample": "69706881d6ddad8890e88110"
+      "sample": "69706880ab0956a7f727635f"
     },
     "bookId": {
       "type": "number",
       "count": 10,
       "sample": 10
     },
-    "__v": {
+    "bibleId": {
       "type": "number",
       "count": 10,
-      "sample": 0
+      "sample": 1001
+    },
+    "bookCode": {
+      "type": "string",
+      "count": 10,
+      "sample": "GEN"
+    },
+    "bookName": {
+      "type": "string",
+      "count": 10,
+      "sample": "Genesis"
+    },
+    "bookIndex": {
+      "type": "number",
+      "count": 10,
+      "sample": 1
     },
     "audit": {
       "type": "object",
@@ -33,157 +48,142 @@
       "count": 10,
       "sample": "seed"
     },
-    "bibleId": {
+    "__v": {
       "type": "number",
       "count": 10,
-      "sample": 1001
-    },
-    "bookCode": {
-      "type": "string",
-      "count": 10,
-      "sample": "GEN"
-    },
-    "bookIndex": {
-      "type": "number",
-      "count": 10,
-      "sample": 1
-    },
-    "bookName": {
-      "type": "string",
-      "count": 10,
-      "sample": "Genesis"
+      "sample": 0
     }
   },
   "samples": [
     {
-      "_id": "69706881d6ddad8890e88110",
+      "_id": "69706880ab0956a7f727635f",
       "bookId": 10,
-      "__v": 0,
-      "audit": {
-        "createdAt": "2026-01-21T05:47:44.927Z",
-        "createdBy": "seed"
-      },
       "bibleId": 1001,
       "bookCode": "GEN",
+      "bookName": "Genesis",
       "bookIndex": 1,
-      "bookName": "Genesis"
-    },
-    {
-      "_id": "69706881d6ddad8890e88111",
-      "bookId": 20,
-      "__v": 0,
       "audit": {
         "createdAt": "2026-01-21T05:47:44.927Z",
         "createdBy": "seed"
       },
+      "__v": 0
+    },
+    {
+      "_id": "69706881ab0956a7f7276363",
+      "bookId": 20,
       "bibleId": 1001,
       "bookCode": "EXO",
+      "bookName": "Exodus",
       "bookIndex": 2,
-      "bookName": "Exodus"
-    },
-    {
-      "_id": "69706881d6ddad8890e88112",
-      "bookId": 30,
-      "__v": 0,
       "audit": {
         "createdAt": "2026-01-21T05:47:44.927Z",
         "createdBy": "seed"
       },
+      "__v": 0
+    },
+    {
+      "_id": "69706881ab0956a7f7276367",
+      "bookId": 30,
       "bibleId": 1001,
       "bookCode": "LEV",
+      "bookName": "Leviticus",
       "bookIndex": 3,
-      "bookName": "Leviticus"
-    },
-    {
-      "_id": "69706881d6ddad8890e88113",
-      "bookId": 40,
-      "__v": 0,
       "audit": {
         "createdAt": "2026-01-21T05:47:44.927Z",
         "createdBy": "seed"
       },
+      "__v": 0
+    },
+    {
+      "_id": "69706881ab0956a7f727636b",
+      "bookId": 40,
       "bibleId": 1001,
       "bookCode": "NUM",
+      "bookName": "Numbers",
       "bookIndex": 4,
-      "bookName": "Numbers"
-    },
-    {
-      "_id": "69706881d6ddad8890e88114",
-      "bookId": 50,
-      "__v": 0,
       "audit": {
         "createdAt": "2026-01-21T05:47:44.927Z",
         "createdBy": "seed"
       },
+      "__v": 0
+    },
+    {
+      "_id": "69706881ab0956a7f727636f",
+      "bookId": 50,
       "bibleId": 1001,
       "bookCode": "DEU",
+      "bookName": "Deuteronomy",
       "bookIndex": 5,
-      "bookName": "Deuteronomy"
-    },
-    {
-      "_id": "69706881d6ddad8890e88115",
-      "bookId": 60,
-      "__v": 0,
       "audit": {
         "createdAt": "2026-01-21T05:47:44.927Z",
         "createdBy": "seed"
       },
+      "__v": 0
+    },
+    {
+      "_id": "69706881ab0956a7f7276373",
+      "bookId": 60,
       "bibleId": 1001,
       "bookCode": "JOS",
+      "bookName": "Joshua",
       "bookIndex": 6,
-      "bookName": "Joshua"
-    },
-    {
-      "_id": "69706881d6ddad8890e88116",
-      "bookId": 70,
-      "__v": 0,
       "audit": {
         "createdAt": "2026-01-21T05:47:44.927Z",
         "createdBy": "seed"
       },
+      "__v": 0
+    },
+    {
+      "_id": "69706881ab0956a7f7276377",
+      "bookId": 70,
       "bibleId": 1001,
       "bookCode": "JDG",
+      "bookName": "Judges",
       "bookIndex": 7,
-      "bookName": "Judges"
-    },
-    {
-      "_id": "69706882d6ddad8890e88117",
-      "bookId": 80,
-      "__v": 0,
       "audit": {
         "createdAt": "2026-01-21T05:47:44.927Z",
         "createdBy": "seed"
       },
+      "__v": 0
+    },
+    {
+      "_id": "69706881ab0956a7f727637b",
+      "bookId": 80,
       "bibleId": 1001,
       "bookCode": "RUT",
+      "bookName": "Ruth",
       "bookIndex": 8,
-      "bookName": "Ruth"
-    },
-    {
-      "_id": "69706882d6ddad8890e88118",
-      "bookId": 90,
-      "__v": 0,
       "audit": {
         "createdAt": "2026-01-21T05:47:44.927Z",
         "createdBy": "seed"
       },
+      "__v": 0
+    },
+    {
+      "_id": "69706882ab0956a7f727637f",
+      "bookId": 90,
       "bibleId": 1001,
       "bookCode": "1SA",
+      "bookName": "1 Samuel",
       "bookIndex": 9,
-      "bookName": "1 Samuel"
-    },
-    {
-      "_id": "69706882d6ddad8890e88119",
-      "bookId": 100,
-      "__v": 0,
       "audit": {
         "createdAt": "2026-01-21T05:47:44.927Z",
         "createdBy": "seed"
       },
+      "__v": 0
+    },
+    {
+      "_id": "69706882ab0956a7f7276383",
+      "bookId": 100,
       "bibleId": 1001,
       "bookCode": "2SA",
+      "bookName": "2 Samuel",
       "bookIndex": 10,
-      "bookName": "2 Samuel"
+      "audit": {
+        "createdAt": "2026-01-21T05:47:44.927Z",
+        "createdBy": "seed"
+      },
+      "__v": 0
     }
   ],
   "validationErrors": []

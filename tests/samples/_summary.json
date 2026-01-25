@@ -71,86 +71,86 @@
   },
   {
     "collection": "transformProfiles",
-    "documentCount": 2,
-    "sampleSize": 2,
+    "documentCount": 4,
+    "sampleSize": 4,
     "fieldCount": 14,
     "validationErrorCount": 0
   },
   {
     "collection": "models",
-    "documentCount": 0,
-    "sampleSize": 0,
-    "fieldCount": 0,
+    "documentCount": 10,
+    "sampleSize": 5,
+    "fieldCount": 22,
     "validationErrorCount": 0
   },
   {
     "collection": "modelProfileMap",
-    "documentCount": 0,
-    "sampleSize": 0,
-    "fieldCount": 0,
+    "documentCount": 10,
+    "sampleSize": 5,
+    "fieldCount": 7,
     "validationErrorCount": 0
   },
   {
     "collection": "runs",
-    "documentCount": 0,
-    "sampleSize": 0,
-    "fieldCount": 0,
+    "documentCount": 314,
+    "sampleSize": 3,
+    "fieldCount": 22,
     "validationErrorCount": 0
   },
   {
     "collection": "runItems",
-    "documentCount": 0,
-    "sampleSize": 0,
-    "fieldCount": 0,
+    "documentCount": 314,
+    "sampleSize": 5,
+    "fieldCount": 9,
     "validationErrorCount": 0
   },
   {
     "collection": "llmRawResponses",
-    "documentCount": 0,
-    "sampleSize": 0,
-    "fieldCount": 0,
+    "documentCount": 325,
+    "sampleSize": 3,
+    "fieldCount": 21,
     "validationErrorCount": 0
   },
   {
     "collection": "llmVerseResults",
-    "documentCount": 0,
-    "sampleSize": 0,
-    "fieldCount": 0,
+    "documentCount": 9683,
+    "sampleSize": 5,
+    "fieldCount": 25,
     "validationErrorCount": 0
   },
   {
     "collection": "aggregationChapters",
-    "documentCount": 0,
-    "sampleSize": 0,
-    "fieldCount": 0,
+    "documentCount": 308,
+    "sampleSize": 3,
+    "fieldCount": 11,
     "validationErrorCount": 0
   },
   {
     "collection": "aggregationBooks",
-    "documentCount": 0,
-    "sampleSize": 0,
-    "fieldCount": 0,
+    "documentCount": 17,
+    "sampleSize": 3,
+    "fieldCount": 11,
     "validationErrorCount": 0
   },
   {
     "collection": "aggregationBibles",
-    "documentCount": 0,
-    "sampleSize": 0,
-    "fieldCount": 0,
+    "documentCount": 3,
+    "sampleSize": 3,
+    "fieldCount": 11,
     "validationErrorCount": 0
   },
   {
     "collection": "schemaValidatorRuns",
-    "documentCount": 4,
+    "documentCount": 3,
     "sampleSize": 2,
     "fieldCount": 11,
     "validationErrorCount": 0
   },
   {
     "collection": "appConfig",
-    "documentCount": 0,
-    "sampleSize": 0,
-    "fieldCount": 0,
+    "documentCount": 4,
+    "sampleSize": 4,
+    "fieldCount": 6,
     "validationErrorCount": 0
   }
 ]

@@ -1,0 +1,103 @@
+{
+  "collection": "aggregationChapters",
+  "documentCount": 308,
+  "sampleSize": 3,
+  "fieldAnalysis": {
+    "_id": {
+      "type": "ObjectId",
+      "count": 3,
+      "sample": "69752f26a88318b065d134d9"
+    },
+    "verseCount": {
+      "type": "number",
+      "count": 3,
+      "sample": 24
+    },
+    "matchCount": {
+      "type": "number",
+      "count": 3,
+      "sample": 13
+    },
+    "evaluatedAt": {
+      "type": "date",
+      "count": 3,
+      "sample": "2026-01-23T22:50:07.813Z"
+    },
+    "modelId": {
+      "type": "number",
+      "count": 3,
+      "sample": 2
+    },
+    "bibleId": {
+      "type": "number",
+      "count": 3,
+      "sample": 1001
+    },
+    "bookId": {
+      "type": "number",
+      "count": 3,
+      "sample": 10
+    },
+    "chapterId": {
+      "type": "number",
+      "count": 3,
+      "sample": 1007
+    },
+    "avgFidelity": {
+      "type": "number",
+      "count": 3,
+      "sample": 97.68
+    },
+    "perfectRate": {
+      "type": "number",
+      "count": 3,
+      "sample": 0.5417
+    },
+    "campaignTag": {
+      "type": "string",
+      "count": 2,
+      "sample": "Testing"
+    }
+  },
+  "samples": [
+    {
+      "_id": "69752f26a88318b065d134d9",
+      "verseCount": 24,
+      "matchCount": 13,
+      "evaluatedAt": "2026-01-23T22:50:07.813Z",
+      "modelId": 2,
+      "bibleId": 1001,
+      "bookId": 10,
+      "chapterId": 1007,
+      "avgFidelity": 97.68,
+      "perfectRate": 0.5417
+    },
+    {
+      "_id": "69752f26a88318b065d134da",
+      "verseCount": 27,
+      "matchCount": 23,
+      "evaluatedAt": "2026-01-24T18:47:56.679Z",
+      "campaignTag": "Testing",
+      "modelId": 10,
+      "bibleId": 1001,
+      "bookId": 10,
+      "chapterId": 1017,
+      "avgFidelity": 98.68,
+      "perfectRate": 0.8519
+    },
+    {
+      "_id": "69752f26a88318b065d134db",
+      "verseCount": 21,
+      "matchCount": 20,
+      "evaluatedAt": "2026-01-24T20:44:11.324Z",
+      "campaignTag": "Testing",
+      "modelId": 6,
+      "bibleId": 1001,
+      "bookId": 620,
+      "chapterId": 62005,
+      "avgFidelity": 99.96,
+      "perfectRate": 0.9524
+    }
+  ],
+  "validationErrors": []
+}

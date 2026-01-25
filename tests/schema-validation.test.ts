@@ -94,7 +94,7 @@ const COLLECTION_SPECS: CollectionSpec[] = [
     },
   },
   {
-    name: "rawChapters",
+    name: "canonicalRawChapters",
     fields: {
       _id: { type: "objectId", required: true },
       rawChapterId: { type: "number", required: true },
@@ -109,7 +109,7 @@ const COLLECTION_SPECS: CollectionSpec[] = [
     },
   },
   {
-    name: "chapters",
+    name: "canonicalChapters",
     fields: {
       _id: { type: "objectId", required: true },
       chapterId: { type: "number", required: true },
@@ -128,7 +128,7 @@ const COLLECTION_SPECS: CollectionSpec[] = [
     },
   },
   {
-    name: "verses",
+    name: "canonicalVerses",
     fields: {
       _id: { type: "objectId", required: true },
       verseId: { type: "number", required: true },
