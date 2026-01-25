@@ -1,0 +1,280 @@
+{
+  "collection": "llmVerseResults",
+  "documentCount": 9683,
+  "sampleSize": 5,
+  "fieldAnalysis": {
+    "_id": {
+      "type": "ObjectId",
+      "count": 5,
+      "sample": "6973f934a88318b065cf0ce3"
+    },
+    "modelId": {
+      "type": "number",
+      "count": 5,
+      "sample": 2
+    },
+    "runId": {
+      "type": "string",
+      "count": 5,
+      "sample": "9c72a774-8351-4b3f-80c1-363e400e4622"
+    },
+    "verseId": {
+      "type": "number",
+      "count": 5,
+      "sample": 1001001
+    },
+    "__v": {
+      "type": "number",
+      "count": 5,
+      "sample": 0
+    },
+    "audit": {
+      "type": "object",
+      "count": 5,
+      "sample": "[object]"
+    },
+    "audit.createdAt": {
+      "type": "date",
+      "count": 5,
+      "sample": "2026-01-23T22:39:50.513Z"
+    },
+    "audit.createdBy": {
+      "type": "string",
+      "count": 5,
+      "sample": "model_run"
+    },
+    "bibleId": {
+      "type": "number",
+      "count": 5,
+      "sample": 1001
+    },
+    "bookId": {
+      "type": "number",
+      "count": 5,
+      "sample": 10
+    },
+    "chapterId": {
+      "type": "number",
+      "count": 5,
+      "sample": 1001
+    },
+    "diff": {
+      "type": "object",
+      "count": 5,
+      "sample": "[object]"
+    },
+    "diff.substitutions": {
+      "type": "number",
+      "count": 5,
+      "sample": 0
+    },
+    "diff.omissions": {
+      "type": "number",
+      "count": 5,
+      "sample": 0
+    },
+    "diff.additions": {
+      "type": "number",
+      "count": 5,
+      "sample": 0
+    },
+    "diff.transpositions": {
+      "type": "number",
+      "count": 5,
+      "sample": 0
+    },
+    "evaluatedAt": {
+      "type": "date",
+      "count": 5,
+      "sample": "2026-01-23T22:39:50.513Z"
+    },
+    "fidelityScore": {
+      "type": "number",
+      "count": 5,
+      "sample": 100
+    },
+    "hashMatch": {
+      "type": "boolean",
+      "count": 5,
+      "sample": true
+    },
+    "hashProcessed": {
+      "type": "string",
+      "count": 5,
+      "sample": "6f785a86b2716dcc5a48caa0de944396ba871d5c7f3bf776993648335fcb2bb2"
+    },
+    "hashRaw": {
+      "type": "string",
+      "count": 5,
+      "sample": "6f785a86b2716dcc5a48caa0de944396ba871d5c7f3bf776993648335fcb2bb2"
+    },
+    "latencyMs": {
+      "type": "number",
+      "count": 5,
+      "sample": 4045
+    },
+    "responseProcessed": {
+      "type": "string",
+      "count": 5,
+      "sample": "In the beginning God created the heaven and the earth."
+    },
+    "responseRaw": {
+      "type": "string",
+      "count": 5,
+      "sample": "In the beginning God created the heaven and the earth."
+    },
+    "resultId": {
+      "type": "number",
+      "count": 5,
+      "sample": 1769208116142672
+    }
+  },
+  "samples": [
+    {
+      "_id": "6973f934a88318b065cf0ce3",
+      "modelId": 2,
+      "runId": "9c72a774-8351-4b3f-80c1-363e400e4622",
+      "verseId": 1001001,
+      "__v": 0,
+      "audit": {
+        "createdAt": "2026-01-23T22:39:50.513Z",
+        "createdBy": "model_run"
+      },
+      "bibleId": 1001,
+      "bookId": 10,
+      "chapterId": 1001,
+      "diff": {
+        "substitutions": 0,
+        "omissions": 0,
+        "additions": 0,
+        "transpositions": 0
+      },
+      "evaluatedAt": "2026-01-23T22:39:50.513Z",
+      "fidelityScore": 100,
+      "hashMatch": true,
+      "hashProcessed": "6f785a86b2716dcc5a48caa0de944396ba871d5c7f3bf776993648335fcb2bb2",
+      "hashRaw": "6f785a86b2716dcc5a48caa0de944396ba871d5c7f3bf776993648335fcb2bb2",
+      "latencyMs": 4045,
+      "responseProcessed": "In the beginning God created the heaven and the earth.",
+      "responseRaw": "In the beginning God created the heaven and the earth.",
+      "resultId": 1769208116142672
+    },
+    {
+      "_id": "6973f934a88318b065cf0ce4",
+      "runId": "9c72a774-8351-4b3f-80c1-363e400e4622",
+      "verseId": 1001002,
+      "modelId": 2,
+      "__v": 0,
+      "audit": {
+        "createdAt": "2026-01-23T22:39:50.513Z",
+        "createdBy": "model_run"
+      },
+      "bibleId": 1001,
+      "bookId": 10,
+      "chapterId": 1001,
+      "diff": {
+        "substitutions": 0,
+        "omissions": 0,
+        "additions": 0,
+        "transpositions": 0
+      },
+      "evaluatedAt": "2026-01-23T22:39:50.513Z",
+      "fidelityScore": 100,
+      "hashMatch": true,
+      "hashProcessed": "3164732a2a2f2fcb68d7dec5be737b18c66c8d743a98d34c8bb8eb866d822d4b",
+      "hashRaw": "3164732a2a2f2fcb68d7dec5be737b18c66c8d743a98d34c8bb8eb866d822d4b",
+      "latencyMs": 4045,
+      "responseProcessed": "And the earth was without form, and void; and darkness was upon the face of the deep. And the Spirit of God moved upon the face of the waters.",
+      "responseRaw": "And the earth was without form, and void; and darkness was upon the face of the deep. And the Spirit of God moved upon the face of the waters.",
+      "resultId": 1769208116201266
+    },
+    {
+      "_id": "6973f934a88318b065cf0ce5",
+      "modelId": 2,
+      "runId": "9c72a774-8351-4b3f-80c1-363e400e4622",
+      "verseId": 1001003,
+      "__v": 0,
+      "audit": {
+        "createdAt": "2026-01-23T22:39:50.513Z",
+        "createdBy": "model_run"
+      },
+      "bibleId": 1001,
+      "bookId": 10,
+      "chapterId": 1001,
+      "diff": {
+        "substitutions": 0,
+        "omissions": 0,
+        "additions": 0,
+        "transpositions": 0
+      },
+      "evaluatedAt": "2026-01-23T22:39:50.513Z",
+      "fidelityScore": 100,
+      "hashMatch": true,
+      "hashProcessed": "cb548ddda54d247e18490056cf4de91c26531b9cce58851ca16841ec4c28f3bb",
+      "hashRaw": "cb548ddda54d247e18490056cf4de91c26531b9cce58851ca16841ec4c28f3bb",
+      "latencyMs": 4045,
+      "responseProcessed": "And God said, Let there be light: and there was light.",
+      "responseRaw": "And God said, Let there be light: and there was light.",
+      "resultId": 1769208116257342
+    },
+    {
+      "_id": "6973f934a88318b065cf0ce6",
+      "modelId": 2,
+      "runId": "9c72a774-8351-4b3f-80c1-363e400e4622",
+      "verseId": 1001004,
+      "__v": 0,
+      "audit": {
+        "createdAt": "2026-01-23T22:39:50.513Z",
+        "createdBy": "model_run"
+      },
+      "bibleId": 1001,
+      "bookId": 10,
+      "chapterId": 1001,
+      "diff": {
+        "substitutions": 0,
+        "omissions": 0,
+        "additions": 0,
+        "transpositions": 0
+      },
+      "evaluatedAt": "2026-01-23T22:39:50.513Z",
+      "fidelityScore": 100,
+      "hashMatch": true,
+      "hashProcessed": "c7f4eaa2516c827656cee88fd3a1dd18f8854f601ba9931b7be38ebd27b4e3d9",
+      "hashRaw": "c7f4eaa2516c827656cee88fd3a1dd18f8854f601ba9931b7be38ebd27b4e3d9",
+      "latencyMs": 4045,
+      "responseProcessed": "And God saw the light, that it was good: and God divided the light from the darkness.",
+      "responseRaw": "And God saw the light, that it was good: and God divided the light from the darkness.",
+      "resultId": 1769208116479552
+    },
+    {
+      "_id": "6973f934a88318b065cf0ce7",
+      "runId": "9c72a774-8351-4b3f-80c1-363e400e4622",
+      "verseId": 1001005,
+      "modelId": 2,
+      "__v": 0,
+      "audit": {
+        "createdAt": "2026-01-23T22:39:50.513Z",
+        "createdBy": "model_run"
+      },
+      "bibleId": 1001,
+      "bookId": 10,
+      "chapterId": 1001,
+      "diff": {
+        "substitutions": 0,
+        "omissions": 0,
+        "additions": 0,
+        "transpositions": 0
+      },
+      "evaluatedAt": "2026-01-23T22:39:50.513Z",
+      "fidelityScore": 100,
+      "hashMatch": true,
+      "hashProcessed": "e7e654aa7e64c7804c0d80f68bd47f0fad0c7623a7d7ded5a2e67804186ce1fc",
+      "hashRaw": "e7e654aa7e64c7804c0d80f68bd47f0fad0c7623a7d7ded5a2e67804186ce1fc",
+      "latencyMs": 4045,
+      "responseProcessed": "And God called the light Day, and the darkness he called Night. And the evening and the morning were the first day.",
+      "responseRaw": "And God called the light Day, and the darkness he called Night. And the evening and the morning were the first day.",
+      "resultId": 1769208116529109
+    }
+  ],
+  "validationErrors": []
+}

@@ -1,0 +1,220 @@
+{
+  "collection": "dimChapters",
+  "documentCount": 1189,
+  "sampleSize": 10,
+  "fieldAnalysis": {
+    "_id": {
+      "type": "ObjectId",
+      "count": 10,
+      "sample": "69715d01def6595e71374182"
+    },
+    "chapterId": {
+      "type": "number",
+      "count": 10,
+      "sample": 1001
+    },
+    "bibleId": {
+      "type": "number",
+      "count": 10,
+      "sample": 1001
+    },
+    "bookId": {
+      "type": "number",
+      "count": 10,
+      "sample": 10
+    },
+    "chapterNumber": {
+      "type": "number",
+      "count": 10,
+      "sample": 1
+    },
+    "reference": {
+      "type": "string",
+      "count": 10,
+      "sample": "Genesis 1"
+    },
+    "chapterName": {
+      "type": "string",
+      "count": 10,
+      "sample": "The Creation"
+    },
+    "verseCount": {
+      "type": "number",
+      "count": 10,
+      "sample": 31
+    },
+    "audit": {
+      "type": "object",
+      "count": 10,
+      "sample": "[object]"
+    },
+    "audit.createdAt": {
+      "type": "date",
+      "count": 10,
+      "sample": "2026-01-21T23:10:57.736Z"
+    },
+    "audit.createdBy": {
+      "type": "string",
+      "count": 10,
+      "sample": "seed"
+    },
+    "__v": {
+      "type": "number",
+      "count": 10,
+      "sample": 0
+    }
+  },
+  "samples": [
+    {
+      "_id": "69715d01def6595e71374182",
+      "chapterId": 1001,
+      "bibleId": 1001,
+      "bookId": 10,
+      "chapterNumber": 1,
+      "reference": "Genesis 1",
+      "chapterName": "The Creation",
+      "verseCount": 31,
+      "audit": {
+        "createdAt": "2026-01-21T23:10:57.736Z",
+        "createdBy": "seed"
+      },
+      "__v": 0
+    },
+    {
+      "_id": "69715d01def6595e71374184",
+      "chapterId": 1002,
+      "bibleId": 1001,
+      "bookId": 10,
+      "chapterNumber": 2,
+      "reference": "Genesis 2",
+      "chapterName": "The Creation of Man and Woman",
+      "verseCount": 25,
+      "audit": {
+        "createdAt": "2026-01-21T23:10:57.736Z",
+        "createdBy": "seed"
+      },
+      "__v": 0
+    },
+    {
+      "_id": "69715d01def6595e71374186",
+      "chapterId": 1003,
+      "bibleId": 1001,
+      "bookId": 10,
+      "chapterNumber": 3,
+      "reference": "Genesis 3",
+      "chapterName": "The Fall of Man",
+      "verseCount": 24,
+      "audit": {
+        "createdAt": "2026-01-21T23:10:57.736Z",
+        "createdBy": "seed"
+      },
+      "__v": 0
+    },
+    {
+      "_id": "69715d01def6595e71374188",
+      "chapterId": 1004,
+      "bibleId": 1001,
+      "bookId": 10,
+      "chapterNumber": 4,
+      "reference": "Genesis 4",
+      "chapterName": "Cain and Abel",
+      "verseCount": 26,
+      "audit": {
+        "createdAt": "2026-01-21T23:10:57.736Z",
+        "createdBy": "seed"
+      },
+      "__v": 0
+    },
+    {
+      "_id": "69715d01def6595e7137418a",
+      "chapterId": 1005,
+      "bibleId": 1001,
+      "bookId": 10,
+      "chapterNumber": 5,
+      "reference": "Genesis 5",
+      "chapterName": "Descendants of Adam",
+      "verseCount": 32,
+      "audit": {
+        "createdAt": "2026-01-21T23:10:57.736Z",
+        "createdBy": "seed"
+      },
+      "__v": 0
+    },
+    {
+      "_id": "69715d02def6595e7137418c",
+      "chapterId": 1006,
+      "bibleId": 1001,
+      "bookId": 10,
+      "chapterNumber": 6,
+      "reference": "Genesis 6",
+      "chapterName": "The Corruption of Mankind",
+      "verseCount": 22,
+      "audit": {
+        "createdAt": "2026-01-21T23:10:57.736Z",
+        "createdBy": "seed"
+      },
+      "__v": 0
+    },
+    {
+      "_id": "69715d02def6595e7137418e",
+      "chapterId": 1007,
+      "bibleId": 1001,
+      "bookId": 10,
+      "chapterNumber": 7,
+      "reference": "Genesis 7",
+      "chapterName": "The Flood",
+      "verseCount": 24,
+      "audit": {
+        "createdAt": "2026-01-21T23:10:57.736Z",
+        "createdBy": "seed"
+      },
+      "__v": 0
+    },
+    {
+      "_id": "69715d02def6595e71374190",
+      "chapterId": 1008,
+      "bibleId": 1001,
+      "bookId": 10,
+      "chapterNumber": 8,
+      "reference": "Genesis 8",
+      "chapterName": "The Flood Subsides",
+      "verseCount": 22,
+      "audit": {
+        "createdAt": "2026-01-21T23:10:57.736Z",
+        "createdBy": "seed"
+      },
+      "__v": 0
+    },
+    {
+      "_id": "69715d02def6595e71374192",
+      "chapterId": 1009,
+      "bibleId": 1001,
+      "bookId": 10,
+      "chapterNumber": 9,
+      "reference": "Genesis 9",
+      "chapterName": "Covenant of the Rainbow",
+      "verseCount": 29,
+      "audit": {
+        "createdAt": "2026-01-21T23:10:57.736Z",
+        "createdBy": "seed"
+      },
+      "__v": 0
+    },
+    {
+      "_id": "69715d02def6595e71374194",
+      "chapterId": 1010,
+      "bibleId": 1001,
+      "bookId": 10,
+      "chapterNumber": 10,
+      "reference": "Genesis 10",
+      "chapterName": "Descendants of Noah",
+      "verseCount": 32,
+      "audit": {
+        "createdAt": "2026-01-21T23:10:57.736Z",
+        "createdBy": "seed"
+      },
+      "__v": 0
+    }
+  ],
+  "validationErrors": []
+}

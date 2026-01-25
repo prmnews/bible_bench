@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-01-20T03:17:51.432Z",
+  "timestamp": "2026-01-25T18:42:55.221Z",
   "totalChecks": 22,
   "passed": 22,
   "failed": 0,
@@ -8,15 +8,15 @@
     {
       "name": "Document Counts",
       "status": "pass",
-      "message": "dimBooks=66, rawChapters=1189, chapters=1189, verses=31102",
+      "message": "dimBooks=66, canonicalRawChapters=1189, canonicalChapters=1189, canonicalVerses=31102",
       "details": {
         "dimLanguages": 1,
         "dimBibles": 1,
         "dimBooks": 66,
-        "rawChapters": 1189,
-        "chapters": 1189,
-        "verses": 31102,
-        "transformProfiles": 2
+        "canonicalRawChapters": 1189,
+        "canonicalChapters": 1189,
+        "canonicalVerses": 31102,
+        "transformProfiles": 4
       }
     },
     {
@@ -105,7 +105,7 @@
       "message": "All verse references valid"
     },
     {
-      "name": "Raw ↔ Chapter Count",
+      "name": "CanonicalRaw ↔ CanonicalChapter Count",
       "status": "pass",
       "message": "Both have 1189 documents"
     },

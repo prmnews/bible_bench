@@ -1,0 +1,103 @@
+{
+  "collection": "aggregationBibles",
+  "documentCount": 3,
+  "sampleSize": 3,
+  "fieldAnalysis": {
+    "_id": {
+      "type": "ObjectId",
+      "count": 3,
+      "sample": "697634eea88318b065d391c9"
+    },
+    "bookCount": {
+      "type": "number",
+      "count": 3,
+      "sample": 8
+    },
+    "chapterCount": {
+      "type": "number",
+      "count": 3,
+      "sample": 129
+    },
+    "verseCount": {
+      "type": "number",
+      "count": 3,
+      "sample": 4044
+    },
+    "matchCount": {
+      "type": "number",
+      "count": 3,
+      "sample": 2751
+    },
+    "evaluatedAt": {
+      "type": "date",
+      "count": 3,
+      "sample": "2026-01-24T20:44:13.699Z"
+    },
+    "campaignTag": {
+      "type": "string",
+      "count": 2,
+      "sample": "Testing"
+    },
+    "modelId": {
+      "type": "number",
+      "count": 3,
+      "sample": 10
+    },
+    "bibleId": {
+      "type": "number",
+      "count": 3,
+      "sample": 1001
+    },
+    "avgFidelity": {
+      "type": "number",
+      "count": 3,
+      "sample": 93.76
+    },
+    "perfectRate": {
+      "type": "number",
+      "count": 3,
+      "sample": 0.6803
+    }
+  },
+  "samples": [
+    {
+      "_id": "697634eea88318b065d391c9",
+      "bookCount": 8,
+      "chapterCount": 129,
+      "verseCount": 4044,
+      "matchCount": 2751,
+      "evaluatedAt": "2026-01-24T20:44:13.699Z",
+      "campaignTag": "Testing",
+      "modelId": 10,
+      "bibleId": 1001,
+      "avgFidelity": 93.76,
+      "perfectRate": 0.6803
+    },
+    {
+      "_id": "697634eea88318b065d391ca",
+      "bookCount": 1,
+      "chapterCount": 50,
+      "verseCount": 1533,
+      "matchCount": 493,
+      "evaluatedAt": "2026-01-24T05:53:25.731Z",
+      "modelId": 2,
+      "bibleId": 1001,
+      "avgFidelity": 71.74,
+      "perfectRate": 0.3216
+    },
+    {
+      "_id": "697634eea88318b065d391cb",
+      "bookCount": 8,
+      "chapterCount": 129,
+      "verseCount": 4044,
+      "matchCount": 3533,
+      "evaluatedAt": "2026-01-24T20:44:11.960Z",
+      "campaignTag": "Testing",
+      "modelId": 6,
+      "bibleId": 1001,
+      "avgFidelity": 98.62,
+      "perfectRate": 0.8736
+    }
+  ],
+  "validationErrors": []
+}

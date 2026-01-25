@@ -175,7 +175,27 @@ export async function transformChapters(
   const chapterIds: number[] = [];
 
   for (const rawChapter of rawChapters) {
-    const textRaw = flattenAbsText(rawChapter.rawPayload);
+    // Build chapter text from verse boundaries so UI uses [n] formatting.
+    const verseParts: string[] = [];
+    const verses = extractAbsVerses(rawChapter.rawPayload);
+    for (const verse of verses) {
+      const verseNumber = parseVerseNumber(verse.verseId);
+      if (verseNumber === null) {
+        continue;
+      }
+
+      const verseText = verse.textRaw.replace(/^\s*\d+\s*/, "");
+      if (verseText.trim().length === 0) {
+        continue;
+      }
+
+      verseParts.push(`[${verseNumber}] ${verseText}`);
+    }
+
+    const textRaw =
+      verseParts.length > 0
+        ? verseParts.join(" ")
+        : flattenAbsText(rawChapter.rawPayload);
     const textProcessed = applyTransformProfile(textRaw, profile);
     const hashRaw = sha256(textRaw);
     const hashProcessed = sha256(textProcessed);

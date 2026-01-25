@@ -1,27 +1,37 @@
 {
-  "collection": "dimBibles",
+  "collection": "canonicalBibles",
   "documentCount": 1,
   "sampleSize": 1,
   "fieldAnalysis": {
     "_id": {
       "type": "ObjectId",
       "count": 1,
-      "sample": "69706880d6ddad8890e8810f"
+      "sample": "69706880ab0956a7f727635b"
     },
     "bibleId": {
       "type": "number",
       "count": 1,
       "sample": 1001
     },
-    "__v": {
-      "type": "number",
-      "count": 1,
-      "sample": 0
-    },
     "apiBibleId": {
       "type": "string",
       "count": 1,
       "sample": "de4e12af7f28f599-02"
+    },
+    "languageId": {
+      "type": "number",
+      "count": 1,
+      "sample": 1
+    },
+    "name": {
+      "type": "string",
+      "count": 1,
+      "sample": "King James Version"
+    },
+    "source": {
+      "type": "string",
+      "count": 1,
+      "sample": "ABS"
     },
     "audit": {
       "type": "object",
@@ -38,35 +48,25 @@
       "count": 1,
       "sample": "seed"
     },
-    "languageId": {
+    "__v": {
       "type": "number",
       "count": 1,
-      "sample": 1
-    },
-    "name": {
-      "type": "string",
-      "count": 1,
-      "sample": "King James Version"
-    },
-    "source": {
-      "type": "string",
-      "count": 1,
-      "sample": "ABS"
+      "sample": 0
     }
   },
   "samples": [
     {
-      "_id": "69706880d6ddad8890e8810f",
+      "_id": "69706880ab0956a7f727635b",
       "bibleId": 1001,
-      "__v": 0,
       "apiBibleId": "de4e12af7f28f599-02",
+      "languageId": 1,
+      "name": "King James Version",
+      "source": "ABS",
       "audit": {
         "createdAt": "2026-01-21T05:47:44.779Z",
         "createdBy": "seed"
       },
-      "languageId": 1,
-      "name": "King James Version",
-      "source": "ABS"
+      "__v": 0
     }
   ],
   "validationErrors": []

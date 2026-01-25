@@ -1,8 +1,325 @@
 {
   "collection": "runs",
-  "documentCount": 0,
-  "sampleSize": 0,
-  "fieldAnalysis": {},
-  "samples": [],
+  "documentCount": 314,
+  "sampleSize": 3,
+  "fieldAnalysis": {
+    "_id": {
+      "type": "ObjectId",
+      "count": 3,
+      "sample": "6973f8b6739491b54e86f715"
+    },
+    "runId": {
+      "type": "string",
+      "count": 3,
+      "sample": "9c72a774-8351-4b3f-80c1-363e400e4622"
+    },
+    "runType": {
+      "type": "string",
+      "count": 3,
+      "sample": "MODEL_CHAPTER"
+    },
+    "modelId": {
+      "type": "number",
+      "count": 3,
+      "sample": 2
+    },
+    "scope": {
+      "type": "string",
+      "count": 3,
+      "sample": "chapter"
+    },
+    "scopeIds": {
+      "type": "object",
+      "count": 3,
+      "sample": "[object]"
+    },
+    "scopeIds.chapterId": {
+      "type": "number",
+      "count": 3,
+      "sample": 1001
+    },
+    "status": {
+      "type": "string",
+      "count": 3,
+      "sample": "completed"
+    },
+    "startedAt": {
+      "type": "date",
+      "count": 3,
+      "sample": "2026-01-23T22:39:50.255Z"
+    },
+    "completedAt": {
+      "type": "date",
+      "count": 3,
+      "sample": "2026-01-23T22:41:58.167Z"
+    },
+    "metrics": {
+      "type": "object",
+      "count": 3,
+      "sample": "[object]"
+    },
+    "metrics.total": {
+      "type": "number",
+      "count": 3,
+      "sample": 1
+    },
+    "metrics.success": {
+      "type": "number",
+      "count": 3,
+      "sample": 1
+    },
+    "metrics.failed": {
+      "type": "number",
+      "count": 3,
+      "sample": 0
+    },
+    "metrics.totalChapters": {
+      "type": "number",
+      "count": 3,
+      "sample": 1
+    },
+    "metrics.durationMs": {
+      "type": "number",
+      "count": 3,
+      "sample": 127911
+    },
+    "logs": {
+      "type": "array",
+      "count": 3,
+      "sample": [
+        {
+          "stage": "run",
+          "level": "info",
+          "message": "Run 9c72a774-8351-4b3f-80c1-363e400e4622 started.",
+          "timestamp": "2026-01-23T22:39:50.255Z"
+        },
+        {
+          "stage": "resolve_targets",
+          "level": "info",
+          "message": "Resolved 1 targets.",
+          "timestamp": "2026-01-23T22:39:50.318Z"
+        },
+        {
+          "stage": "run_items",
+          "level": "info",
+          "message": "Created 1 run items.",
+          "timestamp": "2026-01-23T22:39:50.377Z"
+        },
+        {
+          "stage": "execute",
+          "level": "info",
+          "message": "Executed 1 items: 1 succeeded, 0 failed.",
+          "timestamp": "2026-01-23T22:41:58.166Z"
+        },
+        {
+          "stage": "complete",
+          "level": "info",
+          "message": "Run completed.",
+          "timestamp": "2026-01-23T22:41:58.166Z"
+        }
+      ]
+    },
+    "errorSummary": {
+      "type": "null",
+      "count": 3,
+      "sample": null
+    },
+    "audit": {
+      "type": "object",
+      "count": 3,
+      "sample": "[object]"
+    },
+    "audit.createdAt": {
+      "type": "date",
+      "count": 3,
+      "sample": "2026-01-23T22:39:50.255Z"
+    },
+    "audit.createdBy": {
+      "type": "string",
+      "count": 3,
+      "sample": "admin"
+    },
+    "__v": {
+      "type": "number",
+      "count": 3,
+      "sample": 0
+    }
+  },
+  "samples": [
+    {
+      "_id": "6973f8b6739491b54e86f715",
+      "runId": "9c72a774-8351-4b3f-80c1-363e400e4622",
+      "runType": "MODEL_CHAPTER",
+      "modelId": 2,
+      "scope": "chapter",
+      "scopeIds": {
+        "chapterId": 1001
+      },
+      "status": "completed",
+      "startedAt": "2026-01-23T22:39:50.255Z",
+      "completedAt": "2026-01-23T22:41:58.167Z",
+      "metrics": {
+        "total": 1,
+        "success": 1,
+        "failed": 0,
+        "totalChapters": 1,
+        "durationMs": 127911
+      },
+      "logs": [
+        {
+          "stage": "run",
+          "level": "info",
+          "message": "Run 9c72a774-8351-4b3f-80c1-363e400e4622 started.",
+          "timestamp": "2026-01-23T22:39:50.255Z"
+        },
+        {
+          "stage": "resolve_targets",
+          "level": "info",
+          "message": "Resolved 1 targets.",
+          "timestamp": "2026-01-23T22:39:50.318Z"
+        },
+        {
+          "stage": "run_items",
+          "level": "info",
+          "message": "Created 1 run items.",
+          "timestamp": "2026-01-23T22:39:50.377Z"
+        },
+        {
+          "stage": "execute",
+          "level": "info",
+          "message": "Executed 1 items: 1 succeeded, 0 failed.",
+          "timestamp": "2026-01-23T22:41:58.166Z"
+        },
+        {
+          "stage": "complete",
+          "level": "info",
+          "message": "Run completed.",
+          "timestamp": "2026-01-23T22:41:58.166Z"
+        }
+      ],
+      "errorSummary": null,
+      "audit": {
+        "createdAt": "2026-01-23T22:39:50.255Z",
+        "createdBy": "admin"
+      },
+      "__v": 0
+    },
+    {
+      "_id": "6973f936739491b54e86f744",
+      "runId": "db780559-6b2c-47a8-a84b-6c2c8c6e304c",
+      "runType": "MODEL_CHAPTER",
+      "modelId": 2,
+      "scope": "chapter",
+      "scopeIds": {
+        "chapterId": 1002
+      },
+      "status": "completed",
+      "startedAt": "2026-01-23T22:41:58.321Z",
+      "completedAt": "2026-01-23T22:43:33.639Z",
+      "metrics": {
+        "total": 1,
+        "success": 1,
+        "failed": 0,
+        "totalChapters": 1,
+        "durationMs": 95318
+      },
+      "logs": [
+        {
+          "stage": "run",
+          "level": "info",
+          "message": "Run db780559-6b2c-47a8-a84b-6c2c8c6e304c started.",
+          "timestamp": "2026-01-23T22:41:58.321Z"
+        },
+        {
+          "stage": "resolve_targets",
+          "level": "info",
+          "message": "Resolved 1 targets.",
+          "timestamp": "2026-01-23T22:41:58.381Z"
+        },
+        {
+          "stage": "run_items",
+          "level": "info",
+          "message": "Created 1 run items.",
+          "timestamp": "2026-01-23T22:41:58.437Z"
+        },
+        {
+          "stage": "execute",
+          "level": "info",
+          "message": "Executed 1 items: 1 succeeded, 0 failed.",
+          "timestamp": "2026-01-23T22:43:33.639Z"
+        },
+        {
+          "stage": "complete",
+          "level": "info",
+          "message": "Run completed.",
+          "timestamp": "2026-01-23T22:43:33.639Z"
+        }
+      ],
+      "errorSummary": null,
+      "audit": {
+        "createdAt": "2026-01-23T22:41:58.321Z",
+        "createdBy": "admin"
+      },
+      "__v": 0
+    },
+    {
+      "_id": "6973f995739491b54e86f76d",
+      "runId": "7342ed17-8d86-4e50-b725-a3ec1745ef23",
+      "runType": "MODEL_CHAPTER",
+      "modelId": 2,
+      "scope": "chapter",
+      "scopeIds": {
+        "chapterId": 1003
+      },
+      "status": "completed",
+      "startedAt": "2026-01-23T22:43:33.818Z",
+      "completedAt": "2026-01-23T22:45:28.489Z",
+      "metrics": {
+        "total": 1,
+        "success": 1,
+        "failed": 0,
+        "totalChapters": 1,
+        "durationMs": 114671
+      },
+      "logs": [
+        {
+          "stage": "run",
+          "level": "info",
+          "message": "Run 7342ed17-8d86-4e50-b725-a3ec1745ef23 started.",
+          "timestamp": "2026-01-23T22:43:33.818Z"
+        },
+        {
+          "stage": "resolve_targets",
+          "level": "info",
+          "message": "Resolved 1 targets.",
+          "timestamp": "2026-01-23T22:43:33.890Z"
+        },
+        {
+          "stage": "run_items",
+          "level": "info",
+          "message": "Created 1 run items.",
+          "timestamp": "2026-01-23T22:43:33.978Z"
+        },
+        {
+          "stage": "execute",
+          "level": "info",
+          "message": "Executed 1 items: 1 succeeded, 0 failed.",
+          "timestamp": "2026-01-23T22:45:28.489Z"
+        },
+        {
+          "stage": "complete",
+          "level": "info",
+          "message": "Run completed.",
+          "timestamp": "2026-01-23T22:45:28.489Z"
+        }
+      ],
+      "errorSummary": null,
+      "audit": {
+        "createdAt": "2026-01-23T22:43:33.818Z",
+        "createdBy": "admin"
+      },
+      "__v": 0
+    }
+  ],
   "validationErrors": []
 }

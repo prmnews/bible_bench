@@ -1,8 +1,72 @@
 {
   "collection": "appConfig",
-  "documentCount": 0,
-  "sampleSize": 0,
-  "fieldAnalysis": {},
-  "samples": [],
+  "documentCount": 4,
+  "sampleSize": 4,
+  "fieldAnalysis": {
+    "_id": {
+      "type": "ObjectId",
+      "count": 4,
+      "sample": "697044aad6ddad8890e87e9c"
+    },
+    "key": {
+      "type": "string",
+      "count": 4,
+      "sample": "SHOW_LATEST_ONLY"
+    },
+    "__v": {
+      "type": "number",
+      "count": 4,
+      "sample": 0
+    },
+    "modifiedAt": {
+      "type": "date",
+      "count": 4,
+      "sample": "2026-01-21T03:14:50.300Z"
+    },
+    "modifiedBy": {
+      "type": "string",
+      "count": 4,
+      "sample": "admin"
+    },
+    "value": {
+      "type": "string",
+      "count": 4,
+      "sample": "1"
+    }
+  },
+  "samples": [
+    {
+      "_id": "697044aad6ddad8890e87e9c",
+      "key": "SHOW_LATEST_ONLY",
+      "__v": 0,
+      "modifiedAt": "2026-01-21T03:14:50.300Z",
+      "modifiedBy": "admin",
+      "value": "1"
+    },
+    {
+      "_id": "6974d535a88318b065d05be6",
+      "key": "SCORE_PASS",
+      "__v": 0,
+      "modifiedAt": "2026-01-24T14:22:04.910Z",
+      "modifiedBy": "admin",
+      "value": "100"
+    },
+    {
+      "_id": "6974d55ba88318b065d05bef",
+      "key": "SCORE_FAIL",
+      "__v": 0,
+      "modifiedAt": "2026-01-24T14:21:15.977Z",
+      "modifiedBy": "admin",
+      "value": "94"
+    },
+    {
+      "_id": "6974d5aba88318b065d05bfd",
+      "key": "SCORE_WARNING",
+      "__v": 0,
+      "modifiedAt": "2026-01-24T14:22:35.806Z",
+      "modifiedBy": "admin",
+      "value": "95"
+    }
+  ],
   "validationErrors": []
 }
