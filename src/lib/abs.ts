@@ -58,6 +58,13 @@ export function flattenAbsText(payload: unknown) {
   return parts.join("");
 }
 
+export function flattenAbsTextWithBrackets(payload: unknown): string {
+  const verses = extractAbsVerses(payload);
+  return verses
+    .map((v) => `[${v.verseId}] ${v.textRaw}`)
+    .join(" ");
+}
+
 export function extractAbsVerses(payload: unknown): AbsVerse[] {
   if (!isRecord(payload)) {
     return [];

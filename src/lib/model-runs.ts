@@ -79,6 +79,8 @@ type StartRunParams = {
   createdBy?: string;
   limit?: number;
   skip?: number;
+  /** If true, execute items in background and return immediately with runId */
+  executeAsync?: boolean;
 };
 
 function createResultId() {
@@ -658,6 +660,103 @@ export async function startModelRun(params: StartRunParams): Promise<RunResult> 
 
     await createRunItems(runId, targetType, targetIds);
     log("run_items", "info", `Created ${targetIds.length} run items.`);
+
+    // If async execution requested, fire-and-forget and return immediately
+    if (params.executeAsync) {
+      // Launch execution in background (fire-and-forget)
+      executeRunItems({
+        campaignTag: params.campaignTag,
+        runId,
+        modelId: params.modelId,
+        targetType,
+        targetIds,
+      })
+        .then(async ({ success, failed, cancelled, lastError, lastErrorAt }) => {
+          const status: RunStatus = cancelled ? "cancelled" : failed > 0 ? "failed" : "completed";
+          const durationMs = Date.now() - startedAt.getTime();
+          const metrics = buildMetrics(targetType, targetIds.length, success, failed, durationMs);
+          const errorSummary: RunErrorSummary | null =
+            failed > 0
+              ? {
+                  failedCount: failed,
+                  lastError: lastError ?? null,
+                  lastErrorAt: lastErrorAt ?? null,
+                }
+              : null;
+
+          log(
+            "execute",
+            failed > 0 ? "error" : "info",
+            `Executed ${success + failed} of ${targetIds.length} items: ${success} succeeded, ${failed} failed.`
+          );
+          if (cancelled) {
+            log("execute", "warn", "Run was cancelled by user request.");
+          }
+          if (failed > 0 && lastError) {
+            log("execute", "error", `Last error: ${lastError}`);
+          }
+          log("complete", status === "completed" ? "info" : status === "cancelled" ? "warn" : "error", `Run ${status}.`);
+
+          await RunModel.updateOne(
+            { runId },
+            {
+              $set: {
+                status,
+                completedAt: new Date(),
+                metrics,
+                logs,
+                errorSummary,
+              },
+            }
+          );
+
+          // Auto-trigger aggregations on successful completion (no failures)
+          if (failed === 0) {
+            try {
+              await recomputeAllAggregatesBulk();
+            } catch {
+              // Silently ignore aggregation errors in background
+            }
+          }
+        })
+        .catch(async (error) => {
+          // Handle background execution errors
+          const message = error instanceof Error ? error.message : "Run failed.";
+          const durationMs = Date.now() - startedAt.getTime();
+          log("run", "error", message);
+          log("complete", "error", "Run failed.");
+          const errorSummary: RunErrorSummary = {
+            failedCount: 0,
+            lastError: message,
+            lastErrorAt: new Date(),
+          };
+          await RunModel.updateOne(
+            { runId },
+            {
+              $set: {
+                status: "failed",
+                completedAt: new Date(),
+                metrics: { total: targetIds.length, success: 0, failed: 0, durationMs },
+                logs,
+                errorSummary,
+              },
+            }
+          );
+        });
+
+      // Return immediately with running status
+      return {
+        ok: true,
+        data: {
+          runId,
+          runType: params.runType,
+          status: "running" as RunStatus,
+          metrics: { total: targetIds.length, success: 0, failed: 0 },
+        },
+      };
+    }
+
+    // Synchronous execution (original behavior)
     const { success, failed, cancelled, lastError, lastErrorAt } = await executeRunItems({
       campaignTag: params.campaignTag,
       runId,

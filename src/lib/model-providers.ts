@@ -131,9 +131,9 @@ function extractText(parsed: ParsedResponse | null, targetType: "chapter" | "ver
     return null;
   }
 
-  // Join all verse texts with space
+  // Join all verse texts with bracketed verse numbers
   return chapter.verses
-    .map((v) => v.verseText?.trim())
+    .map((v) => `[${v.verseNumber}] ${v.verseText?.trim()}`)
     .filter((t) => t)
     .join(" ");
 }
