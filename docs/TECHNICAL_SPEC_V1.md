@@ -120,6 +120,11 @@ MODEL-PARSE-001 Model parse failed
 - Diff size and fidelity score distribution.
 
 ## 16. Security Notes
-- API keys are stored encrypted in models collection.
+- API keys are sourced from environment variables (OPENAI_API_KEY, ANTHROPIC_API_KEY, GEMINI_API_KEY) and are not stored in MongoDB or returned by admin APIs.
 - No public access to admin endpoints in production.
+
+## 17. Data Refresh Guidance
+- Canonical formatting changes can be validated via `scripts/rerun-canonical-etl.ts` (use `--dry-run` first).
+- LLM output format changes require reprocessing model runs; existing `llm` results will not update automatically.
+- Truncating canonical or llm collections is acceptable for clean validation but will erase audit history; prefer targeted reruns when possible.
 

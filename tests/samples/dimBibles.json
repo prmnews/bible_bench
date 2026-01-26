@@ -6,7 +6,7 @@
     "_id": {
       "type": "ObjectId",
       "count": 1,
-      "sample": "69706880d6ddad8890e8810f"
+      "sample": "6976a427a88318b065d61019"
     },
     "bibleId": {
       "type": "number",
@@ -31,7 +31,7 @@
     "audit.createdAt": {
       "type": "date",
       "count": 1,
-      "sample": "2026-01-21T05:47:44.779Z"
+      "sample": "2026-01-25T23:15:51.449Z"
     },
     "audit.createdBy": {
       "type": "string",
@@ -56,12 +56,12 @@
   },
   "samples": [
     {
-      "_id": "69706880d6ddad8890e8810f",
+      "_id": "6976a427a88318b065d61019",
       "bibleId": 1001,
       "__v": 0,
       "apiBibleId": "de4e12af7f28f599-02",
       "audit": {
-        "createdAt": "2026-01-21T05:47:44.779Z",
+        "createdAt": "2026-01-25T23:15:51.449Z",
         "createdBy": "seed"
       },
       "languageId": 1,

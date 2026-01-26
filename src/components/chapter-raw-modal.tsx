@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Clock,
   Copy,
@@ -9,6 +9,7 @@ import {
   Code,
   ArrowsLeftRight,
 } from "@phosphor-icons/react";
+import { diffWords } from "diff";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -62,8 +63,8 @@ type ChapterRawModalProps = {
   modelId?: number;
 };
 
-type CanonicalTabType = "raw" | "processed" | "sourceJson";
-type LlmTabType = "raw" | "extracted";
+type CanonicalTabType = "processed" | "sourceJson";
+type LlmTabType = "processed" | "sourceJson";
 
 // ============================================================================
 // Copy Button Component
@@ -168,6 +169,61 @@ function TextPanel({
 }
 
 // ============================================================================
+// Diff Panel Component
+// ============================================================================
+
+function DiffPanel({ canonical, llm }: { canonical: string; llm: string }) {
+  const changes = useMemo(() => diffWords(canonical, llm), [canonical, llm]);
+
+  return (
+    <div className="grid grid-cols-2 gap-4">
+      <div className="rounded-lg border border-border bg-muted/30 p-3">
+        <div className="mb-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+          Canonical
+        </div>
+        <p className="text-sm leading-relaxed">
+          {changes.map((change, idx) => {
+            if ((change as { added?: boolean }).added) return null;
+            if ((change as { removed?: boolean }).removed) {
+              return (
+                <span
+                  key={idx}
+                  className="bg-red-500/20 text-red-700 dark:text-red-300 px-0.5 rounded"
+                >
+                  {change.value}
+                </span>
+              );
+            }
+            return <span key={idx}>{change.value}</span>;
+          })}
+        </p>
+      </div>
+      <div className="rounded-lg border border-border bg-muted/30 p-3">
+        <div className="mb-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+          LLM Output
+        </div>
+        <p className="text-sm leading-relaxed">
+          {changes.map((change, idx) => {
+            if ((change as { removed?: boolean }).removed) return null;
+            if ((change as { added?: boolean }).added) {
+              return (
+                <span
+                  key={idx}
+                  className="bg-green-500/20 text-green-700 dark:text-green-300 px-0.5 rounded"
+                >
+                  {change.value}
+                </span>
+              );
+            }
+            return <span key={idx}>{change.value}</span>;
+          })}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================================
 // Main Modal Component
 // ============================================================================
 
@@ -180,8 +236,9 @@ export function ChapterRawModal({
   const [data, setData] = useState<ChapterRawData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [canonicalTab, setCanonicalTab] = useState<CanonicalTabType>("raw");
-  const [llmTab, setLlmTab] = useState<LlmTabType>("raw");
+  const [canonicalTab, setCanonicalTab] = useState<CanonicalTabType>("processed");
+  const [llmTab, setLlmTab] = useState<LlmTabType>("processed");
+  const [showDiff, setShowDiff] = useState(false);
 
   // Fetch data when modal opens
   useEffect(() => {
@@ -219,8 +276,6 @@ export function ChapterRawModal({
   const getCanonicalText = () => {
     if (!data) return "";
     switch (canonicalTab) {
-      case "raw":
-        return data.canonical.textRaw;
       case "processed":
         return data.canonical.textProcessed;
       case "sourceJson":
@@ -232,12 +287,30 @@ export function ChapterRawModal({
   const getLlmText = () => {
     if (!data?.llmResponse) return "No LLM response available";
     switch (llmTab) {
-      case "raw":
-        return data.llmResponse.responseRaw;
-      case "extracted":
+      case "processed":
         return data.llmResponse.extractedText ?? "No extracted text";
+      case "sourceJson":
+        return data.llmResponse.responseRaw;
     }
   };
+
+  const diffActive = showDiff && canonicalTab === "processed" && llmTab === "processed";
+
+  const handleToggleDiff = () => {
+    if (canonicalTab !== "processed") {
+      setCanonicalTab("processed");
+    }
+    if (llmTab !== "processed") {
+      setLlmTab("processed");
+    }
+    setShowDiff((prev) => !prev);
+  };
+
+  useEffect(() => {
+    if (showDiff && (canonicalTab !== "processed" || llmTab !== "processed")) {
+      setShowDiff(false);
+    }
+  }, [showDiff, canonicalTab, llmTab]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -271,24 +344,39 @@ export function ChapterRawModal({
             {/* Metadata Row */}
             {data.llmResponse && (
               <div className="shrink-0 flex flex-wrap items-center gap-4 text-xs text-muted-foreground border-b border-border pb-3">
-                <div className="flex items-center gap-1.5">
-                  <span className="font-medium">Model:</span>
-                  <span className="text-foreground">
-                    {data.llmResponse.modelName}
-                  </span>
-                </div>
-                {data.llmResponse.latencyMs && (
+                <div className="flex flex-wrap items-center gap-4">
                   <div className="flex items-center gap-1.5">
-                    <Clock className="h-3 w-3" />
-                    <span>{data.llmResponse.latencyMs}ms</span>
+                    <span className="font-medium">Model:</span>
+                    <span className="text-foreground">
+                      {data.llmResponse.modelName}
+                    </span>
                   </div>
-                )}
-                <div className="flex items-center gap-1.5">
+                  {data.llmResponse.latencyMs && (
+                    <div className="flex items-center gap-1.5">
+                      <Clock className="h-3 w-3" />
+                      <span>{data.llmResponse.latencyMs}ms</span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex-1 flex justify-center">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleToggleDiff}
+                    className="gap-2"
+                  >
+                    {showDiff ? "Hide Diff" : "Show Diff"}
+                  </Button>
+                </div>
+
+                <div className="flex items-center gap-1.5 ml-auto">
                   <span className="font-medium">Evaluated:</span>
                   <span>
                     {new Date(data.llmResponse.evaluatedAt).toLocaleString()}
                   </span>
                 </div>
+
                 {data.llmResponse.parseError && (
                   <div className="text-amber-500">
                     Parse Error: {data.llmResponse.parseError}
@@ -345,12 +433,6 @@ export function ChapterRawModal({
                   </div>
                   <div className="flex items-center gap-1 rounded-md border border-border p-0.5">
                     <TabButton
-                      active={canonicalTab === "raw"}
-                      onClick={() => setCanonicalTab("raw")}
-                    >
-                      Raw
-                    </TabButton>
-                    <TabButton
                       active={canonicalTab === "processed"}
                       onClick={() => setCanonicalTab("processed")}
                     >
@@ -365,17 +447,17 @@ export function ChapterRawModal({
                   </div>
                 </div>
                 <div className="flex-1 min-h-0">
-                  <TextPanel
-                    title={
-                      canonicalTab === "raw"
-                        ? "Raw Text (from ABS JSON)"
-                        : canonicalTab === "processed"
+                  {!diffActive && (
+                    <TextPanel
+                      title={
+                        canonicalTab === "processed"
                           ? "Processed Text (after transforms)"
                           : "Source JSON (ABS API Payload)"
-                    }
-                    text={getCanonicalText()}
-                    isJson={canonicalTab === "sourceJson"}
-                  />
+                      }
+                      text={getCanonicalText()}
+                      isJson={canonicalTab === "sourceJson"}
+                    />
+                  )}
                 </div>
               </div>
 
@@ -395,31 +477,42 @@ export function ChapterRawModal({
                   </div>
                   <div className="flex items-center gap-1 rounded-md border border-border p-0.5">
                     <TabButton
-                      active={llmTab === "raw"}
-                      onClick={() => setLlmTab("raw")}
+                      active={llmTab === "processed"}
+                      onClick={() => setLlmTab("processed")}
                     >
-                      Raw
+                      Processed
                     </TabButton>
                     <TabButton
-                      active={llmTab === "extracted"}
-                      onClick={() => setLlmTab("extracted")}
+                      active={llmTab === "sourceJson"}
+                      onClick={() => setLlmTab("sourceJson")}
                     >
-                      Extracted
+                      Source JSON
                     </TabButton>
                   </div>
                 </div>
                 <div className="flex-1 min-h-0">
-                  <TextPanel
-                    title={
-                      llmTab === "raw"
-                        ? "Raw Response (from model)"
-                        : "Extracted Text (parsed from response)"
-                    }
-                    text={getLlmText()}
-                    isJson={llmTab === "raw"}
-                  />
+                  {!diffActive && (
+                    <TextPanel
+                      title={
+                        llmTab === "processed"
+                          ? "Processed Text (parsed from response)"
+                          : "Source JSON (from model)"
+                      }
+                      text={getLlmText()}
+                      isJson={llmTab === "sourceJson"}
+                    />
+                  )}
                 </div>
               </div>
+
+              {diffActive && (
+                <div className="col-span-2">
+                  <DiffPanel
+                    canonical={data.canonical.textProcessed}
+                    llm={data.llmResponse?.extractedText ?? ""}
+                  />
+                </div>
+              )}
             </div>
           </div>
         )}

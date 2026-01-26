@@ -6,7 +6,7 @@
     "_id": {
       "type": "ObjectId",
       "count": 1,
-      "sample": "69706880ab0956a7f7276357"
+      "sample": "6976a42784607fe14a30d430"
     },
     "languageId": {
       "type": "number",
@@ -31,7 +31,7 @@
     "audit.createdAt": {
       "type": "date",
       "count": 1,
-      "sample": "2026-01-21T05:47:44.617Z"
+      "sample": "2026-01-25T23:15:51.261Z"
     },
     "audit.createdBy": {
       "type": "string",
@@ -46,12 +46,12 @@
   },
   "samples": [
     {
-      "_id": "69706880ab0956a7f7276357",
+      "_id": "6976a42784607fe14a30d430",
       "languageId": 1,
       "isoCode": "en",
       "name": "English",
       "audit": {
-        "createdAt": "2026-01-21T05:47:44.617Z",
+        "createdAt": "2026-01-25T23:15:51.261Z",
         "createdBy": "seed"
       },
       "__v": 0

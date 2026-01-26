@@ -6,7 +6,7 @@
     "_id": {
       "type": "ObjectId",
       "count": 5,
-      "sample": "69766346a88318b065d58dcc"
+      "sample": "6976a4aba88318b065d61503"
     },
     "chapterId": {
       "type": "number",
@@ -26,7 +26,7 @@
     "audit.createdAt": {
       "type": "date",
       "count": 5,
-      "sample": "2026-01-25T18:39:02.206Z"
+      "sample": "2026-01-25T23:27:15.183Z"
     },
     "audit.createdBy": {
       "type": "string",
@@ -81,12 +81,12 @@
     "etlControl.lastProcessedAt": {
       "type": "date",
       "count": 5,
-      "sample": "2026-01-25T18:39:02.206Z"
+      "sample": "2026-01-25T23:27:15.183Z"
     },
     "etlControl.batchId": {
-      "type": "string",
+      "type": "null",
       "count": 5,
-      "sample": "rerun-canonical-etl-1769366334481"
+      "sample": null
     },
     "hashProcessed": {
       "type": "string",
@@ -126,11 +126,11 @@
   },
   "samples": [
     {
-      "_id": "69766346a88318b065d58dcc",
+      "_id": "6976a4aba88318b065d61503",
       "chapterId": 1001,
       "__v": 0,
       "audit": {
-        "createdAt": "2026-01-25T18:39:02.206Z",
+        "createdAt": "2026-01-25T23:27:15.183Z",
         "createdBy": "chapter_transform"
       },
       "bibleId": 1001,
@@ -142,8 +142,8 @@
         "lockedBy": null,
         "lockedAt": null,
         "lastProcessedBy": "chapter_transform",
-        "lastProcessedAt": "2026-01-25T18:39:02.206Z",
-        "batchId": "rerun-canonical-etl-1769366334481"
+        "lastProcessedAt": "2026-01-25T23:27:15.183Z",
+        "batchId": null
       },
       "hashProcessed": "295b7987d7403653d01c0bf41890deba964a84d9a9d7199e44a6a261ca18ceb5",
       "hashRaw": "1e40a0413193ccf69618a85b8ed6c9bfefa299fc74c6ae2fd12ed408b53184e2",
@@ -154,11 +154,11 @@
       "transformProfileId": 1
     },
     {
-      "_id": "69766346a88318b065d58dcd",
+      "_id": "6976a4aba88318b065d61504",
       "chapterId": 1002,
       "__v": 0,
       "audit": {
-        "createdAt": "2026-01-25T18:39:02.206Z",
+        "createdAt": "2026-01-25T23:27:15.183Z",
         "createdBy": "chapter_transform"
       },
       "bibleId": 1001,
@@ -170,8 +170,8 @@
         "lockedBy": null,
         "lockedAt": null,
         "lastProcessedBy": "chapter_transform",
-        "lastProcessedAt": "2026-01-25T18:39:02.206Z",
-        "batchId": "rerun-canonical-etl-1769366334481"
+        "lastProcessedAt": "2026-01-25T23:27:15.183Z",
+        "batchId": null
       },
       "hashProcessed": "a1634c473489646e32509bcb3d2ea04a7bca96fd78442be560d90cbf2a5de0de",
       "hashRaw": "a77117eaf8ccc8f2a1289a51bb5597a1aed0080a8eac3f5ee0301d04f55999fa",
@@ -182,11 +182,11 @@
       "transformProfileId": 1
     },
     {
-      "_id": "69766346a88318b065d58dce",
+      "_id": "6976a4aba88318b065d61505",
       "chapterId": 1003,
       "__v": 0,
       "audit": {
-        "createdAt": "2026-01-25T18:39:02.206Z",
+        "createdAt": "2026-01-25T23:27:15.183Z",
         "createdBy": "chapter_transform"
       },
       "bibleId": 1001,
@@ -198,8 +198,8 @@
         "lockedBy": null,
         "lockedAt": null,
         "lastProcessedBy": "chapter_transform",
-        "lastProcessedAt": "2026-01-25T18:39:02.206Z",
-        "batchId": "rerun-canonical-etl-1769366334481"
+        "lastProcessedAt": "2026-01-25T23:27:15.183Z",
+        "batchId": null
       },
       "hashProcessed": "31e408f9252c48d9a82c76233082661a8ad6659b616c5530ddf04b7d46a1daa1",
       "hashRaw": "30b939b6e231ad2e542f6ea60355824d284700de02b91565ea69c1e945553219",
@@ -210,11 +210,11 @@
       "transformProfileId": 1
     },
     {
-      "_id": "69766346a88318b065d58dcf",
+      "_id": "6976a4aba88318b065d61506",
       "chapterId": 1004,
       "__v": 0,
       "audit": {
-        "createdAt": "2026-01-25T18:39:02.206Z",
+        "createdAt": "2026-01-25T23:27:15.183Z",
         "createdBy": "chapter_transform"
       },
       "bibleId": 1001,
@@ -226,8 +226,8 @@
         "lockedBy": null,
         "lockedAt": null,
         "lastProcessedBy": "chapter_transform",
-        "lastProcessedAt": "2026-01-25T18:39:02.206Z",
-        "batchId": "rerun-canonical-etl-1769366334481"
+        "lastProcessedAt": "2026-01-25T23:27:15.183Z",
+        "batchId": null
       },
       "hashProcessed": "525b37318b0eaf7b327511a197e149fd4a3d227412f7674b009b4e3758552da2",
       "hashRaw": "ad76ef6267e58833c4f2fcfefab888b8f78b4c16fc2ad89257e9be564693247e",
@@ -238,11 +238,11 @@
       "transformProfileId": 1
     },
     {
-      "_id": "69766346a88318b065d58dd0",
+      "_id": "6976a4aba88318b065d61507",
       "chapterId": 1005,
       "__v": 0,
       "audit": {
-        "createdAt": "2026-01-25T18:39:02.206Z",
+        "createdAt": "2026-01-25T23:27:15.183Z",
         "createdBy": "chapter_transform"
       },
       "bibleId": 1001,
@@ -254,8 +254,8 @@
         "lockedBy": null,
         "lockedAt": null,
         "lastProcessedBy": "chapter_transform",
-        "lastProcessedAt": "2026-01-25T18:39:02.206Z",
-        "batchId": "rerun-canonical-etl-1769366334481"
+        "lastProcessedAt": "2026-01-25T23:27:15.183Z",
+        "batchId": null
       },
       "hashProcessed": "92cd906b54cbd0feab02e59553d9cb7f47156f54dafea1c344d07ae8d0819fd8",
       "hashRaw": "10a5f77ecbc4c8fe1f146d454276dbda865d2a71f27ed06506b598576d47b9c7",

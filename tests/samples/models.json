@@ -103,11 +103,6 @@
       "count": 5,
       "sample": "1.0"
     },
-    "apiConfigEncrypted.apiKey": {
-      "type": "string",
-      "count": 4,
-      "sample": "REDACTED_OPENAI_API_KEY"
-    },
     "apiConfigEncrypted.reasoningEffort": {
       "type": "string",
       "count": 3,
@@ -147,7 +142,6 @@
       "apiConfigEncrypted": {
         "model": "gpt-5-nano",
         "maxTokens": 128000,
-        "apiKey": "REDACTED_OPENAI_API_KEY",
         "reasoningEffort": "low"
       },
       "audit": {
@@ -173,7 +167,6 @@
       "apiConfigEncrypted": {
         "model": "gpt-5-mini-2025-08-07",
         "maxTokens": 128000,
-        "apiKey": "REDACTED_OPENAI_API_KEY",
         "reasoningEffort": "low"
       },
       "audit": {
@@ -199,7 +192,6 @@
       "apiConfigEncrypted": {
         "model": "gpt-5.2-2025-12-11",
         "maxTokens": 128000,
-        "apiKey": "REDACTED_OPENAI_API_KEY",
         "reasoningEffort": "low"
       },
       "audit": {
@@ -224,8 +216,7 @@
       "__v": 0,
       "apiConfigEncrypted": {
         "model": "claude-sonnet-4-5-20250929",
-        "maxTokens": 128000,
-        "apiKey": "REDACTED_ANTHROPIC_API_KEY"
+        "maxTokens": 128000
       },
       "audit": {
         "createdAt": "2026-01-20T14:02:21.035Z",

@@ -1,17 +1,22 @@
 {
   "collection": "runs",
-  "documentCount": 314,
+  "documentCount": 421,
   "sampleSize": 3,
   "fieldAnalysis": {
     "_id": {
       "type": "ObjectId",
       "count": 3,
-      "sample": "6973f8b6739491b54e86f715"
+      "sample": "6976a87184607fe14a30ed6f"
     },
     "runId": {
       "type": "string",
       "count": 3,
-      "sample": "9c72a774-8351-4b3f-80c1-363e400e4622"
+      "sample": "f184195a-406c-422c-9108-1f17bb6eebe0"
+    },
+    "campaignTag": {
+      "type": "string",
+      "count": 3,
+      "sample": "Testing"
     },
     "runType": {
       "type": "string",
@@ -21,7 +26,7 @@
     "modelId": {
       "type": "number",
       "count": 3,
-      "sample": 2
+      "sample": 6
     },
     "scope": {
       "type": "string",
@@ -41,17 +46,22 @@
     "status": {
       "type": "string",
       "count": 3,
-      "sample": "completed"
+      "sample": "failed"
+    },
+    "cancelRequested": {
+      "type": "boolean",
+      "count": 3,
+      "sample": false
     },
     "startedAt": {
       "type": "date",
       "count": 3,
-      "sample": "2026-01-23T22:39:50.255Z"
+      "sample": "2026-01-25T23:34:09.650Z"
     },
     "completedAt": {
       "type": "date",
       "count": 3,
-      "sample": "2026-01-23T22:41:58.167Z"
+      "sample": "2026-01-25T23:34:10.535Z"
     },
     "metrics": {
       "type": "object",
@@ -66,12 +76,12 @@
     "metrics.success": {
       "type": "number",
       "count": 3,
-      "sample": 1
+      "sample": 0
     },
     "metrics.failed": {
       "type": "number",
       "count": 3,
-      "sample": 0
+      "sample": 1
     },
     "metrics.totalChapters": {
       "type": "number",
@@ -81,7 +91,7 @@
     "metrics.durationMs": {
       "type": "number",
       "count": 3,
-      "sample": 127911
+      "sample": 885
     },
     "logs": {
       "type": "array",
@@ -90,39 +100,60 @@
         {
           "stage": "run",
           "level": "info",
-          "message": "Run 9c72a774-8351-4b3f-80c1-363e400e4622 started.",
-          "timestamp": "2026-01-23T22:39:50.255Z"
+          "message": "Run f184195a-406c-422c-9108-1f17bb6eebe0 started.",
+          "timestamp": "2026-01-25T23:34:09.650Z"
         },
         {
           "stage": "resolve_targets",
           "level": "info",
           "message": "Resolved 1 targets.",
-          "timestamp": "2026-01-23T22:39:50.318Z"
+          "timestamp": "2026-01-25T23:34:09.720Z"
         },
         {
           "stage": "run_items",
           "level": "info",
           "message": "Created 1 run items.",
-          "timestamp": "2026-01-23T22:39:50.377Z"
+          "timestamp": "2026-01-25T23:34:09.775Z"
         },
         {
           "stage": "execute",
-          "level": "info",
-          "message": "Executed 1 items: 1 succeeded, 0 failed.",
-          "timestamp": "2026-01-23T22:41:58.166Z"
+          "level": "error",
+          "message": "Executed 1 of 1 items: 0 succeeded, 1 failed.",
+          "timestamp": "2026-01-25T23:34:10.535Z"
+        },
+        {
+          "stage": "execute",
+          "level": "error",
+          "message": "Last error: 401 {\"type\":\"error\",\"error\":{\"type\":\"authentication_error\",\"message\":\"invalid x-api-key\"},\"request_id\":\"req_011CXUyJovybvaUEzp6hvydA\"}",
+          "timestamp": "2026-01-25T23:34:10.535Z"
         },
         {
           "stage": "complete",
-          "level": "info",
-          "message": "Run completed.",
-          "timestamp": "2026-01-23T22:41:58.166Z"
+          "level": "error",
+          "message": "Run failed.",
+          "timestamp": "2026-01-25T23:34:10.535Z"
         }
       ]
     },
     "errorSummary": {
-      "type": "null",
+      "type": "object",
       "count": 3,
-      "sample": null
+      "sample": "[object]"
+    },
+    "errorSummary.failedCount": {
+      "type": "number",
+      "count": 3,
+      "sample": 1
+    },
+    "errorSummary.lastError": {
+      "type": "string",
+      "count": 3,
+      "sample": "401 {\"type\":\"error\",\"error\":{\"type\":\"authentication_error\",\"message\":\"invalid x-api-key\"},\"request_id\":\"req_011CXUyJovybvaUEzp6hvydA\"}"
+    },
+    "errorSummary.lastErrorAt": {
+      "type": "date",
+      "count": 3,
+      "sample": "2026-01-25T23:34:10.476Z"
     },
     "audit": {
       "type": "object",
@@ -132,7 +163,7 @@
     "audit.createdAt": {
       "type": "date",
       "count": 3,
-      "sample": "2026-01-23T22:39:50.255Z"
+      "sample": "2026-01-25T23:34:09.650Z"
     },
     "audit.createdBy": {
       "type": "string",
@@ -147,175 +178,211 @@
   },
   "samples": [
     {
-      "_id": "6973f8b6739491b54e86f715",
-      "runId": "9c72a774-8351-4b3f-80c1-363e400e4622",
+      "_id": "6976a87184607fe14a30ed6f",
+      "runId": "f184195a-406c-422c-9108-1f17bb6eebe0",
+      "campaignTag": "Testing",
       "runType": "MODEL_CHAPTER",
-      "modelId": 2,
+      "modelId": 6,
       "scope": "chapter",
       "scopeIds": {
         "chapterId": 1001
       },
-      "status": "completed",
-      "startedAt": "2026-01-23T22:39:50.255Z",
-      "completedAt": "2026-01-23T22:41:58.167Z",
+      "status": "failed",
+      "cancelRequested": false,
+      "startedAt": "2026-01-25T23:34:09.650Z",
+      "completedAt": "2026-01-25T23:34:10.535Z",
       "metrics": {
         "total": 1,
-        "success": 1,
-        "failed": 0,
+        "success": 0,
+        "failed": 1,
         "totalChapters": 1,
-        "durationMs": 127911
+        "durationMs": 885
       },
       "logs": [
         {
           "stage": "run",
           "level": "info",
-          "message": "Run 9c72a774-8351-4b3f-80c1-363e400e4622 started.",
-          "timestamp": "2026-01-23T22:39:50.255Z"
+          "message": "Run f184195a-406c-422c-9108-1f17bb6eebe0 started.",
+          "timestamp": "2026-01-25T23:34:09.650Z"
         },
         {
           "stage": "resolve_targets",
           "level": "info",
           "message": "Resolved 1 targets.",
-          "timestamp": "2026-01-23T22:39:50.318Z"
+          "timestamp": "2026-01-25T23:34:09.720Z"
         },
         {
           "stage": "run_items",
           "level": "info",
           "message": "Created 1 run items.",
-          "timestamp": "2026-01-23T22:39:50.377Z"
+          "timestamp": "2026-01-25T23:34:09.775Z"
         },
         {
           "stage": "execute",
-          "level": "info",
-          "message": "Executed 1 items: 1 succeeded, 0 failed.",
-          "timestamp": "2026-01-23T22:41:58.166Z"
+          "level": "error",
+          "message": "Executed 1 of 1 items: 0 succeeded, 1 failed.",
+          "timestamp": "2026-01-25T23:34:10.535Z"
+        },
+        {
+          "stage": "execute",
+          "level": "error",
+          "message": "Last error: 401 {\"type\":\"error\",\"error\":{\"type\":\"authentication_error\",\"message\":\"invalid x-api-key\"},\"request_id\":\"req_011CXUyJovybvaUEzp6hvydA\"}",
+          "timestamp": "2026-01-25T23:34:10.535Z"
         },
         {
           "stage": "complete",
-          "level": "info",
-          "message": "Run completed.",
-          "timestamp": "2026-01-23T22:41:58.166Z"
+          "level": "error",
+          "message": "Run failed.",
+          "timestamp": "2026-01-25T23:34:10.535Z"
         }
       ],
-      "errorSummary": null,
+      "errorSummary": {
+        "failedCount": 1,
+        "lastError": "401 {\"type\":\"error\",\"error\":{\"type\":\"authentication_error\",\"message\":\"invalid x-api-key\"},\"request_id\":\"req_011CXUyJovybvaUEzp6hvydA\"}",
+        "lastErrorAt": "2026-01-25T23:34:10.476Z"
+      },
       "audit": {
-        "createdAt": "2026-01-23T22:39:50.255Z",
+        "createdAt": "2026-01-25T23:34:09.650Z",
         "createdBy": "admin"
       },
       "__v": 0
     },
     {
-      "_id": "6973f936739491b54e86f744",
-      "runId": "db780559-6b2c-47a8-a84b-6c2c8c6e304c",
+      "_id": "6976a87184607fe14a30ed78",
+      "runId": "02b47bda-2a2d-41eb-b1a2-ef4d91ad0fd9",
+      "campaignTag": "Testing",
       "runType": "MODEL_CHAPTER",
-      "modelId": 2,
+      "modelId": 6,
       "scope": "chapter",
       "scopeIds": {
         "chapterId": 1002
       },
-      "status": "completed",
-      "startedAt": "2026-01-23T22:41:58.321Z",
-      "completedAt": "2026-01-23T22:43:33.639Z",
+      "status": "failed",
+      "cancelRequested": false,
+      "startedAt": "2026-01-25T23:34:09.873Z",
+      "completedAt": "2026-01-25T23:34:10.862Z",
       "metrics": {
         "total": 1,
-        "success": 1,
-        "failed": 0,
+        "success": 0,
+        "failed": 1,
         "totalChapters": 1,
-        "durationMs": 95318
+        "durationMs": 989
       },
       "logs": [
         {
           "stage": "run",
           "level": "info",
-          "message": "Run db780559-6b2c-47a8-a84b-6c2c8c6e304c started.",
-          "timestamp": "2026-01-23T22:41:58.321Z"
+          "message": "Run 02b47bda-2a2d-41eb-b1a2-ef4d91ad0fd9 started.",
+          "timestamp": "2026-01-25T23:34:09.873Z"
         },
         {
           "stage": "resolve_targets",
           "level": "info",
           "message": "Resolved 1 targets.",
-          "timestamp": "2026-01-23T22:41:58.381Z"
+          "timestamp": "2026-01-25T23:34:09.931Z"
         },
         {
           "stage": "run_items",
           "level": "info",
           "message": "Created 1 run items.",
-          "timestamp": "2026-01-23T22:41:58.437Z"
+          "timestamp": "2026-01-25T23:34:10.051Z"
         },
         {
           "stage": "execute",
-          "level": "info",
-          "message": "Executed 1 items: 1 succeeded, 0 failed.",
-          "timestamp": "2026-01-23T22:43:33.639Z"
+          "level": "error",
+          "message": "Executed 1 of 1 items: 0 succeeded, 1 failed.",
+          "timestamp": "2026-01-25T23:34:10.862Z"
+        },
+        {
+          "stage": "execute",
+          "level": "error",
+          "message": "Last error: 401 {\"type\":\"error\",\"error\":{\"type\":\"authentication_error\",\"message\":\"invalid x-api-key\"},\"request_id\":\"req_011CXUyJqPYKorPn6MRVYLDi\"}",
+          "timestamp": "2026-01-25T23:34:10.862Z"
         },
         {
           "stage": "complete",
-          "level": "info",
-          "message": "Run completed.",
-          "timestamp": "2026-01-23T22:43:33.639Z"
+          "level": "error",
+          "message": "Run failed.",
+          "timestamp": "2026-01-25T23:34:10.862Z"
         }
       ],
-      "errorSummary": null,
+      "errorSummary": {
+        "failedCount": 1,
+        "lastError": "401 {\"type\":\"error\",\"error\":{\"type\":\"authentication_error\",\"message\":\"invalid x-api-key\"},\"request_id\":\"req_011CXUyJqPYKorPn6MRVYLDi\"}",
+        "lastErrorAt": "2026-01-25T23:34:10.794Z"
+      },
       "audit": {
-        "createdAt": "2026-01-23T22:41:58.321Z",
+        "createdAt": "2026-01-25T23:34:09.873Z",
         "createdBy": "admin"
       },
       "__v": 0
     },
     {
-      "_id": "6973f995739491b54e86f76d",
-      "runId": "7342ed17-8d86-4e50-b725-a3ec1745ef23",
+      "_id": "6976a87284607fe14a30ed84",
+      "runId": "3c2a9dd8-2049-4e10-ae1c-07d5d502e09e",
+      "campaignTag": "Testing",
       "runType": "MODEL_CHAPTER",
-      "modelId": 2,
+      "modelId": 6,
       "scope": "chapter",
       "scopeIds": {
         "chapterId": 1003
       },
-      "status": "completed",
-      "startedAt": "2026-01-23T22:43:33.818Z",
-      "completedAt": "2026-01-23T22:45:28.489Z",
+      "status": "failed",
+      "cancelRequested": false,
+      "startedAt": "2026-01-25T23:34:10.203Z",
+      "completedAt": "2026-01-25T23:34:11.088Z",
       "metrics": {
         "total": 1,
-        "success": 1,
-        "failed": 0,
+        "success": 0,
+        "failed": 1,
         "totalChapters": 1,
-        "durationMs": 114671
+        "durationMs": 885
       },
       "logs": [
         {
           "stage": "run",
           "level": "info",
-          "message": "Run 7342ed17-8d86-4e50-b725-a3ec1745ef23 started.",
-          "timestamp": "2026-01-23T22:43:33.818Z"
+          "message": "Run 3c2a9dd8-2049-4e10-ae1c-07d5d502e09e started.",
+          "timestamp": "2026-01-25T23:34:10.203Z"
         },
         {
           "stage": "resolve_targets",
           "level": "info",
           "message": "Resolved 1 targets.",
-          "timestamp": "2026-01-23T22:43:33.890Z"
+          "timestamp": "2026-01-25T23:34:10.343Z"
         },
         {
           "stage": "run_items",
           "level": "info",
           "message": "Created 1 run items.",
-          "timestamp": "2026-01-23T22:43:33.978Z"
+          "timestamp": "2026-01-25T23:34:10.497Z"
         },
         {
           "stage": "execute",
-          "level": "info",
-          "message": "Executed 1 items: 1 succeeded, 0 failed.",
-          "timestamp": "2026-01-23T22:45:28.489Z"
+          "level": "error",
+          "message": "Executed 1 of 1 items: 0 succeeded, 1 failed.",
+          "timestamp": "2026-01-25T23:34:11.088Z"
+        },
+        {
+          "stage": "execute",
+          "level": "error",
+          "message": "Last error: 401 {\"type\":\"error\",\"error\":{\"type\":\"authentication_error\",\"message\":\"invalid x-api-key\"},\"request_id\":\"req_011CXUyJrQJwkMGLM4H4gXr2\"}",
+          "timestamp": "2026-01-25T23:34:11.088Z"
         },
         {
           "stage": "complete",
-          "level": "info",
-          "message": "Run completed.",
-          "timestamp": "2026-01-23T22:45:28.489Z"
+          "level": "error",
+          "message": "Run failed.",
+          "timestamp": "2026-01-25T23:34:11.088Z"
         }
       ],
-      "errorSummary": null,
+      "errorSummary": {
+        "failedCount": 1,
+        "lastError": "401 {\"type\":\"error\",\"error\":{\"type\":\"authentication_error\",\"message\":\"invalid x-api-key\"},\"request_id\":\"req_011CXUyJrQJwkMGLM4H4gXr2\"}",
+        "lastErrorAt": "2026-01-25T23:34:11.028Z"
+      },
       "audit": {
-        "createdAt": "2026-01-23T22:43:33.818Z",
+        "createdAt": "2026-01-25T23:34:10.203Z",
         "createdBy": "admin"
       },
       "__v": 0

@@ -1,27 +1,27 @@
 {
   "collection": "llmVerseResults",
-  "documentCount": 9683,
+  "documentCount": 3380,
   "sampleSize": 5,
   "fieldAnalysis": {
     "_id": {
       "type": "ObjectId",
       "count": 5,
-      "sample": "6973f934a88318b065cf0ce3"
-    },
-    "modelId": {
-      "type": "number",
-      "count": 5,
-      "sample": 2
-    },
-    "runId": {
-      "type": "string",
-      "count": 5,
-      "sample": "9c72a774-8351-4b3f-80c1-363e400e4622"
+      "sample": "6976b05ca88318b065d6936c"
     },
     "verseId": {
       "type": "number",
       "count": 5,
       "sample": 1001001
+    },
+    "campaignTag": {
+      "type": "string",
+      "count": 5,
+      "sample": "Testing"
+    },
+    "modelId": {
+      "type": "number",
+      "count": 5,
+      "sample": 6
     },
     "__v": {
       "type": "number",
@@ -36,7 +36,7 @@
     "audit.createdAt": {
       "type": "date",
       "count": 5,
-      "sample": "2026-01-23T22:39:50.513Z"
+      "sample": "2026-01-26T00:08:34.445Z"
     },
     "audit.createdBy": {
       "type": "string",
@@ -86,7 +86,7 @@
     "evaluatedAt": {
       "type": "date",
       "count": 5,
-      "sample": "2026-01-23T22:39:50.513Z"
+      "sample": "2026-01-26T00:08:34.445Z"
     },
     "fidelityScore": {
       "type": "number",
@@ -101,43 +101,48 @@
     "hashProcessed": {
       "type": "string",
       "count": 5,
-      "sample": "6f785a86b2716dcc5a48caa0de944396ba871d5c7f3bf776993648335fcb2bb2"
+      "sample": "3047c9c1928da6ffadbfcc7e2045ddeb8cba9cbe3ae9a064a31ce29f2d5f3244"
     },
     "hashRaw": {
       "type": "string",
       "count": 5,
-      "sample": "6f785a86b2716dcc5a48caa0de944396ba871d5c7f3bf776993648335fcb2bb2"
+      "sample": "c18d157a63041ebd2104ed7e30b8582b68697c1f225382fed12dea93dc85848a"
     },
     "latencyMs": {
       "type": "number",
       "count": 5,
-      "sample": 4045
+      "sample": 224
     },
     "responseProcessed": {
       "type": "string",
       "count": 5,
-      "sample": "In the beginning God created the heaven and the earth."
+      "sample": "[1] In the beginning God created the heaven and the earth."
     },
     "responseRaw": {
       "type": "string",
       "count": 5,
-      "sample": "In the beginning God created the heaven and the earth."
+      "sample": "1 In the beginning God created the heaven and the earth."
     },
     "resultId": {
       "type": "number",
       "count": 5,
-      "sample": 1769208116142672
+      "sample": 1769386121594729
+    },
+    "runId": {
+      "type": "string",
+      "count": 5,
+      "sample": "760926f4-ebe7-4ee1-81f8-5f9da7ddc449"
     }
   },
   "samples": [
     {
-      "_id": "6973f934a88318b065cf0ce3",
-      "modelId": 2,
-      "runId": "9c72a774-8351-4b3f-80c1-363e400e4622",
+      "_id": "6976b05ca88318b065d6936c",
       "verseId": 1001001,
+      "campaignTag": "Testing",
+      "modelId": 6,
       "__v": 0,
       "audit": {
-        "createdAt": "2026-01-23T22:39:50.513Z",
+        "createdAt": "2026-01-26T00:08:34.445Z",
         "createdBy": "model_run"
       },
       "bibleId": 1001,
@@ -149,24 +154,25 @@
         "additions": 0,
         "transpositions": 0
       },
-      "evaluatedAt": "2026-01-23T22:39:50.513Z",
+      "evaluatedAt": "2026-01-26T00:08:34.445Z",
       "fidelityScore": 100,
       "hashMatch": true,
-      "hashProcessed": "6f785a86b2716dcc5a48caa0de944396ba871d5c7f3bf776993648335fcb2bb2",
-      "hashRaw": "6f785a86b2716dcc5a48caa0de944396ba871d5c7f3bf776993648335fcb2bb2",
-      "latencyMs": 4045,
-      "responseProcessed": "In the beginning God created the heaven and the earth.",
-      "responseRaw": "In the beginning God created the heaven and the earth.",
-      "resultId": 1769208116142672
+      "hashProcessed": "3047c9c1928da6ffadbfcc7e2045ddeb8cba9cbe3ae9a064a31ce29f2d5f3244",
+      "hashRaw": "c18d157a63041ebd2104ed7e30b8582b68697c1f225382fed12dea93dc85848a",
+      "latencyMs": 224,
+      "responseProcessed": "[1] In the beginning God created the heaven and the earth.",
+      "responseRaw": "1 In the beginning God created the heaven and the earth.",
+      "resultId": 1769386121594729,
+      "runId": "760926f4-ebe7-4ee1-81f8-5f9da7ddc449"
     },
     {
-      "_id": "6973f934a88318b065cf0ce4",
-      "runId": "9c72a774-8351-4b3f-80c1-363e400e4622",
+      "_id": "6976b05ca88318b065d6936d",
       "verseId": 1001002,
-      "modelId": 2,
+      "campaignTag": "Testing",
+      "modelId": 6,
       "__v": 0,
       "audit": {
-        "createdAt": "2026-01-23T22:39:50.513Z",
+        "createdAt": "2026-01-26T00:08:34.445Z",
         "createdBy": "model_run"
       },
       "bibleId": 1001,
@@ -178,24 +184,25 @@
         "additions": 0,
         "transpositions": 0
       },
-      "evaluatedAt": "2026-01-23T22:39:50.513Z",
+      "evaluatedAt": "2026-01-26T00:08:34.445Z",
       "fidelityScore": 100,
       "hashMatch": true,
-      "hashProcessed": "3164732a2a2f2fcb68d7dec5be737b18c66c8d743a98d34c8bb8eb866d822d4b",
-      "hashRaw": "3164732a2a2f2fcb68d7dec5be737b18c66c8d743a98d34c8bb8eb866d822d4b",
-      "latencyMs": 4045,
-      "responseProcessed": "And the earth was without form, and void; and darkness was upon the face of the deep. And the Spirit of God moved upon the face of the waters.",
-      "responseRaw": "And the earth was without form, and void; and darkness was upon the face of the deep. And the Spirit of God moved upon the face of the waters.",
-      "resultId": 1769208116201266
+      "hashProcessed": "fa51a33228eb511dba75030e8b918c04d5274fe3f59724f3fe0cfecc4bf3f51d",
+      "hashRaw": "ea2661ab7a548222aceb2290385996d101d5b88987c030aa66456e5833337204",
+      "latencyMs": 224,
+      "responseProcessed": "[2] And the earth was without form, and void; and darkness was upon the face of the deep. And the Spirit of God moved upon the face of the waters.",
+      "responseRaw": "2 And the earth was without form, and void; and darkness was upon the face of the deep. And the Spirit of God moved upon the face of the waters.",
+      "resultId": 1769386121655851,
+      "runId": "760926f4-ebe7-4ee1-81f8-5f9da7ddc449"
     },
     {
-      "_id": "6973f934a88318b065cf0ce5",
-      "modelId": 2,
-      "runId": "9c72a774-8351-4b3f-80c1-363e400e4622",
+      "_id": "6976b05ca88318b065d6936e",
+      "campaignTag": "Testing",
+      "modelId": 6,
       "verseId": 1001003,
       "__v": 0,
       "audit": {
-        "createdAt": "2026-01-23T22:39:50.513Z",
+        "createdAt": "2026-01-26T00:08:34.445Z",
         "createdBy": "model_run"
       },
       "bibleId": 1001,
@@ -207,24 +214,25 @@
         "additions": 0,
         "transpositions": 0
       },
-      "evaluatedAt": "2026-01-23T22:39:50.513Z",
+      "evaluatedAt": "2026-01-26T00:08:34.445Z",
       "fidelityScore": 100,
       "hashMatch": true,
-      "hashProcessed": "cb548ddda54d247e18490056cf4de91c26531b9cce58851ca16841ec4c28f3bb",
-      "hashRaw": "cb548ddda54d247e18490056cf4de91c26531b9cce58851ca16841ec4c28f3bb",
-      "latencyMs": 4045,
-      "responseProcessed": "And God said, Let there be light: and there was light.",
-      "responseRaw": "And God said, Let there be light: and there was light.",
-      "resultId": 1769208116257342
+      "hashProcessed": "a2ac3c39117864d5159c268f297a14966cc32a376d5251da3b95d728f217e453",
+      "hashRaw": "4fb2deff25aaa415d2fd912a7b03e1a62fbf8e269380fdbb52abe31d0c26ad96",
+      "latencyMs": 224,
+      "responseProcessed": "[3] And God said, Let there be light: and there was light.",
+      "responseRaw": "3 And God said, Let there be light: and there was light.",
+      "resultId": 1769386121721959,
+      "runId": "760926f4-ebe7-4ee1-81f8-5f9da7ddc449"
     },
     {
-      "_id": "6973f934a88318b065cf0ce6",
-      "modelId": 2,
-      "runId": "9c72a774-8351-4b3f-80c1-363e400e4622",
+      "_id": "6976b05ca88318b065d6936f",
+      "campaignTag": "Testing",
+      "modelId": 6,
       "verseId": 1001004,
       "__v": 0,
       "audit": {
-        "createdAt": "2026-01-23T22:39:50.513Z",
+        "createdAt": "2026-01-26T00:08:34.445Z",
         "createdBy": "model_run"
       },
       "bibleId": 1001,
@@ -236,24 +244,25 @@
         "additions": 0,
         "transpositions": 0
       },
-      "evaluatedAt": "2026-01-23T22:39:50.513Z",
+      "evaluatedAt": "2026-01-26T00:08:34.445Z",
       "fidelityScore": 100,
       "hashMatch": true,
-      "hashProcessed": "c7f4eaa2516c827656cee88fd3a1dd18f8854f601ba9931b7be38ebd27b4e3d9",
-      "hashRaw": "c7f4eaa2516c827656cee88fd3a1dd18f8854f601ba9931b7be38ebd27b4e3d9",
-      "latencyMs": 4045,
-      "responseProcessed": "And God saw the light, that it was good: and God divided the light from the darkness.",
-      "responseRaw": "And God saw the light, that it was good: and God divided the light from the darkness.",
-      "resultId": 1769208116479552
+      "hashProcessed": "36a53a63f86b87135c1112841602cd0db339a8d3cf1f15d1d67e17f0c4b95ac3",
+      "hashRaw": "2abeb281dd05dee4b669ab0d2306d0e00315e3485805fb49a3ac9502ed300a78",
+      "latencyMs": 224,
+      "responseProcessed": "[4] And God saw the light, that it was good: and God divided the light from the darkness.",
+      "responseRaw": "4 And God saw the light, that it was good: and God divided the light from the darkness.",
+      "resultId": 1769386121778487,
+      "runId": "760926f4-ebe7-4ee1-81f8-5f9da7ddc449"
     },
     {
-      "_id": "6973f934a88318b065cf0ce7",
-      "runId": "9c72a774-8351-4b3f-80c1-363e400e4622",
+      "_id": "6976b05da88318b065d69370",
+      "modelId": 6,
       "verseId": 1001005,
-      "modelId": 2,
+      "campaignTag": "Testing",
       "__v": 0,
       "audit": {
-        "createdAt": "2026-01-23T22:39:50.513Z",
+        "createdAt": "2026-01-26T00:08:34.445Z",
         "createdBy": "model_run"
       },
       "bibleId": 1001,
@@ -265,15 +274,16 @@
         "additions": 0,
         "transpositions": 0
       },
-      "evaluatedAt": "2026-01-23T22:39:50.513Z",
+      "evaluatedAt": "2026-01-26T00:08:34.445Z",
       "fidelityScore": 100,
       "hashMatch": true,
-      "hashProcessed": "e7e654aa7e64c7804c0d80f68bd47f0fad0c7623a7d7ded5a2e67804186ce1fc",
-      "hashRaw": "e7e654aa7e64c7804c0d80f68bd47f0fad0c7623a7d7ded5a2e67804186ce1fc",
-      "latencyMs": 4045,
-      "responseProcessed": "And God called the light Day, and the darkness he called Night. And the evening and the morning were the first day.",
-      "responseRaw": "And God called the light Day, and the darkness he called Night. And the evening and the morning were the first day.",
-      "resultId": 1769208116529109
+      "hashProcessed": "ad9242b95c739c9e5883b6b1f7b2779c57fad8a23dc07c3a0e6b022897a51d6a",
+      "hashRaw": "5a6e68e650452edbd478cc6ba6c49d1bae3f5f8d7cc9f1857c9122f41b202192",
+      "latencyMs": 224,
+      "responseProcessed": "[5] And God called the light Day, and the darkness he called Night. And the evening and the morning were the first day.",
+      "responseRaw": "5 And God called the light Day, and the darkness he called Night. And the evening and the morning were the first day.",
+      "resultId": 1769386121838368,
+      "runId": "760926f4-ebe7-4ee1-81f8-5f9da7ddc449"
     }
   ],
   "validationErrors": []

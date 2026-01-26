@@ -66,6 +66,31 @@ function validateCapabilities(value: unknown): ModelCapabilitiesPayload | null {
   return flags;
 }
 
+function stripApiKey(
+  value: Record<string, unknown> | null | undefined
+): Record<string, unknown> | null | undefined {
+  if (!isRecord(value)) {
+    return value;
+  }
+
+  const rest = { ...value };
+  if ("apiKey" in rest) {
+    delete rest.apiKey;
+  }
+  return rest;
+}
+
+function redactApiConfig(model: Record<string, unknown>): Record<string, unknown> {
+  const apiConfig = model["apiConfigEncrypted"];
+  if (!isRecord(apiConfig) || !("apiKey" in apiConfig)) {
+    return model;
+  }
+
+  const rest = { ...apiConfig };
+  delete rest.apiKey;
+  return { ...model, apiConfigEncrypted: rest };
+}
+
 function validatePayload(payload: unknown): ValidationResult {
   if (!isRecord(payload)) {
     return { ok: false, error: "Body must be a JSON object." };
@@ -105,6 +130,7 @@ function validatePayload(payload: unknown): ValidationResult {
   if (apiConfigEncrypted !== undefined && apiConfigEncrypted !== null && !isRecord(apiConfigEncrypted)) {
     return { ok: false, error: "apiConfigEncrypted must be an object or null." };
   }
+  const sanitizedApiConfig = stripApiKey(apiConfigEncrypted as Record<string, unknown> | null | undefined);
 
   const capabilities = validateCapabilities(payload["capabilities"]);
   if (payload["capabilities"] !== undefined && capabilities === null) {
@@ -138,7 +164,7 @@ function validatePayload(payload: unknown): ValidationResult {
       routingMethod: routingMethod.trim(),
       isActive,
       releasedAt,
-      apiConfigEncrypted: apiConfigEncrypted === undefined ? undefined : apiConfigEncrypted,
+      apiConfigEncrypted: apiConfigEncrypted === undefined ? undefined : sanitizedApiConfig,
       capabilities: capabilities ?? undefined,
     },
   };
@@ -155,7 +181,8 @@ export async function GET() {
   const models = await ModelModel.find({}, { _id: 0 })
     .sort({ modelId: 1 })
     .lean();
-  return NextResponse.json({ ok: true, data: models });
+  const redacted = models.map((model) => redactApiConfig(model as Record<string, unknown>));
+  return NextResponse.json({ ok: true, data: redacted });
 }
 
 export async function POST(request: Request) {

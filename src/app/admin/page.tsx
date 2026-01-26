@@ -156,10 +156,12 @@ function RunStatusCard({
 
 function AlertsSection({ 
   alerts, 
-  onDismiss 
+  onDismiss,
+  onDismissAll,
 }: { 
   alerts: Alert[];
   onDismiss: (runId: string, errorCode: string) => void;
+  onDismissAll: () => void;
 }) {
   if (alerts.length === 0) {
     return null;
@@ -170,9 +172,7 @@ function AlertsSection({
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-medium text-primary">Alerts</h3>
         <button
-          onClick={() => {
-            alerts.forEach((alert) => onDismiss(alert.runId, alert.errorCode));
-          }}
+          onClick={onDismissAll}
           className="text-xs text-muted-foreground hover:text-foreground underline"
         >
           Dismiss All
@@ -301,11 +301,25 @@ export default function AdminDashboardPage() {
   }, []);
 
   const handleDismissAlert = useCallback((runId: string, errorCode: string) => {
-    const key = `${runId}-${errorCode}`;
-    const newDismissed = new Set(dismissedAlerts);
-    newDismissed.add(key);
-    setDismissedAlerts(newDismissed);
-    localStorage.setItem("dismissed-alerts", JSON.stringify(Array.from(newDismissed)));
+    setDismissedAlerts((prev) => {
+      const next = new Set(prev);
+      next.add(`${runId}-${errorCode}`);
+      return next;
+    });
+  }, []);
+
+  const handleDismissAllAlerts = useCallback(() => {
+    setDismissedAlerts((prev) => {
+      const next = new Set(prev);
+      (data?.alerts ?? []).forEach((alert) => {
+        next.add(`${alert.runId}-${alert.errorCode}`);
+      });
+      return next;
+    });
+  }, [data?.alerts]);
+
+  useEffect(() => {
+    localStorage.setItem("dismissed-alerts", JSON.stringify(Array.from(dismissedAlerts)));
   }, [dismissedAlerts]);
 
   const fetchData = useCallback(async () => {
@@ -386,6 +400,10 @@ export default function AdminDashboardPage() {
     runs: 0,
   };
 
+  const visibleAlerts = (data?.alerts ?? []).filter(
+    (alert) => !dismissedAlerts.has(`${alert.runId}-${alert.errorCode}`)
+  );
+
   return (
     <section className="space-y-6">
       <div className="flex items-center justify-between">
@@ -412,10 +430,9 @@ export default function AdminDashboardPage() {
 
       {/* Alerts Section */}
       <AlertsSection 
-        alerts={(data?.alerts ?? []).filter(
-          (alert) => !dismissedAlerts.has(`${alert.runId}-${alert.errorCode}`)
-        )} 
+        alerts={visibleAlerts} 
         onDismiss={handleDismissAlert}
+        onDismissAll={handleDismissAllAlerts}
       />
 
       {/* Stats Grid */}

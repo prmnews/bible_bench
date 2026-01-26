@@ -1,37 +1,37 @@
 {
   "collection": "aggregationBibles",
-  "documentCount": 3,
-  "sampleSize": 3,
+  "documentCount": 2,
+  "sampleSize": 2,
   "fieldAnalysis": {
     "_id": {
       "type": "ObjectId",
-      "count": 3,
-      "sample": "697634eea88318b065d391c9"
+      "count": 2,
+      "sample": "6976b363a88318b065d6d9cc"
     },
     "bookCount": {
       "type": "number",
-      "count": 3,
-      "sample": 8
+      "count": 2,
+      "sample": 5
     },
     "chapterCount": {
       "type": "number",
-      "count": 3,
-      "sample": 129
+      "count": 2,
+      "sample": 58
     },
     "verseCount": {
       "type": "number",
-      "count": 3,
-      "sample": 4044
+      "count": 2,
+      "sample": 1690
     },
     "matchCount": {
       "type": "number",
-      "count": 3,
-      "sample": 2751
+      "count": 2,
+      "sample": 1014
     },
     "evaluatedAt": {
       "type": "date",
-      "count": 3,
-      "sample": "2026-01-24T20:44:13.699Z"
+      "count": 2,
+      "sample": "2026-01-26T00:20:43.319Z"
     },
     "campaignTag": {
       "type": "string",
@@ -40,63 +40,51 @@
     },
     "modelId": {
       "type": "number",
-      "count": 3,
+      "count": 2,
       "sample": 10
     },
     "bibleId": {
       "type": "number",
-      "count": 3,
+      "count": 2,
       "sample": 1001
     },
     "avgFidelity": {
       "type": "number",
-      "count": 3,
-      "sample": 93.76
+      "count": 2,
+      "sample": 91.27
     },
     "perfectRate": {
       "type": "number",
-      "count": 3,
-      "sample": 0.6803
+      "count": 2,
+      "sample": 0.6
     }
   },
   "samples": [
     {
-      "_id": "697634eea88318b065d391c9",
-      "bookCount": 8,
-      "chapterCount": 129,
-      "verseCount": 4044,
-      "matchCount": 2751,
-      "evaluatedAt": "2026-01-24T20:44:13.699Z",
+      "_id": "6976b363a88318b065d6d9cc",
+      "bookCount": 5,
+      "chapterCount": 58,
+      "verseCount": 1690,
+      "matchCount": 1014,
+      "evaluatedAt": "2026-01-26T00:20:43.319Z",
       "campaignTag": "Testing",
       "modelId": 10,
       "bibleId": 1001,
-      "avgFidelity": 93.76,
-      "perfectRate": 0.6803
+      "avgFidelity": 91.27,
+      "perfectRate": 0.6
     },
     {
-      "_id": "697634eea88318b065d391ca",
-      "bookCount": 1,
-      "chapterCount": 50,
-      "verseCount": 1533,
-      "matchCount": 493,
-      "evaluatedAt": "2026-01-24T05:53:25.731Z",
-      "modelId": 2,
-      "bibleId": 1001,
-      "avgFidelity": 71.74,
-      "perfectRate": 0.3216
-    },
-    {
-      "_id": "697634eea88318b065d391cb",
-      "bookCount": 8,
-      "chapterCount": 129,
-      "verseCount": 4044,
-      "matchCount": 3533,
-      "evaluatedAt": "2026-01-24T20:44:11.960Z",
+      "_id": "6976b363a88318b065d6d9cd",
+      "bookCount": 5,
+      "chapterCount": 58,
+      "verseCount": 1690,
+      "matchCount": 1560,
+      "evaluatedAt": "2026-01-26T00:20:41.546Z",
       "campaignTag": "Testing",
       "modelId": 6,
       "bibleId": 1001,
-      "avgFidelity": 98.62,
-      "perfectRate": 0.8736
+      "avgFidelity": 98,
+      "perfectRate": 0.9231
     }
   ],
   "validationErrors": []

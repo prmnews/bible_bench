@@ -52,9 +52,23 @@ type ModelResponseResult = {
   userPrompt?: string;
 };
 
+const DEBUG_LOG_ENDPOINT = process.env.DEBUG_LOG_ENDPOINT;
+
 // ============================================================================
 // UTILITY FUNCTIONS
 // ============================================================================
+
+function sendDebugLog(payload: Record<string, unknown>) {
+  if (!DEBUG_LOG_ENDPOINT) {
+    return;
+  }
+
+  fetch(DEBUG_LOG_ENDPOINT, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  }).catch(() => {});
+}
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -71,6 +85,28 @@ function getStringMap(value: unknown): Record<string, string> {
 
   const entries = Object.entries(value).filter(([, entry]) => typeof entry === "string");
   return Object.fromEntries(entries) as Record<string, string>;
+}
+
+const PROVIDER_API_KEY_ENV: Record<string, string> = {
+  openai: "OPENAI_API_KEY",
+  anthropic: "ANTHROPIC_API_KEY",
+  google: "GEMINI_API_KEY",
+  gemini: "GEMINI_API_KEY",
+};
+
+function resolveProviderApiKey(provider: string): string {
+  const normalized = provider.trim().toLowerCase();
+  const envKey = PROVIDER_API_KEY_ENV[normalized];
+  if (!envKey) {
+    throw new Error(`Unsupported provider "${provider}" for API key resolution.`);
+  }
+
+  const apiKey = process.env[envKey];
+  if (!apiKey) {
+    throw new Error(`Missing ${envKey} for ${provider} provider.`);
+  }
+
+  return apiKey;
 }
 
 // ============================================================================
@@ -331,10 +367,7 @@ async function generateOpenAIResponse(
     throw new Error("OpenAI model configuration is missing.");
   }
 
-  const apiKey = getString(config["apiKey"]);
-  if (!apiKey) {
-    throw new Error("OpenAI API key is missing.");
-  }
+  const apiKey = resolveProviderApiKey("openai");
 
   const modelName = getString(config["model"]) ?? "gpt-4o";
   const isReasoning = isReasoningModel(modelName);
@@ -348,7 +381,21 @@ async function generateOpenAIResponse(
 
   // #region agent log
   const logStartTime = Date.now();
-  fetch('http://127.0.0.1:7246/ingest/3ff6390d-24c9-4902-b3c7-355c7ec4a00e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'model-providers.ts:OpenAI-START',message:'OpenAI request starting',data:{modelName,maxTokens,isReasoning,targetType:params.targetType,targetId:params.targetId,reference:params.reference},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'A,B,D'})}).catch(()=>{});
+  sendDebugLog({
+    location: "model-providers.ts:OpenAI-START",
+    message: "OpenAI request starting",
+    data: {
+      modelName,
+      maxTokens,
+      isReasoning,
+      targetType: params.targetType,
+      targetId: params.targetId,
+      reference: params.reference,
+    },
+    timestamp: Date.now(),
+    sessionId: "debug-session",
+    hypothesisId: "A,B,D",
+  });
   // #endregion
 
   const client = new OpenAI({ apiKey });
@@ -393,7 +440,18 @@ async function generateOpenAIResponse(
     // #region agent log
     const sdkErrorMsg = sdkError instanceof Error ? sdkError.message : String(sdkError);
     const sdkErrorName = sdkError instanceof Error ? sdkError.name : 'Unknown';
-    fetch('http://127.0.0.1:7246/ingest/3ff6390d-24c9-4902-b3c7-355c7ec4a00e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'model-providers.ts:OpenAI-SDK-ERROR',message:'OpenAI SDK threw error',data:{errorName:sdkErrorName,errorMessage:sdkErrorMsg,durationMs:Date.now()-logStartTime},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'B,E'})}).catch(()=>{});
+    sendDebugLog({
+      location: "model-providers.ts:OpenAI-SDK-ERROR",
+      message: "OpenAI SDK threw error",
+      data: {
+        errorName: sdkErrorName,
+        errorMessage: sdkErrorMsg,
+        durationMs: Date.now() - logStartTime,
+      },
+      timestamp: Date.now(),
+      sessionId: "debug-session",
+      hypothesisId: "B,E",
+    });
     // #endregion
     throw sdkError;
   }
@@ -404,7 +462,25 @@ async function generateOpenAIResponse(
   const messageContent = choice0?.message?.content;
   const messageRefusal = (choice0?.message as unknown as Record<string, unknown>)?.refusal;
   const contentLength = typeof messageContent === 'string' ? messageContent.length : 0;
-  fetch('http://127.0.0.1:7246/ingest/3ff6390d-24c9-4902-b3c7-355c7ec4a00e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'model-providers.ts:OpenAI-RESPONSE',message:'OpenAI response received',data:{durationMs:Date.now()-logStartTime,finishReason,hasContent:!!messageContent,contentLength,hasRefusal:!!messageRefusal,refusal:messageRefusal||null,choicesCount:response.choices?.length||0,model:response.model,usage:response.usage,isReasoning},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'A,C'})}).catch(()=>{});
+  sendDebugLog({
+    location: "model-providers.ts:OpenAI-RESPONSE",
+    message: "OpenAI response received",
+    data: {
+      durationMs: Date.now() - logStartTime,
+      finishReason,
+      hasContent: !!messageContent,
+      contentLength,
+      hasRefusal: !!messageRefusal,
+      refusal: messageRefusal || null,
+      choicesCount: response.choices?.length || 0,
+      model: response.model,
+      usage: response.usage,
+      isReasoning,
+    },
+    timestamp: Date.now(),
+    sessionId: "debug-session",
+    hypothesisId: "A,C",
+  });
   // #endregion
 
   const responseRaw = response.choices[0]?.message?.content ?? "";
@@ -412,7 +488,19 @@ async function generateOpenAIResponse(
   const extractedText = extractText(parsed, params.targetType);
 
   // #region agent log
-  fetch('http://127.0.0.1:7246/ingest/3ff6390d-24c9-4902-b3c7-355c7ec4a00e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'model-providers.ts:OpenAI-PARSED',message:'OpenAI response parsed',data:{responseRawLength:responseRaw.length,hasParsed:!!parsed,parseError,hasExtractedText:!!extractedText},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'A'})}).catch(()=>{});
+  sendDebugLog({
+    location: "model-providers.ts:OpenAI-PARSED",
+    message: "OpenAI response parsed",
+    data: {
+      responseRawLength: responseRaw.length,
+      hasParsed: !!parsed,
+      parseError,
+      hasExtractedText: !!extractedText,
+    },
+    timestamp: Date.now(),
+    sessionId: "debug-session",
+    hypothesisId: "A",
+  });
   // #endregion
 
   return { responseRaw, parsed, parseError, extractedText };
@@ -430,10 +518,7 @@ async function generateAnthropicResponse(
     throw new Error("Anthropic model configuration is missing.");
   }
 
-  const apiKey = getString(config["apiKey"]);
-  if (!apiKey) {
-    throw new Error("Anthropic API key is missing.");
-  }
+  const apiKey = resolveProviderApiKey("anthropic");
 
   const modelName = getString(config["model"]) ?? "claude-sonnet-4-20250514";
   const maxTokens = typeof config["maxTokens"] === "number" ? config["maxTokens"] : 4096;
@@ -508,10 +593,7 @@ async function generateGeminiResponse(
     throw new Error("Gemini model configuration is missing.");
   }
 
-  const apiKey = getString(config["apiKey"]);
-  if (!apiKey) {
-    throw new Error("Gemini API key is missing.");
-  }
+  const apiKey = resolveProviderApiKey("gemini");
 
   const modelName = getString(config["model"]) ?? "gemini-2.0-flash";
   const responseSchema = params.targetType === "chapter" 

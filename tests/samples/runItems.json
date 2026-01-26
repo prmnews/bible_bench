@@ -1,17 +1,17 @@
 {
   "collection": "runItems",
-  "documentCount": 314,
+  "documentCount": 421,
   "sampleSize": 5,
   "fieldAnalysis": {
     "_id": {
       "type": "ObjectId",
       "count": 5,
-      "sample": "6973f8b6739491b54e86f717"
+      "sample": "6976a87184607fe14a30ed71"
     },
     "runId": {
       "type": "string",
       "count": 5,
-      "sample": "9c72a774-8351-4b3f-80c1-363e400e4622"
+      "sample": "f184195a-406c-422c-9108-1f17bb6eebe0"
     },
     "targetType": {
       "type": "string",
@@ -26,7 +26,7 @@
     "status": {
       "type": "string",
       "count": 5,
-      "sample": "success"
+      "sample": "failed"
     },
     "attempts": {
       "type": "number",
@@ -34,14 +34,14 @@
       "sample": 1
     },
     "lastError": {
-      "type": "null",
+      "type": "string",
       "count": 5,
-      "sample": null
+      "sample": "401 {\"type\":\"error\",\"error\":{\"type\":\"authentication_error\",\"message\":\"invalid x-api-key\"},\"request_id\":\"req_011CXUyJovybvaUEzp6hvydA\"}"
     },
     "updatedAt": {
       "type": "date",
       "count": 5,
-      "sample": "2026-01-23T22:41:58.116Z"
+      "sample": "2026-01-25T23:34:10.476Z"
     },
     "__v": {
       "type": "number",
@@ -51,58 +51,58 @@
   },
   "samples": [
     {
-      "_id": "6973f8b6739491b54e86f717",
-      "runId": "9c72a774-8351-4b3f-80c1-363e400e4622",
+      "_id": "6976a87184607fe14a30ed71",
+      "runId": "f184195a-406c-422c-9108-1f17bb6eebe0",
       "targetType": "chapter",
       "targetId": 1001,
-      "status": "success",
+      "status": "failed",
       "attempts": 1,
-      "lastError": null,
-      "updatedAt": "2026-01-23T22:41:58.116Z",
+      "lastError": "401 {\"type\":\"error\",\"error\":{\"type\":\"authentication_error\",\"message\":\"invalid x-api-key\"},\"request_id\":\"req_011CXUyJovybvaUEzp6hvydA\"}",
+      "updatedAt": "2026-01-25T23:34:10.476Z",
       "__v": 0
     },
     {
-      "_id": "6973f936739491b54e86f746",
-      "runId": "db780559-6b2c-47a8-a84b-6c2c8c6e304c",
+      "_id": "6976a87184607fe14a30ed7b",
+      "runId": "02b47bda-2a2d-41eb-b1a2-ef4d91ad0fd9",
       "targetType": "chapter",
       "targetId": 1002,
-      "status": "success",
+      "status": "failed",
       "attempts": 1,
-      "lastError": null,
-      "updatedAt": "2026-01-23T22:43:33.587Z",
+      "lastError": "401 {\"type\":\"error\",\"error\":{\"type\":\"authentication_error\",\"message\":\"invalid x-api-key\"},\"request_id\":\"req_011CXUyJqPYKorPn6MRVYLDi\"}",
+      "updatedAt": "2026-01-25T23:34:10.794Z",
       "__v": 0
     },
     {
-      "_id": "6973f995739491b54e86f76f",
-      "runId": "7342ed17-8d86-4e50-b725-a3ec1745ef23",
+      "_id": "6976a87284607fe14a30ed88",
+      "runId": "3c2a9dd8-2049-4e10-ae1c-07d5d502e09e",
       "targetType": "chapter",
       "targetId": 1003,
-      "status": "success",
+      "status": "failed",
       "attempts": 1,
-      "lastError": null,
-      "updatedAt": "2026-01-23T22:45:28.441Z",
+      "lastError": "401 {\"type\":\"error\",\"error\":{\"type\":\"authentication_error\",\"message\":\"invalid x-api-key\"},\"request_id\":\"req_011CXUyJrQJwkMGLM4H4gXr2\"}",
+      "updatedAt": "2026-01-25T23:34:11.028Z",
       "__v": 0
     },
     {
-      "_id": "6973fa08739491b54e86f797",
-      "runId": "3de53614-0c63-4f7c-807e-c369693e8ce4",
+      "_id": "6976a87284607fe14a30ed96",
+      "runId": "692aceda-bfd3-44ce-b687-a81a1a7e9e4f",
       "targetType": "chapter",
       "targetId": 1004,
-      "status": "success",
+      "status": "failed",
       "attempts": 1,
-      "lastError": null,
-      "updatedAt": "2026-01-23T22:47:10.451Z",
+      "lastError": "401 {\"type\":\"error\",\"error\":{\"type\":\"authentication_error\",\"message\":\"invalid x-api-key\"},\"request_id\":\"req_011CXUyJsNrAPqxFuFXn5WeX\"}",
+      "updatedAt": "2026-01-25T23:34:11.253Z",
       "__v": 0
     },
     {
-      "_id": "6973fa6e739491b54e86f7c1",
-      "runId": "2a30f477-744e-4819-8fb2-239c01bb7326",
+      "_id": "6976a87284607fe14a30eda6",
+      "runId": "bdf1d961-6964-476e-891c-7edaea2429a1",
       "targetType": "chapter",
       "targetId": 1005,
-      "status": "success",
+      "status": "failed",
       "attempts": 1,
-      "lastError": null,
-      "updatedAt": "2026-01-23T22:48:38.964Z",
+      "lastError": "401 {\"type\":\"error\",\"error\":{\"type\":\"authentication_error\",\"message\":\"invalid x-api-key\"},\"request_id\":\"req_011CXUyJtVKLGSnNgA4LqQ2w\"}",
+      "updatedAt": "2026-01-25T23:34:11.520Z",
       "__v": 0
     }
   ],
