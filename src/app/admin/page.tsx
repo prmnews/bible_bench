@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 type Counts = {
   canonicalRawChapters: number;
@@ -287,6 +287,7 @@ export default function AdminDashboardPage() {
   const [error, setError] = useState<string | null>(null);
   const [isRetrying, setIsRetrying] = useState(false);
   const [dismissedAlerts, setDismissedAlerts] = useState<Set<string>>(new Set());
+  const hasPersistedDismissedAlerts = useRef(false);
 
   // Load dismissed alerts from localStorage on mount
   useEffect(() => {
@@ -319,6 +320,10 @@ export default function AdminDashboardPage() {
   }, [data?.alerts]);
 
   useEffect(() => {
+    if (!hasPersistedDismissedAlerts.current) {
+      hasPersistedDismissedAlerts.current = true;
+      return;
+    }
     localStorage.setItem("dismissed-alerts", JSON.stringify(Array.from(dismissedAlerts)));
   }, [dismissedAlerts]);
 
