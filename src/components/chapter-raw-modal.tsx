@@ -147,14 +147,14 @@ function TextPanel({
   isJson?: boolean;
 }) {
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full min-h-0">
       <div className="flex items-center justify-between mb-2">
         <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
           {title}
         </span>
         <CopyButton text={text} />
       </div>
-      <ScrollArea className="flex-1 rounded-md border border-border bg-muted/30">
+      <ScrollArea className="flex-1 min-h-0 rounded-md border border-border bg-muted/30">
         <pre
           className={cn(
             "p-3 text-sm whitespace-pre-wrap break-words",
@@ -421,96 +421,94 @@ export function ChapterRawModal({
             )}
 
             {/* Two-Column Comparison */}
-            <div className="flex-1 grid grid-cols-2 gap-4 min-h-0">
-              {/* Canonical Column */}
-              <div className="flex flex-col min-h-0">
-                <div className="shrink-0 flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-2">
-                    <FileText className="h-4 w-4 text-green-500" />
-                    <span className="text-sm font-medium">
-                      Canonical (ABS Source)
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-1 rounded-md border border-border p-0.5">
-                    <TabButton
-                      active={canonicalTab === "processed"}
-                      onClick={() => setCanonicalTab("processed")}
-                    >
-                      Processed
-                    </TabButton>
-                    <TabButton
-                      active={canonicalTab === "sourceJson"}
-                      onClick={() => setCanonicalTab("sourceJson")}
-                    >
-                      Source JSON
-                    </TabButton>
-                  </div>
-                </div>
-                <div className="flex-1 min-h-0">
-                  {!diffActive && (
-                    <TextPanel
-                      title={
-                        canonicalTab === "processed"
-                          ? "Processed Text (after transforms)"
-                          : "Source JSON (ABS API Payload)"
-                      }
-                      text={getCanonicalText()}
-                      isJson={canonicalTab === "sourceJson"}
-                    />
-                  )}
-                </div>
-              </div>
-
-              {/* LLM Column */}
-              <div className="flex flex-col min-h-0">
-                <div className="shrink-0 flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-2">
-                    <Code className="h-4 w-4 text-blue-500" />
-                    <span className="text-sm font-medium">
-                      LLM Response
-                      {data.llmResponse && (
-                        <span className="text-muted-foreground font-normal ml-1">
-                          ({data.llmResponse.modelName})
-                        </span>
-                      )}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-1 rounded-md border border-border p-0.5">
-                    <TabButton
-                      active={llmTab === "processed"}
-                      onClick={() => setLlmTab("processed")}
-                    >
-                      Processed
-                    </TabButton>
-                    <TabButton
-                      active={llmTab === "sourceJson"}
-                      onClick={() => setLlmTab("sourceJson")}
-                    >
-                      Source JSON
-                    </TabButton>
-                  </div>
-                </div>
-                <div className="flex-1 min-h-0">
-                  {!diffActive && (
-                    <TextPanel
-                      title={
-                        llmTab === "processed"
-                          ? "Processed Text (parsed from response)"
-                          : "Source JSON (from model)"
-                      }
-                      text={getLlmText()}
-                      isJson={llmTab === "sourceJson"}
-                    />
-                  )}
-                </div>
-              </div>
-
-              {diffActive && (
-                <div className="col-span-2">
+            <div className="flex-1 min-h-0">
+              {diffActive ? (
+                <ScrollArea className="h-full">
                   <DiffPanel
                     canonical={data.canonical.textProcessed}
                     llm={data.llmResponse?.extractedText ?? ""}
                   />
+                </ScrollArea>
+              ) : (
+                <div className="grid grid-cols-2 gap-4 h-full min-h-0">
+                  {/* Canonical Column */}
+                  <div className="flex flex-col min-h-0">
+                    <div className="shrink-0 flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <FileText className="h-4 w-4 text-green-500" />
+                        <span className="text-sm font-medium">
+                          Canonical (ABS Source)
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-1 rounded-md border border-border p-0.5">
+                        <TabButton
+                          active={canonicalTab === "processed"}
+                          onClick={() => setCanonicalTab("processed")}
+                        >
+                          Processed
+                        </TabButton>
+                        <TabButton
+                          active={canonicalTab === "sourceJson"}
+                          onClick={() => setCanonicalTab("sourceJson")}
+                        >
+                          Source JSON
+                        </TabButton>
+                      </div>
+                    </div>
+                    <div className="flex-1 min-h-0">
+                      <TextPanel
+                        title={
+                          canonicalTab === "processed"
+                            ? "Processed Text (after transforms)"
+                            : "Source JSON (ABS API Payload)"
+                        }
+                        text={getCanonicalText()}
+                        isJson={canonicalTab === "sourceJson"}
+                      />
+                    </div>
+                  </div>
+
+                  {/* LLM Column */}
+                  <div className="flex flex-col min-h-0">
+                    <div className="shrink-0 flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <Code className="h-4 w-4 text-blue-500" />
+                        <span className="text-sm font-medium">
+                          LLM Response
+                          {data.llmResponse && (
+                            <span className="text-muted-foreground font-normal ml-1">
+                              ({data.llmResponse.modelName})
+                            </span>
+                          )}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-1 rounded-md border border-border p-0.5">
+                        <TabButton
+                          active={llmTab === "processed"}
+                          onClick={() => setLlmTab("processed")}
+                        >
+                          Processed
+                        </TabButton>
+                        <TabButton
+                          active={llmTab === "sourceJson"}
+                          onClick={() => setLlmTab("sourceJson")}
+                        >
+                          Source JSON
+                        </TabButton>
+                      </div>
+                    </div>
+                    <div className="flex-1 min-h-0">
+                      <TextPanel
+                        title={
+                          llmTab === "processed"
+                            ? "Processed Text (parsed from response)"
+                            : "Source JSON (from model)"
+                        }
+                        text={getLlmText()}
+                        isJson={llmTab === "sourceJson"}
+                      />
+                    </div>
+                  </div>
                 </div>
               )}
             </div>

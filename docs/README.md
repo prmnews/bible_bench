@@ -1,15 +1,10 @@
-# Bible Bench Specifications
+# Bible Bench Documentation (Sprint 14)
 
-This folder contains the draft v1 specification documents:
+This folder contains current documentation for capabilities, audit/validation, and ETL operations.
+The `docs/archive/` folder is historical only and should not be used for current work.
 
-- TECHNICAL_SPEC_V1.md
-- TRANSFORM_PROFILE_SCHEMA_V1.md
-- DATA_DICTIONARY_V1.md
-- MONGODB_DATA_MODEL_V1.md
-- API_SPEC_OPENAPI_V1.md
-- API_DTO_SCHEMAS_V1.md
-- ADMIN_UI_SPEC_V1.md
-- ADMIN_UI_WIREFRAMES_V1.md
-- ETL_PARSER_SPEC_V1.md
-- PARSER_PSEUDOCODE_V1.md
+## Current Docs
+- `CAPABILITIES_FEATURES_DEMO.md` - Executive-facing capabilities, features, and demo narrative.
+- `AUDIT_AND_VALIDATION.md` - Audit trail, validation layers, and integrity safeguards.
+- `ETL_OPERATIONAL_GUIDE.md` - Step-by-step operational guidance for the ETL pipeline.
 

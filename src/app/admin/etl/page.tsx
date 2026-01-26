@@ -155,6 +155,8 @@ function ModelRunScopePanel() {
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [isCancelling, setIsCancelling] = useState(false);
   const pollingRef = useRef<NodeJS.Timeout | null>(null);
+  const isPollingRef = useRef(false);
+  const POLL_INTERVAL_MS = 500;
 
   // Load campaigns on mount
   useEffect(() => {
@@ -298,51 +300,63 @@ function ModelRunScopePanel() {
   useEffect(() => {
     if (!isRunning || currentRunIds.length === 0) {
       if (pollingRef.current) {
-        clearInterval(pollingRef.current);
+        clearTimeout(pollingRef.current);
         pollingRef.current = null;
       }
       return;
     }
 
+    let cancelled = false;
+
     const pollProgress = async () => {
+      if (cancelled || isPollingRef.current) {
+        return;
+      }
+
+      isPollingRef.current = true;
+
       // Build per-model progress map
       const newModelProgress = new Map<number, Map<number, string>>();
       let allComplete = true;
 
-      for (const runId of currentRunIds) {
-        const modelId = runModelMap.get(runId);
-        if (!modelId) continue;
+      try {
+        for (const runId of currentRunIds) {
+          const modelId = runModelMap.get(runId);
+          if (!modelId) continue;
 
-        try {
-          const res = await fetch(`/api/admin/runs/${runId}/items`);
-          const json = await res.json();
-          if (json.ok) {
-            const runStatus = json.data.status;
+          try {
+            const res = await fetch(`/api/admin/runs/${runId}/items`);
+            const json = await res.json();
+            if (json.ok) {
+              const runStatus = json.data.status;
 
-            // Check if this run is still in progress
-            if (runStatus === "running") {
-              allComplete = false;
-            }
+              // Check if this run is still in progress
+              if (runStatus === "running") {
+                allComplete = false;
+              }
 
-            // Get or create the chapter map for this model
-            let modelChapters = newModelProgress.get(modelId);
-            if (!modelChapters) {
-              modelChapters = new Map<number, string>();
-              newModelProgress.set(modelId, modelChapters);
-            }
+              // Get or create the chapter map for this model
+              let modelChapters = newModelProgress.get(modelId);
+              if (!modelChapters) {
+                modelChapters = new Map<number, string>();
+                newModelProgress.set(modelId, modelChapters);
+              }
 
-            // Update chapter progress from items for this specific model
-            for (const item of json.data.items) {
-              const existingStatus = modelChapters.get(item.targetId);
-              // If already marked as success/failed, don't overwrite
-              if (!existingStatus || existingStatus === "pending") {
-                modelChapters.set(item.targetId, item.status);
+              // Update chapter progress from items for this specific model
+              for (const item of json.data.items) {
+                const existingStatus = modelChapters.get(item.targetId);
+                // If already marked as success/failed, don't overwrite
+                if (!existingStatus || existingStatus === "pending") {
+                  modelChapters.set(item.targetId, item.status);
+                }
               }
             }
+          } catch (err) {
+            console.error("Failed to poll progress:", err);
           }
-        } catch (err) {
-          console.error("Failed to poll progress:", err);
         }
+      } finally {
+        isPollingRef.current = false;
       }
 
       setModelChapterProgress(newModelProgress);
@@ -350,7 +364,7 @@ function ModelRunScopePanel() {
       // If all runs complete, stop polling and update result
       if (allComplete) {
         if (pollingRef.current) {
-          clearInterval(pollingRef.current);
+          clearTimeout(pollingRef.current);
           pollingRef.current = null;
         }
         setIsRunning(false);
@@ -370,19 +384,22 @@ function ModelRunScopePanel() {
           message: `Completed: ${successCount} chapters successful, ${failedCount} failed`,
         });
       }
+
+      if (!cancelled && !allComplete) {
+        pollingRef.current = setTimeout(pollProgress, POLL_INTERVAL_MS);
+      }
     };
 
     // Initial poll immediately
     pollProgress();
 
-    // Then poll every 2 seconds
-    pollingRef.current = setInterval(pollProgress, 2000);
-
     return () => {
+      cancelled = true;
       if (pollingRef.current) {
-        clearInterval(pollingRef.current);
+        clearTimeout(pollingRef.current);
         pollingRef.current = null;
       }
+      isPollingRef.current = false;
     };
   }, [isRunning, currentRunIds, runModelMap]);
 
