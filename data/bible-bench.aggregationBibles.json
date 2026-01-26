@@ -1,48 +1,50 @@
 [{
   "_id": {
-    "$oid": "6973f14fa88318b065cf0c53"
+    "$oid": "697634eea88318b065d391c9"
   },
-  "bookCount": 1,
-  "chapterCount": 1,
-  "verseCount": 31,
-  "matchCount": 31,
+  "bookCount": 8,
+  "chapterCount": 129,
+  "verseCount": 4044,
+  "matchCount": 2751,
   "evaluatedAt": {
-    "$date": "2026-01-23T00:13:29.609Z"
+    "$date": "2026-01-24T20:44:13.699Z"
   },
-  "modelId": 9,
+  "campaignTag": "Testing",
+  "modelId": 10,
   "bibleId": 1001,
-  "avgFidelity": 100,
-  "perfectRate": 1
+  "avgFidelity": 93.76,
+  "perfectRate": 0.6803
 },
 {
   "_id": {
-    "$oid": "6973f14fa88318b065cf0c54"
+    "$oid": "697634eea88318b065d391ca"
   },
   "bookCount": 1,
-  "chapterCount": 18,
-  "verseCount": 484,
-  "matchCount": 357,
+  "chapterCount": 50,
+  "verseCount": 1533,
+  "matchCount": 493,
   "evaluatedAt": {
-    "$date": "2026-01-22T23:52:33.579Z"
-  },
-  "modelId": 3,
-  "bibleId": 1001,
-  "avgFidelity": 94.3,
-  "perfectRate": 0.7376
-},
-{
-  "_id": {
-    "$oid": "6973f14fa88318b065cf0c55"
-  },
-  "bookCount": 1,
-  "chapterCount": 1,
-  "verseCount": 31,
-  "matchCount": 29,
-  "evaluatedAt": {
-    "$date": "2026-01-23T21:33:49.576Z"
+    "$date": "2026-01-24T05:53:25.731Z"
   },
   "modelId": 2,
   "bibleId": 1001,
-  "avgFidelity": 99.91,
-  "perfectRate": 0.9355
+  "avgFidelity": 71.74,
+  "perfectRate": 0.3216
+},
+{
+  "_id": {
+    "$oid": "697634eea88318b065d391cb"
+  },
+  "bookCount": 8,
+  "chapterCount": 129,
+  "verseCount": 4044,
+  "matchCount": 3533,
+  "evaluatedAt": {
+    "$date": "2026-01-24T20:44:11.960Z"
+  },
+  "campaignTag": "Testing",
+  "modelId": 6,
+  "bibleId": 1001,
+  "avgFidelity": 98.62,
+  "perfectRate": 0.8736
 }]

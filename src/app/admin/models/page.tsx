@@ -10,7 +10,6 @@ type Model = {
   routingMethod: string;
   isActive: boolean;
   apiConfigEncrypted?: {
-    apiKey?: string;
     model?: string;
     maxTokens?: number;
     systemPromptOverride?: string;
@@ -25,7 +24,6 @@ type ModelFormData = {
   version: string;
   routingMethod: string;
   isActive: boolean;
-  apiKey: string;
   modelName: string;
   maxTokens: string;
   systemPromptOverride: string;
@@ -41,7 +39,6 @@ const DEFAULT_FORM: ModelFormData = {
   version: "",
   routingMethod: "direct",
   isActive: true,
-  apiKey: "",
   modelName: "",
   maxTokens: "4096",
   systemPromptOverride: "",
@@ -187,21 +184,9 @@ function ModelForm({
         </div>
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-foreground">
-          API Key
-        </label>
-        <input
-          type="password"
-          name="apiKey"
-          value={form.apiKey}
-          onChange={handleChange}
-          className="mt-1 block w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
-          placeholder="sk-..."
-        />
-        <p className="mt-1 text-xs text-muted-foreground">
-          Leave blank to keep existing key when editing
-        </p>
+      <div className="rounded-md border border-border bg-muted/50 p-3 text-xs text-muted-foreground">
+        API keys are sourced from environment variables and are not stored in the database.
+        Use OPENAI_API_KEY, ANTHROPIC_API_KEY, or GEMINI_API_KEY based on provider.
       </div>
 
       {/* Advanced Settings */}
@@ -396,11 +381,6 @@ export default function AdminModelsPage() {
       if (data.maxTokens) {
         apiConfigEncrypted.maxTokens = Number(data.maxTokens);
       }
-      if (data.apiKey) {
-        apiConfigEncrypted.apiKey = data.apiKey;
-      } else if (editingModel?.apiConfigEncrypted?.apiKey) {
-        apiConfigEncrypted.apiKey = editingModel.apiConfigEncrypted.apiKey;
-      }
       // Include system prompt override if provided
       if (data.systemPromptOverride.trim()) {
         apiConfigEncrypted.systemPromptOverride = data.systemPromptOverride.trim();
@@ -506,7 +486,6 @@ export default function AdminModelsPage() {
         version: editingModel.version,
         routingMethod: editingModel.routingMethod,
         isActive: editingModel.isActive,
-        apiKey: "",
         modelName: editingModel.apiConfigEncrypted?.model ?? "",
         maxTokens: String(editingModel.apiConfigEncrypted?.maxTokens ?? 4096),
         systemPromptOverride: editingModel.apiConfigEncrypted?.systemPromptOverride ?? "",

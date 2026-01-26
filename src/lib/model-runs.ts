@@ -23,6 +23,35 @@ import {
   type CanonicalVerse,
 } from "@/lib/verse-parser";
 
+const DEBUG_LOG_ENDPOINT = process.env.DEBUG_LOG_ENDPOINT;
+
+function sendDebugLog(payload: Record<string, unknown>) {
+  if (!DEBUG_LOG_ENDPOINT) {
+    return;
+  }
+
+  fetch(DEBUG_LOG_ENDPOINT, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  }).catch(() => {});
+}
+
+function ensureLeadingVerseNumber(text: string, verseNumber: number): string {
+  const trimmed = text.trim();
+  if (!trimmed) {
+    return text;
+  }
+
+  const bracketPattern = new RegExp(`^\\[\\s*${verseNumber}\\s*\\]`);
+  const plainPattern = new RegExp(`^${verseNumber}(\\D|$)`);
+  if (bracketPattern.test(trimmed) || plainPattern.test(trimmed)) {
+    return text;
+  }
+
+  return `${verseNumber} ${trimmed}`;
+}
+
 type RunType = "MODEL_CHAPTER" | "MODEL_VERSE";
 type RunScope = "bible" | "book" | "chapter" | "verse";
 type RunTargetType = "chapter" | "verse";
@@ -325,7 +354,21 @@ async function executeRunItems(params: {
         }
 
         // #region agent log
-        fetch('http://127.0.0.1:7246/ingest/3ff6390d-24c9-4902-b3c7-355c7ec4a00e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'model-runs.ts:CHAPTER-START',message:'Starting chapter model run',data:{runId,modelId,targetId,reference:chapter.reference,verseCount:canonicalVerses.length,provider:model.provider},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'ALL'})}).catch(()=>{});
+        sendDebugLog({
+          location: "model-runs.ts:CHAPTER-START",
+          message: "Starting chapter model run",
+          data: {
+            runId,
+            modelId,
+            targetId,
+            reference: chapter.reference,
+            verseCount: canonicalVerses.length,
+            provider: model.provider,
+          },
+          timestamp: Date.now(),
+          sessionId: "debug-session",
+          hypothesisId: "ALL",
+        });
         // #endregion
 
         const startTime = Date.now();
@@ -347,7 +390,22 @@ async function executeRunItems(params: {
         const latencyMs = Date.now() - startTime;
 
         // #region agent log
-        fetch('http://127.0.0.1:7246/ingest/3ff6390d-24c9-4902-b3c7-355c7ec4a00e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'model-runs.ts:CHAPTER-RESPONSE',message:'Chapter model response received',data:{runId,targetId,latencyMs,responseRawLength:responseRaw?.length||0,hasParsed:!!parsed,parseError,hasExtractedText:!!extractedText},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'ALL'})}).catch(()=>{});
+        sendDebugLog({
+          location: "model-runs.ts:CHAPTER-RESPONSE",
+          message: "Chapter model response received",
+          data: {
+            runId,
+            targetId,
+            latencyMs,
+            responseRawLength: responseRaw?.length || 0,
+            hasParsed: !!parsed,
+            parseError,
+            hasExtractedText: !!extractedText,
+          },
+          timestamp: Date.now(),
+          sessionId: "debug-session",
+          hypothesisId: "ALL",
+        });
         // #endregion
         const latencyPerVerse = Math.round(latencyMs / canonicalVerses.length);
 
@@ -394,7 +452,10 @@ async function executeRunItems(params: {
         // Create verse results for each canonical verse
         for (const mapped of mapResult.mapped) {
           // Apply transform profile to extracted verse text
-          const extractedText = mapped.extractedText;
+          const extractedText = ensureLeadingVerseNumber(
+            mapped.extractedText,
+            mapped.verseNumber
+          );
           const responseProcessed = modelProfile
             ? applyTransformProfile(extractedText, modelProfile)
             : extractedText;
@@ -486,9 +547,13 @@ async function executeRunItems(params: {
         }
 
         // Apply minimal normalization to extracted text (whitespace/trim only)
+        const normalizedExtractedText = ensureLeadingVerseNumber(
+          extractedText,
+          verse.verseNumber
+        );
         const responseProcessed = modelProfile
-          ? applyTransformProfile(extractedText, modelProfile)
-          : extractedText;
+          ? applyTransformProfile(normalizedExtractedText, modelProfile)
+          : normalizedExtractedText;
         const hashRaw = sha256(responseRaw);
         const hashProcessed = sha256(responseProcessed);
         const hashMatch = hashProcessed === verse.hashProcessed;
@@ -547,7 +612,14 @@ async function executeRunItems(params: {
       lastErrorAt = new Date();
 
       // #region agent log
-      fetch('http://127.0.0.1:7246/ingest/3ff6390d-24c9-4902-b3c7-355c7ec4a00e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'model-runs.ts:ITEM-ERROR',message:'Run item failed with error',data:{runId,targetId,errorName,errorMessage:message},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'ALL'})}).catch(()=>{});
+      sendDebugLog({
+        location: "model-runs.ts:ITEM-ERROR",
+        message: "Run item failed with error",
+        data: { runId, targetId, errorName, errorMessage: message },
+        timestamp: Date.now(),
+        sessionId: "debug-session",
+        hypothesisId: "ALL",
+      });
       // #endregion
 
       await RunItemModel.updateOne(

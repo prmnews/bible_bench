@@ -80,7 +80,7 @@
     "collection": "models",
     "documentCount": 10,
     "sampleSize": 5,
-    "fieldCount": 22,
+    "fieldCount": 21,
     "validationErrorCount": 0
   },
   {
@@ -92,57 +92,57 @@
   },
   {
     "collection": "runs",
-    "documentCount": 314,
+    "documentCount": 421,
     "sampleSize": 3,
-    "fieldCount": 22,
+    "fieldCount": 27,
     "validationErrorCount": 0
   },
   {
     "collection": "runItems",
-    "documentCount": 314,
+    "documentCount": 421,
     "sampleSize": 5,
     "fieldCount": 9,
     "validationErrorCount": 0
   },
   {
     "collection": "llmRawResponses",
-    "documentCount": 325,
+    "documentCount": 191,
     "sampleSize": 3,
     "fieldCount": 21,
     "validationErrorCount": 0
   },
   {
     "collection": "llmVerseResults",
-    "documentCount": 9683,
+    "documentCount": 3380,
     "sampleSize": 5,
-    "fieldCount": 25,
+    "fieldCount": 26,
     "validationErrorCount": 0
   },
   {
     "collection": "aggregationChapters",
-    "documentCount": 308,
+    "documentCount": 116,
     "sampleSize": 3,
     "fieldCount": 11,
     "validationErrorCount": 0
   },
   {
     "collection": "aggregationBooks",
-    "documentCount": 17,
+    "documentCount": 10,
     "sampleSize": 3,
     "fieldCount": 11,
     "validationErrorCount": 0
   },
   {
     "collection": "aggregationBibles",
-    "documentCount": 3,
-    "sampleSize": 3,
+    "documentCount": 2,
+    "sampleSize": 2,
     "fieldCount": 11,
     "validationErrorCount": 0
   },
   {
     "collection": "schemaValidatorRuns",
-    "documentCount": 3,
-    "sampleSize": 2,
+    "documentCount": 1,
+    "sampleSize": 1,
     "fieldCount": 11,
     "validationErrorCount": 0
   },

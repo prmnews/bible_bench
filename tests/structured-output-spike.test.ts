@@ -56,6 +56,21 @@ type ChapterResponse = {
   verses: ChapterVerseData[];
 };
 
+function isSkippableProviderError(message?: string | null): boolean {
+  if (!message) {
+    return false;
+  }
+
+  const normalized = message.toLowerCase();
+  return (
+    normalized.includes("not set") ||
+    normalized.includes("429") ||
+    normalized.includes("quota") ||
+    normalized.includes("rate limit") ||
+    normalized.includes("resource exhausted")
+  );
+}
+
 // Schema definition for reference (used in prompts, not programmatically)
 // {
 //   book: string - The book name
@@ -394,8 +409,8 @@ describe("Structured Output Spike - Genesis 1:1", () => {
     printResult(result);
     
     // Don't fail the test if API key missing, just report
-    if (result.parseError?.includes("not set")) {
-      console.log("  ⚠️  Skipped (no API key)");
+    if (isSkippableProviderError(result.parseError)) {
+      console.log("  ⚠️  Skipped (no API key or rate limited)");
       return;
     }
     
@@ -407,8 +422,8 @@ describe("Structured Output Spike - Genesis 1:1", () => {
     const result = await testAnthropic();
     printResult(result);
     
-    if (result.parseError?.includes("not set")) {
-      console.log("  ⚠️  Skipped (no API key)");
+    if (isSkippableProviderError(result.parseError)) {
+      console.log("  ⚠️  Skipped (no API key or rate limited)");
       return;
     }
     
@@ -420,8 +435,8 @@ describe("Structured Output Spike - Genesis 1:1", () => {
     const result = await testGemini();
     printResult(result);
     
-    if (result.parseError?.includes("not set")) {
-      console.log("  ⚠️  Skipped (no API key)");
+    if (isSkippableProviderError(result.parseError)) {
+      console.log("  ⚠️  Skipped (no API key or rate limited)");
       return;
     }
     
@@ -452,7 +467,11 @@ describe("Structured Output Spike - Genesis 1:1", () => {
     console.log("-".repeat(70));
 
     for (const r of results) {
-      const jsonParse = r.parsed ? "✓" : r.parseError?.includes("not set") ? "⚠️ skip" : "✗";
+      const jsonParse = r.parsed
+        ? "✓"
+        : isSkippableProviderError(r.parseError)
+          ? "⚠️ skip"
+          : "✗";
       const schemaOk = r.validationErrors.length === 0 ? "✓" : "✗";
       const hashMatch = r.hashMatch ? "✓" : "✗";
       const fidelity = r.fidelityScore !== null ? `${r.fidelityScore}%` : "-";
@@ -831,8 +850,8 @@ describe("Structured Output Spike - Chapter (Psalm 117)", () => {
     const result = await testOpenAIChapter();
     printChapterResult(result);
     
-    if (result.parseError?.includes("not set")) {
-      console.log("  ⚠️  Skipped (no API key)");
+    if (isSkippableProviderError(result.parseError)) {
+      console.log("  ⚠️  Skipped (no API key or rate limited)");
       return;
     }
     
@@ -845,8 +864,8 @@ describe("Structured Output Spike - Chapter (Psalm 117)", () => {
     const result = await testAnthropicChapter();
     printChapterResult(result);
     
-    if (result.parseError?.includes("not set")) {
-      console.log("  ⚠️  Skipped (no API key)");
+    if (isSkippableProviderError(result.parseError)) {
+      console.log("  ⚠️  Skipped (no API key or rate limited)");
       return;
     }
     
@@ -859,8 +878,8 @@ describe("Structured Output Spike - Chapter (Psalm 117)", () => {
     const result = await testGeminiChapter();
     printChapterResult(result);
     
-    if (result.parseError?.includes("not set")) {
-      console.log("  ⚠️  Skipped (no API key)");
+    if (isSkippableProviderError(result.parseError)) {
+      console.log("  ⚠️  Skipped (no API key or rate limited)");
       return;
     }
     
@@ -891,7 +910,11 @@ describe("Structured Output Spike - Chapter (Psalm 117)", () => {
     console.log("-".repeat(70));
 
     for (const r of results) {
-      const jsonParse = r.parsed ? "✓" : r.parseError?.includes("not set") ? "⚠️ skip" : "✗";
+      const jsonParse = r.parsed
+        ? "✓"
+        : isSkippableProviderError(r.parseError)
+          ? "⚠️ skip"
+          : "✗";
       const hasArray = Array.isArray(r.parsed?.verses) ? "✓" : "✗";
       const verseCount = r.verseCount === PSALM_117.verses.length 
         ? `✓ ${r.verseCount}` 

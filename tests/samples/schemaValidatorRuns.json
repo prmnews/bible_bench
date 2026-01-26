@@ -1,60 +1,65 @@
 {
   "collection": "schemaValidatorRuns",
-  "documentCount": 3,
-  "sampleSize": 2,
+  "documentCount": 1,
+  "sampleSize": 1,
   "fieldAnalysis": {
     "_id": {
       "type": "ObjectId",
-      "count": 2,
-      "sample": "69706816ab0956a7f7276352"
+      "count": 1,
+      "sample": "6976a40b84607fe14a30d42d"
     },
     "runId": {
       "type": "string",
-      "count": 2,
-      "sample": "f78e51f7-f791-4987-85ae-a15a6e21f164"
+      "count": 1,
+      "sample": "77271cc4-7d83-4562-ba38-5e33dc661a23"
     },
     "dryRun": {
       "type": "boolean",
-      "count": 2,
+      "count": 1,
       "sample": false
     },
     "startedAt": {
       "type": "date",
-      "count": 2,
-      "sample": "2026-01-21T05:45:57.888Z"
+      "count": 1,
+      "sample": "2026-01-25T23:15:22.608Z"
     },
     "completedAt": {
       "type": "date",
-      "count": 2,
-      "sample": "2026-01-21T05:45:58.426Z"
+      "count": 1,
+      "sample": "2026-01-25T23:15:23.110Z"
     },
     "success": {
       "type": "boolean",
-      "count": 2,
+      "count": 1,
       "sample": true
     },
     "results": {
       "type": "array",
-      "count": 2,
+      "count": 1,
       "sample": [
         {
           "name": "dimLanguages",
-          "action": "create",
+          "action": "update",
           "ok": true
         },
         {
           "name": "dimBibles",
-          "action": "create",
+          "action": "update",
           "ok": true
         },
         {
           "name": "dimBooks",
-          "action": "create",
+          "action": "update",
           "ok": true
         },
         {
           "name": "dimChapters",
-          "action": "create",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "dimCampaigns",
+          "action": "update",
           "ok": true
         },
         {
@@ -99,17 +104,17 @@
         },
         {
           "name": "transformProfiles",
-          "action": "create",
+          "action": "update",
           "ok": true
         },
         {
           "name": "runs",
-          "action": "create",
+          "action": "update",
           "ok": true
         },
         {
           "name": "runItems",
-          "action": "create",
+          "action": "update",
           "ok": true
         },
         {
@@ -138,190 +143,45 @@
           "ok": true
         },
         {
-          "name": "canonicalTestVerses",
-          "action": "create",
-          "ok": true
-        },
-        {
           "name": "appConfig",
           "action": "update",
           "ok": true
         },
         {
           "name": "schemaValidatorRuns",
-          "action": "create",
-          "ok": true
-        },
-        {
-          "name": "etlRuns",
-          "action": "create",
+          "action": "update",
           "ok": true
         }
       ]
     },
     "audit": {
       "type": "object",
-      "count": 2,
+      "count": 1,
       "sample": "[object]"
     },
     "audit.createdAt": {
       "type": "date",
-      "count": 2,
-      "sample": "2026-01-21T05:45:57.888Z"
+      "count": 1,
+      "sample": "2026-01-25T23:15:22.608Z"
     },
     "audit.createdBy": {
       "type": "string",
-      "count": 2,
+      "count": 1,
       "sample": "admin"
     },
     "__v": {
       "type": "number",
-      "count": 2,
+      "count": 1,
       "sample": 0
     }
   },
   "samples": [
     {
-      "_id": "69706816ab0956a7f7276352",
-      "runId": "f78e51f7-f791-4987-85ae-a15a6e21f164",
+      "_id": "6976a40b84607fe14a30d42d",
+      "runId": "77271cc4-7d83-4562-ba38-5e33dc661a23",
       "dryRun": false,
-      "startedAt": "2026-01-21T05:45:57.888Z",
-      "completedAt": "2026-01-21T05:45:58.426Z",
-      "success": true,
-      "results": [
-        {
-          "name": "dimLanguages",
-          "action": "create",
-          "ok": true
-        },
-        {
-          "name": "dimBibles",
-          "action": "create",
-          "ok": true
-        },
-        {
-          "name": "dimBooks",
-          "action": "create",
-          "ok": true
-        },
-        {
-          "name": "dimChapters",
-          "action": "create",
-          "ok": true
-        },
-        {
-          "name": "canonicalLanguages",
-          "action": "update",
-          "ok": true
-        },
-        {
-          "name": "canonicalBibles",
-          "action": "update",
-          "ok": true
-        },
-        {
-          "name": "canonicalBooks",
-          "action": "update",
-          "ok": true
-        },
-        {
-          "name": "canonicalRawChapters",
-          "action": "update",
-          "ok": true
-        },
-        {
-          "name": "canonicalChapters",
-          "action": "update",
-          "ok": true
-        },
-        {
-          "name": "canonicalVerses",
-          "action": "update",
-          "ok": true
-        },
-        {
-          "name": "models",
-          "action": "update",
-          "ok": true
-        },
-        {
-          "name": "modelProfileMap",
-          "action": "update",
-          "ok": true
-        },
-        {
-          "name": "transformProfiles",
-          "action": "create",
-          "ok": true
-        },
-        {
-          "name": "runs",
-          "action": "create",
-          "ok": true
-        },
-        {
-          "name": "runItems",
-          "action": "create",
-          "ok": true
-        },
-        {
-          "name": "llmRawResponses",
-          "action": "update",
-          "ok": true
-        },
-        {
-          "name": "llmVerseResults",
-          "action": "update",
-          "ok": true
-        },
-        {
-          "name": "aggregationChapters",
-          "action": "update",
-          "ok": true
-        },
-        {
-          "name": "aggregationBooks",
-          "action": "update",
-          "ok": true
-        },
-        {
-          "name": "aggregationBibles",
-          "action": "update",
-          "ok": true
-        },
-        {
-          "name": "canonicalTestVerses",
-          "action": "create",
-          "ok": true
-        },
-        {
-          "name": "appConfig",
-          "action": "update",
-          "ok": true
-        },
-        {
-          "name": "schemaValidatorRuns",
-          "action": "create",
-          "ok": true
-        },
-        {
-          "name": "etlRuns",
-          "action": "create",
-          "ok": true
-        }
-      ],
-      "audit": {
-        "createdAt": "2026-01-21T05:45:57.888Z",
-        "createdBy": "admin"
-      },
-      "__v": 0
-    },
-    {
-      "_id": "69715cf7def6595e713740f2",
-      "runId": "27a2332a-a047-4fa9-93b4-5b2f8983aa34",
-      "dryRun": false,
-      "startedAt": "2026-01-21T23:10:46.913Z",
-      "completedAt": "2026-01-21T23:10:47.434Z",
+      "startedAt": "2026-01-25T23:15:22.608Z",
+      "completedAt": "2026-01-25T23:15:23.110Z",
       "success": true,
       "results": [
         {
@@ -341,6 +201,11 @@
         },
         {
           "name": "dimChapters",
+          "action": "update",
+          "ok": true
+        },
+        {
+          "name": "dimCampaigns",
           "action": "update",
           "ok": true
         },
@@ -425,11 +290,6 @@
           "ok": true
         },
         {
-          "name": "canonicalTestVerses",
-          "action": "update",
-          "ok": true
-        },
-        {
           "name": "appConfig",
           "action": "update",
           "ok": true
@@ -438,15 +298,10 @@
           "name": "schemaValidatorRuns",
           "action": "update",
           "ok": true
-        },
-        {
-          "name": "etlRuns",
-          "action": "update",
-          "ok": true
         }
       ],
       "audit": {
-        "createdAt": "2026-01-21T23:10:46.913Z",
+        "createdAt": "2026-01-25T23:15:22.608Z",
         "createdBy": "admin"
       },
       "__v": 0

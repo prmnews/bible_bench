@@ -60,6 +60,20 @@ function validateCapabilities(value: unknown): ModelCapabilitiesPayload | null {
   return flags;
 }
 
+function stripApiKey(
+  value: Record<string, unknown> | null | undefined
+): Record<string, unknown> | null | undefined {
+  if (!isRecord(value)) {
+    return value;
+  }
+
+  const rest = { ...value };
+  if ("apiKey" in rest) {
+    delete rest.apiKey;
+  }
+  return rest;
+}
+
 function validatePayload(payload: unknown): ValidationResult {
   if (!isRecord(payload)) {
     return { ok: false, error: "Body must be a JSON object." };
@@ -113,7 +127,7 @@ function validatePayload(payload: unknown): ValidationResult {
     if (value !== null && !isRecord(value)) {
       return { ok: false, error: "apiConfigEncrypted must be an object or null." };
     }
-    update.apiConfigEncrypted = value as Record<string, unknown> | null;
+    update.apiConfigEncrypted = stripApiKey(value as Record<string, unknown> | null);
   }
 
   if (payload["capabilities"] !== undefined) {

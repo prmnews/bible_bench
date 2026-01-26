@@ -6,7 +6,7 @@
     "_id": {
       "type": "ObjectId",
       "count": 10,
-      "sample": "69715d01def6595e71374182"
+      "sample": "6976a7f684607fe14a30e419"
     },
     "chapterId": {
       "type": "number",
@@ -51,7 +51,7 @@
     "audit.createdAt": {
       "type": "date",
       "count": 10,
-      "sample": "2026-01-21T23:10:57.736Z"
+      "sample": "2026-01-25T23:32:06.927Z"
     },
     "audit.createdBy": {
       "type": "string",
@@ -66,7 +66,7 @@
   },
   "samples": [
     {
-      "_id": "69715d01def6595e71374182",
+      "_id": "6976a7f684607fe14a30e419",
       "chapterId": 1001,
       "bibleId": 1001,
       "bookId": 10,
@@ -75,13 +75,13 @@
       "chapterName": "The Creation",
       "verseCount": 31,
       "audit": {
-        "createdAt": "2026-01-21T23:10:57.736Z",
+        "createdAt": "2026-01-25T23:32:06.927Z",
         "createdBy": "seed"
       },
       "__v": 0
     },
     {
-      "_id": "69715d01def6595e71374184",
+      "_id": "6976a7f684607fe14a30e41b",
       "chapterId": 1002,
       "bibleId": 1001,
       "bookId": 10,
@@ -90,13 +90,13 @@
       "chapterName": "The Creation of Man and Woman",
       "verseCount": 25,
       "audit": {
-        "createdAt": "2026-01-21T23:10:57.736Z",
+        "createdAt": "2026-01-25T23:32:06.927Z",
         "createdBy": "seed"
       },
       "__v": 0
     },
     {
-      "_id": "69715d01def6595e71374186",
+      "_id": "6976a7f784607fe14a30e41d",
       "chapterId": 1003,
       "bibleId": 1001,
       "bookId": 10,
@@ -105,13 +105,13 @@
       "chapterName": "The Fall of Man",
       "verseCount": 24,
       "audit": {
-        "createdAt": "2026-01-21T23:10:57.736Z",
+        "createdAt": "2026-01-25T23:32:06.927Z",
         "createdBy": "seed"
       },
       "__v": 0
     },
     {
-      "_id": "69715d01def6595e71374188",
+      "_id": "6976a7f784607fe14a30e41f",
       "chapterId": 1004,
       "bibleId": 1001,
       "bookId": 10,
@@ -120,13 +120,13 @@
       "chapterName": "Cain and Abel",
       "verseCount": 26,
       "audit": {
-        "createdAt": "2026-01-21T23:10:57.736Z",
+        "createdAt": "2026-01-25T23:32:06.927Z",
         "createdBy": "seed"
       },
       "__v": 0
     },
     {
-      "_id": "69715d01def6595e7137418a",
+      "_id": "6976a7f784607fe14a30e421",
       "chapterId": 1005,
       "bibleId": 1001,
       "bookId": 10,
@@ -135,13 +135,13 @@
       "chapterName": "Descendants of Adam",
       "verseCount": 32,
       "audit": {
-        "createdAt": "2026-01-21T23:10:57.736Z",
+        "createdAt": "2026-01-25T23:32:06.927Z",
         "createdBy": "seed"
       },
       "__v": 0
     },
     {
-      "_id": "69715d02def6595e7137418c",
+      "_id": "6976a7f784607fe14a30e423",
       "chapterId": 1006,
       "bibleId": 1001,
       "bookId": 10,
@@ -150,13 +150,13 @@
       "chapterName": "The Corruption of Mankind",
       "verseCount": 22,
       "audit": {
-        "createdAt": "2026-01-21T23:10:57.736Z",
+        "createdAt": "2026-01-25T23:32:06.927Z",
         "createdBy": "seed"
       },
       "__v": 0
     },
     {
-      "_id": "69715d02def6595e7137418e",
+      "_id": "6976a7f784607fe14a30e425",
       "chapterId": 1007,
       "bibleId": 1001,
       "bookId": 10,
@@ -165,13 +165,13 @@
       "chapterName": "The Flood",
       "verseCount": 24,
       "audit": {
-        "createdAt": "2026-01-21T23:10:57.736Z",
+        "createdAt": "2026-01-25T23:32:06.927Z",
         "createdBy": "seed"
       },
       "__v": 0
     },
     {
-      "_id": "69715d02def6595e71374190",
+      "_id": "6976a7f784607fe14a30e427",
       "chapterId": 1008,
       "bibleId": 1001,
       "bookId": 10,
@@ -180,13 +180,13 @@
       "chapterName": "The Flood Subsides",
       "verseCount": 22,
       "audit": {
-        "createdAt": "2026-01-21T23:10:57.736Z",
+        "createdAt": "2026-01-25T23:32:06.927Z",
         "createdBy": "seed"
       },
       "__v": 0
     },
     {
-      "_id": "69715d02def6595e71374192",
+      "_id": "6976a7f784607fe14a30e429",
       "chapterId": 1009,
       "bibleId": 1001,
       "bookId": 10,
@@ -195,13 +195,13 @@
       "chapterName": "Covenant of the Rainbow",
       "verseCount": 29,
       "audit": {
-        "createdAt": "2026-01-21T23:10:57.736Z",
+        "createdAt": "2026-01-25T23:32:06.927Z",
         "createdBy": "seed"
       },
       "__v": 0
     },
     {
-      "_id": "69715d02def6595e71374194",
+      "_id": "6976a7f784607fe14a30e42b",
       "chapterId": 1010,
       "bibleId": 1001,
       "bookId": 10,
@@ -210,7 +210,7 @@
       "chapterName": "Descendants of Noah",
       "verseCount": 32,
       "audit": {
-        "createdAt": "2026-01-21T23:10:57.736Z",
+        "createdAt": "2026-01-25T23:32:06.927Z",
         "createdBy": "seed"
       },
       "__v": 0

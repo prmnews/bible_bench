@@ -61,7 +61,11 @@ export function flattenAbsText(payload: unknown) {
 export function flattenAbsTextWithBrackets(payload: unknown): string {
   const verses = extractAbsVerses(payload);
   return verses
-    .map((v) => `[${v.verseId}] ${v.textRaw}`)
+    .map((v) => {
+      const verseLabel = v.verseId.trim();
+      const cleanedText = v.textRaw.replace(/^\s*\d+\s*/, "").trim();
+      return `[${verseLabel}] ${cleanedText}`;
+    })
     .join(" ");
 }
 

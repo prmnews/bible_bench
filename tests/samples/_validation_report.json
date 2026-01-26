@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-01-25T18:42:44.471Z",
+  "timestamp": "2026-01-26T00:40:16.497Z",
   "sampleSize": 50,
   "totalErrors": 0,
   "collectionStats": {
@@ -44,8 +44,8 @@
       "errors": 0
     },
     "schemaValidatorRuns": {
-      "total": 3,
-      "sampled": 3,
+      "total": 1,
+      "sampled": 1,
       "errors": 0
     }
   },

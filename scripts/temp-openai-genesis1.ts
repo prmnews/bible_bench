@@ -83,6 +83,28 @@ function parseOptionalNumber(value: string | undefined): number | null {
   return Number.isFinite(parsed) ? parsed : null;
 }
 
+const PROVIDER_API_KEY_ENV: Record<string, string> = {
+  openai: "OPENAI_API_KEY",
+  anthropic: "ANTHROPIC_API_KEY",
+  google: "GEMINI_API_KEY",
+  gemini: "GEMINI_API_KEY",
+};
+
+function resolveProviderApiKey(provider: string): string {
+  const normalized = provider.trim().toLowerCase();
+  const envKey = PROVIDER_API_KEY_ENV[normalized];
+  if (!envKey) {
+    throw new Error(`Unsupported provider "${provider}" for API key resolution.`);
+  }
+
+  const apiKey = process.env[envKey];
+  if (!apiKey) {
+    throw new Error(`Missing ${envKey} for ${provider} provider.`);
+  }
+
+  return apiKey;
+}
+
 function parseChapterResponse(raw: string): { parsed: ChapterResponse | null; error: string | null } {
   try {
     const jsonStr = cleanJsonString(raw);
@@ -166,28 +188,6 @@ async function loadTargetPayload(targetType: TargetType, reference: string) {
   };
 }
 
-function withEnvApiKey(model: ModelRecord): ModelRecord {
-  const provider = model.provider.toLowerCase();
-  const apiConfig = isRecord(model.apiConfigEncrypted)
-    ? { ...model.apiConfigEncrypted }
-    : {};
-
-  if (typeof apiConfig.apiKey !== "string" || apiConfig.apiKey.trim().length === 0) {
-    if (provider === "openai") {
-      apiConfig.apiKey = process.env.OPENAI_API_KEY ?? "";
-    } else if (provider === "anthropic") {
-      apiConfig.apiKey = process.env.ANTHROPIC_API_KEY ?? "";
-    } else if (provider === "google" || provider === "gemini") {
-      apiConfig.apiKey = process.env.GEMINI_API_KEY ?? process.env.GOOGLE_API_KEY ?? "";
-    }
-  }
-
-  return {
-    ...model,
-    apiConfigEncrypted: apiConfig,
-  };
-}
-
 async function runDbModelSweep() {
   console.log("[mode] DB model mode enabled");
   await connectToDatabase();
@@ -208,27 +208,20 @@ async function runDbModelSweep() {
     console.log("[target] Reference:", target.reference);
     console.log("[target] ID:", target.targetId);
 
-    const hydrated = withEnvApiKey(model);
-    const provider = hydrated.provider;
-    const modelName = isRecord(hydrated.apiConfigEncrypted)
-      ? String(hydrated.apiConfigEncrypted.model ?? "")
+    const provider = model.provider;
+    const providerNormalized = provider.toLowerCase();
+    const modelName = isRecord(model.apiConfigEncrypted)
+      ? String(model.apiConfigEncrypted.model ?? "")
       : "";
-    const apiKeyValue = isRecord(hydrated.apiConfigEncrypted)
-      ? String(hydrated.apiConfigEncrypted.apiKey ?? "")
-      : "";
+    const apiKeyValue = providerNormalized === "mock" ? "" : resolveProviderApiKey(provider);
 
     console.log("\n" + "-".repeat(80));
-    console.log(`[model] ${hydrated.displayName ?? "unknown"}`);
-    console.log(`  Model ID: ${hydrated.modelId ?? "?"}`);
+    console.log(`[model] ${model.displayName ?? "unknown"}`);
+    console.log(`  Model ID: ${model.modelId ?? "?"}`);
     console.log(`  Provider: ${provider}`);
-    console.log(`  Version: ${hydrated.version ?? "?"}`);
+    console.log(`  Version: ${model.version ?? "?"}`);
     console.log(`  Model name: ${modelName || "(none)"}`);
     console.log(`  API key present: ${Boolean(apiKeyValue)} (len: ${apiKeyValue.length})`);
-
-    if (!apiKeyValue && provider !== "mock") {
-      console.warn("  [skip] Missing API key for provider.");
-      return;
-    }
 
     const start = Date.now();
     try {
@@ -240,8 +233,8 @@ async function runDbModelSweep() {
         canonicalProcessed: target.canonicalProcessed,
         model: {
           provider,
-          apiConfigEncrypted: isRecord(hydrated.apiConfigEncrypted)
-            ? hydrated.apiConfigEncrypted
+          apiConfigEncrypted: isRecord(model.apiConfigEncrypted)
+            ? model.apiConfigEncrypted
             : undefined,
         },
       });

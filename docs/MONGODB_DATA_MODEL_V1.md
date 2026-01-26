@@ -202,7 +202,10 @@ This document shows collection shapes and sample documents for MongoDB Atlas. Th
   "routingMethod": "direct",
   "isActive": true,
   "releasedAt": "2025-12-01T00:00:00Z",
-  "apiConfigEncrypted": { "ciphertext": "..." },
+  "apiConfigEncrypted": {
+    "model": "gpt-4o",
+    "maxTokens": 4096
+  },
   "capabilities": {
     "supportsJsonSchema": true,
     "supportsToolCalls": true,
@@ -212,6 +215,7 @@ This document shows collection shapes and sample documents for MongoDB Atlas. Th
   "audit": { "createdAt": "2026-01-17T00:00:00Z", "createdBy": "admin" }
 }
 ```
+API keys are sourced from environment variables (OPENAI_API_KEY, ANTHROPIC_API_KEY, GEMINI_API_KEY) and are not stored in the models collection.
 
 ## transformProfiles
 ```json
